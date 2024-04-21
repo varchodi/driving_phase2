@@ -6,6 +6,11 @@ export class Point{
         this.y = y;
     }
 
+    //!! check if 2 points are the same
+    equals(point: Point):boolean {
+        return this.x==point.x && this.y == this.y
+    }
+
     draw  (ctx: CanvasRenderingContext2D,size:number=18, color: string = "black"){
         const radius = size / 2;
         ctx.beginPath();
