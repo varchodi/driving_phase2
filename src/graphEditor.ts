@@ -30,6 +30,10 @@ export class GraphEditor{
                 if (this.hovered) {
                     this.removePoint(this.hovered);
                 }
+                //uselect point
+                else {
+                    this.selected = null;
+                }
             }
 
             //??Left click
@@ -38,11 +42,7 @@ export class GraphEditor{
                 //?? if point where clicked ?; we hover on it , if not create a new one
                 if (this.hovered) {
                     //?? add segment with existing points too 
-                    if (this.selected) {
-                        this.graph.tryAddSegment(new Segment(this.selected, this.hovered));
-                    }
-
-                    this.selected = this.hovered;
+                    this.selectPoint(this.hovered);
 
                     //!! gragable
                     this.dragging = true;
@@ -51,11 +51,7 @@ export class GraphEditor{
                 this.graph.addPoint(mouse);
 
                 //!! if the is a previous selected point 
-                if (this.selected) {
-                    this.graph.tryAddSegment(new Segment(this.selected, mouse));
-                }
-                
-                this.selected = mouse;
+                this.selectPoint(mouse);
                 this.hovered = mouse;
             }
         })
@@ -80,6 +76,14 @@ export class GraphEditor{
         })
     }
 
+    //select point
+    private selectPoint(point: Point) {
+        if (this.selected) {
+            this.graph.tryAddSegment(new Segment(this.selected, point));
+        }
+        
+        this.selected = point;
+    }
 
     private removePoint(point: Point) {
         this.graph.removePoint(point);
