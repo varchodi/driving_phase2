@@ -25,26 +25,30 @@ export class GraphEditor{
 
 
     private addEventsListeners() {
-        this.canvas.addEventListener("mousedown", this.handleMouseDouwn)
+        //use .bind(this) to make graphEditor object accessible in the function 
+        this.canvas.addEventListener("mousedown", this.handleMouseDouwn.bind(this))
 
-        this.canvas.addEventListener("mousemove", (evt: MouseEvent) => {
-            this.mouse = new Point(evt.offsetX, evt.offsetY);
+        this.canvas.addEventListener("mousemove", this.handleMouseMouve.bind(this));
+
+        //??context menu ??
+        this.canvas.addEventListener("contextmenu", (evt: MouseEvent) => {
+            evt.preventDefault();
+        })
+        
+        this.canvas.addEventListener("mouseup", () => {
+            this.dragging = false;
+        })
+    }
+
+    //Mouse mouve action handleler
+    private handleMouseMouve(evt:MouseEvent) {
+        this.mouse = new Point(evt.offsetX, evt.offsetY);
             this.hovered = getNearestPoint(this.mouse, this.graph.points,10);
             
             if (this.dragging && this.selected) {
                 this.selected.x = this.mouse.x!;
                 this.selected.y = this.mouse.y!;
             }
-        })
-
-        //??context menu ??
-        this.canvas.addEventListener("contextmenu", (evt: MouseEvent) => {
-            evt.preventDefault();
-        })
-
-        this.canvas.addEventListener("mouseup", () => {
-            this.dragging = false;
-        })
     }
 
     //mouse down action
