@@ -8,6 +8,7 @@ export class GraphEditor{
     private selected: Point | null;
     private hovered: Point|null;
     private dragging: boolean;
+    private mouse: Point | null; 
 
     constructor(public canvas: HTMLCanvasElement, public graph: Graph) {
         this.canvas = canvas;
@@ -16,7 +17,8 @@ export class GraphEditor{
         this.selected = null;
         this.hovered = null;
         this.dragging = false;
-
+        this.mouse = null;
+        
         //init events listeners
         this.addEventsListeners();
     }
@@ -27,18 +29,12 @@ export class GraphEditor{
             
             //Right click
             if (evt.button == 2) {
-                if (this.hovered) {
-                    this.removePoint(this.hovered);
-                }
-                //uselect point
-                else {
-                    this.selected = null;
-                }
+                
             }
 
             //??Left click
             if (evt.button == 0) {
-                const mouse = new Point(evt.offsetX, evt.offsetY);
+                
                 //?? if point where clicked ?; we hover on it , if not create a new one
                 if (this.hovered) {
                     //?? add segment with existing points too 
@@ -48,21 +44,21 @@ export class GraphEditor{
                     this.dragging = true;
                     return;
                 }
-                this.graph.addPoint(mouse);
+                this.graph.addPoint(this.mouse!);
 
                 //!! if the is a previous selected point 
-                this.selectPoint(mouse);
-                this.hovered = mouse;
+                this.selectPoint(this.mouse!);
+                this.hovered = this.mouse;
             }
         })
 
         this.canvas.addEventListener("mousemove", (evt: MouseEvent) => {
-            const mouse = new Point(evt.offsetX, evt.offsetY);
-            this.hovered = getNearestPoint(mouse, this.graph.points,10);
+            this.mouse = new Point(evt.offsetX, evt.offsetY);
+            this.hovered = getNearestPoint(this.mouse, this.graph.points,10);
             
             if (this.dragging && this.selected) {
-                this.selected.x = mouse.x!;
-                this.selected.y = mouse.y!;
+                this.selected.x = this.mouse.x!;
+                this.selected.y = this.mouse.y!;
             }
         })
 
@@ -97,11 +93,12 @@ export class GraphEditor{
         this.graph.draw(this.ctx);
 
         if (this.hovered) {
-            console.log("drawing")
             this.hovered.draw(this.ctx, { fill: true });
         }
 
         if (this.selected) {
+            const intent = this.hovered ? this.hovered : this.mouse;
+            new Segment(this.selected, intent!).draw(this.ctx,{dash:[3,3]});
             this.selected.draw(this.ctx, { outline: true });
         }
     }
