@@ -25,36 +25,7 @@ export class GraphEditor{
 
 
     private addEventsListeners() {
-        this.canvas.addEventListener("mousedown", (evt: MouseEvent) => {
-            
-            //Right click
-            if (evt.button == 2) {
-                if (this.selected) {
-                    this.selected = null;
-                } else if (this.hovered) {
-                    this.removePoint(this.hovered);
-                }
-            }
-
-            //??Left click
-            if (evt.button == 0) {
-                
-                //?? if point where clicked ?; we hover on it , if not create a new one
-                if (this.hovered) {
-                    //?? add segment with existing points too 
-                    this.selectPoint(this.hovered);
-
-                    //!! gragable
-                    this.dragging = true;
-                    return;
-                }
-                this.graph.addPoint(this.mouse!);
-
-                //!! if the is a previous selected point 
-                this.selectPoint(this.mouse!);
-                this.hovered = this.mouse;
-            }
-        })
+        this.canvas.addEventListener("mousedown", this.handleMouseDouwn)
 
         this.canvas.addEventListener("mousemove", (evt: MouseEvent) => {
             this.mouse = new Point(evt.offsetX, evt.offsetY);
@@ -75,6 +46,38 @@ export class GraphEditor{
             this.dragging = false;
         })
     }
+
+    //mouse down action
+    private handleMouseDouwn(evt: MouseEvent) {
+        //Right click
+        if (evt.button == 2) {
+            if (this.selected) {
+                this.selected = null;
+            } else if (this.hovered) {
+                this.removePoint(this.hovered);
+            }
+        }
+
+        //??Left click
+        if (evt.button == 0) {
+            
+            //?? if point where clicked ?; we hover on it , if not create a new one
+            if (this.hovered) {
+                //?? add segment with existing points too 
+                this.selectPoint(this.hovered);
+
+                //!! gragable
+                this.dragging = true;
+                return;
+            }
+            this.graph.addPoint(this.mouse!);
+
+            //!! if the is a previous selected point 
+            this.selectPoint(this.mouse!);
+            this.hovered = this.mouse;
+        }
+    }
+
 
     //select point
     private selectPoint(point: Point) {
