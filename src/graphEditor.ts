@@ -29,7 +29,11 @@ export class GraphEditor{
             
             //Right click
             if (evt.button == 2) {
-                
+                if (this.selected) {
+                    this.selected = null;
+                } else if (this.hovered) {
+                    this.removePoint(this.hovered);
+                }
             }
 
             //??Left click
