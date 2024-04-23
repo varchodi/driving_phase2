@@ -1,8 +1,9 @@
 import { Point } from "./primitives/point";
-import {add,substract} from "./math/utils"
+import {add,substract,scale} from "./math/utils"
 export class Viewport{
     private ctx: CanvasRenderingContext2D;
     public zoom: number;
+    public center: Point;
     private drag : {
         start: Point,
         end: Point,
@@ -16,8 +17,9 @@ export class Viewport{
         this.ctx = canvas.getContext("2d")!;
 
         this.zoom = 1;
-        this.offset = new Point(0, 0);//default offset
-
+        this.center = new Point(canvas.width / 2, canvas.height / 2);//default center
+        this.offset = scale(this.center,-1)//default offsetp
+        
         this.drag = {
             start: new Point(0, 0),
             end: new Point(0, 0),
@@ -34,6 +36,10 @@ export class Viewport{
             evt.offsetX * this.zoom,
             evt.offsetY* this.zoom
         )
+    }
+
+    getOffset():Point {
+        return add(this.offset,this.drag.offset)
     }
 
     private addEventsListeners() {
