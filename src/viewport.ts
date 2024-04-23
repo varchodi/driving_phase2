@@ -30,6 +30,20 @@ export class Viewport{
         this.addEventsListeners();
     }
 
+    //reset??
+    reset() {
+        this.ctx.restore();//restore ??
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.save();//save stat
+        this.ctx.translate(this.center.x, this.center.y);//?? center canvas 
+        this.ctx.scale(1 / this.zoom, 1 / this.zoom);//scale
+
+        const offset = this.getOffset();
+        
+        this.ctx.translate(offset.x, offset.y);//focus on point while scaling
+    
+    }
+
     //getmouse info,with scaling applied
     getMouse(evt: MouseEvent,substractDragOffset?:boolean) {
         const p= new Point(

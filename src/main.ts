@@ -26,17 +26,8 @@ const graphEditor = new GraphEditor(viewport, graph);
 
 animate();
 function animate() {
-    ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-    ctx.save();//save stat
-    ctx.translate(viewport.center.x, viewport.center.y);//?? center canvas 
-    ctx.scale(1 / viewport.zoom, 1 / viewport.zoom);//scale
-
-    const offset = viewport.getOffset();
-    
-    ctx.translate(offset.x, offset.y);//focus on point while scaling
-    
+    viewport.reset();
     graphEditor.display();
-    ctx.restore();//restore ??
 
     requestAnimationFrame(animate);
 }
