@@ -29,6 +29,8 @@ function animate() {
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
     ctx.save();//save stat
     ctx.scale(1 / viewport.zoom, 1 / viewport.zoom);//scale
+    
+    ctx.translate(viewport.offset.x, viewport.offset.y);//focus on point while scaling
     graphEditor.display();
     ctx.restore();//restore ??
 
