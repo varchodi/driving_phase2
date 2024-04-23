@@ -12,6 +12,19 @@ export class Graph{
         this.segments = segments;
     }
 
+    //load previous data (points and segments)
+    static load(info: Graph): Graph {
+        //transporm save data into point and segment data 
+        const points:Point[] = info.points.map((p)=>new Point(p.x,p.y));
+        const segments = info.segments.map((s) => new Segment(
+            points.find((p) => p.equals(s.p1))!,
+                points.find((p) => p.equals(s.p2))!,
+            
+        ))
+
+        return new Graph(points, segments);
+    }
+
     //add point
     addPoint(point: Point) {
         this.points.push(point);
