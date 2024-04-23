@@ -3,6 +3,8 @@ import { Graph } from './math/graph';
 import { Point } from './primitives/point';
 import { Segment } from './primitives/segment';
 import { GraphEditor } from './graphEditor';
+import { Viewport } from './viewport';
+
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 
 const ctx = myCanvas.getContext("2d") as CanvasRenderingContext2D;
@@ -18,7 +20,8 @@ const s2 = new Segment(p1, p3);
 const s3 = new Segment(p1, p4);
 const s4 = new Segment(p2, p3);
 
-const graph = new Graph([p1, p2, p3, p4],[s1,s2,s3,s4]);
+const graph = new Graph([p1, p2, p3, p4], [s1, s2, s3, s4]);
+const viewort = new Viewport(myCanvas);
 const graphEditor = new GraphEditor(myCanvas, graph);
 
 animate();
