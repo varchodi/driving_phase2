@@ -31,11 +31,12 @@ export class Viewport{
     }
 
     //getmouse info,with scaling applied
-    getMouse(evt: MouseEvent) {
-        return new Point(
+    getMouse(evt: MouseEvent,substractDragOffset?:boolean) {
+        const p= new Point(
             (evt.offsetX-this.center.x) * this.zoom-this.offset.x,
             (evt.offsetY-this.center.y)* this.zoom-this.offset.y,
         )
+        return substractDragOffset ? substract(p, this.drag.offset) : p;
     }
 
     getOffset():Point {

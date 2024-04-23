@@ -45,7 +45,7 @@ export class GraphEditor{
 
     //Mouse mouve action handleler
     private handleMouseMouve(evt:MouseEvent) {
-        this.mouse = this.viewport.getMouse(evt);
+        this.mouse = this.viewport.getMouse(evt,true);
             this.hovered = getNearestPoint(this.mouse, this.graph.points,10*this.viewport.zoom);
             
             if (this.dragging && this.selected) {
