@@ -1,3 +1,5 @@
+import { Point } from "./primitives/point";
+
 export class Viewport{
     private ctx: CanvasRenderingContext2D;
     public zoom: number;
@@ -9,6 +11,14 @@ export class Viewport{
         this.zoom = 1;
 
         this.addEventsListeners();
+    }
+
+    //getmouse info,with scaling applied
+    getMouse(evt: MouseEvent) {
+        return new Point(
+            evt.offsetX * this.zoom,
+            evt.offsetY* this.zoom
+        )
     }
 
     private addEventsListeners() {
