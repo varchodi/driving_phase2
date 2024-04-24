@@ -17,6 +17,8 @@ const graphInfo = graphString ? JSON.parse(graphString) as Graph : null;
 
 const graph = graphInfo ? Graph.load(graphInfo) : new Graph();
 
+
+
 const viewport = new Viewport(myCanvas);
 const graphEditor = new GraphEditor(viewport, graph);
 
@@ -25,10 +27,10 @@ function animate() {
     viewport.reset();
     graphEditor.display();
 
-    new Envelope(graph.segments[0],80).draw(ctx)
+    new Envelope(graph.segments[0],200,20).draw(ctx)
 
     //draw polygon on segments ??points 
-    new Polygon(graph?.points).draw(ctx);
+    // new Polygon(graph?.points).draw(ctx);
 
     requestAnimationFrame(animate);
 }
