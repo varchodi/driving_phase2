@@ -32,7 +32,12 @@ export class World{
 
     draw(ctx: CanvasRenderingContext2D) {
         for (const env of this.envelopes) {
-            env.draw(ctx,{fill:"#bbb",stroke:"#bbb"});
+            env.draw(ctx,{fill:"#bbb",stroke:"#bbb",lineWidth:15});
+        }
+
+        //draw middle line of the road
+        for (const seg of this.graph.segments) {
+            seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] });
         }
 
         for (const seg of this.roadBoarders) {

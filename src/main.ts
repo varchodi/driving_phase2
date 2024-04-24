@@ -29,6 +29,9 @@ function animate() {
     world.generate();
     world.draw(ctx);
 
+    //add transparency
+    ctx.globalAlpha = 0.2;
+
     graphEditor.display();
 
     // new Envelope(graph.segments[0],200,20).draw(ctx)
