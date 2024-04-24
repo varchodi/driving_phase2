@@ -32,3 +32,14 @@ export function substract(p1: Point, p2: Point):Point {
 export function scale(p: Point, scaler: number): Point{
     return new Point(p.x * scaler, p.y * scaler);
 }
+
+export function translate(loc: Point, angle: number, offset: number):Point {
+    return new Point(
+        loc.x + Math.cos(angle) * offset,
+        loc.y + Math.sin(angle) * offset
+    )
+}
+
+export function angle(p: Point):number {
+    return Math.atan2(p.y, p.x);
+}

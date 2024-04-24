@@ -3,6 +3,7 @@ import { Graph } from './math/graph';
 import { GraphEditor } from './graphEditor';
 import { Viewport } from './viewport';
 import { Polygon } from './primitives/polygon';
+import { Envelope } from './primitives/envelope';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -24,7 +25,7 @@ function animate() {
     viewport.reset();
     graphEditor.display();
 
-    
+    new Envelope(graph.segments[0],80).draw(ctx)
 
     //draw polygon on segments ??points 
     new Polygon(graph?.points).draw(ctx);
