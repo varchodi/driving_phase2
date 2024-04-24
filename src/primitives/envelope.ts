@@ -36,8 +36,7 @@ export class Envelope{
         return new Polygon(points)
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
-        this.poly.draw(ctx);
-        this.poly.drawSegment(ctx);
+    draw(ctx: CanvasRenderingContext2D,options?:{fill:string,stroke:string}) {
+        this.poly.draw(ctx,options);
     }
 }

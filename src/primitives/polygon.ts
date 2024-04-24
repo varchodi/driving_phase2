@@ -1,6 +1,6 @@
 import { Point } from "./point";
 import { Segment } from "./segment";
-import { getIntersection ,getRandomColor} from "../math/utils";
+import { getIntersection ,getRandomColor,average} from "../math/utils";
 
 export class Polygon{
     private segments: Segment[];
@@ -14,6 +14,33 @@ export class Polygon{
             new Segment(points[i - 1], points[i % points.length])
          );
       }
+    }
+
+    //?? unify broken polygon
+    static union(polys: Polygon[]) {
+        Polygon.multiBreak(polys);
+
+        const keptSegments = [];
+
+        for (let i = 0; i < polys.length; i++){
+            for (const seg of polys[i].segments) {
+                let keep = true;
+
+                for (let j = 0; j < polys.length; j++){
+                    if (i != j) {
+                        if (polys[j].containsSegment(seg)) {
+                            keep = false;
+                            break;
+                        }
+                    }
+                }
+                if (keep) {
+                    keptSegments.push(seg);
+                }
+            }
+        }
+
+        return keptSegments;
     }
 
     //!! break all polygons at intersection
@@ -56,6 +83,27 @@ export class Polygon{
         for (const seg of this.segments) {
             seg.draw(ctx,{color:getRandomColor(),width:5})
         }
+    }
+
+    containsSegment(seg: Segment) {
+        const midpoint=average(seg.p1,seg.p2)
+        return this.containsPoint(midpoint);
+    }
+
+    //check if point p is inside the polygon
+    containsPoint(p: Point) {
+        const outerPoint=new Point(-1000,-1000)
+        let intersectionCount = 0;
+
+        for (const seg of this.segments) {
+            let int = getIntersection(outerPoint, p, seg.p1, seg.p2);
+
+            if (int) {
+                intersectionCount++;
+            }
+        }
+
+        return intersectionCount % 2 == 1;//if count is even true
     }
 
     draw(ctx: CanvasRenderingContext2D, { stroke = "blue", lineWidth = 2, fill = "rgba(0,0,2255,0.3)" }={} ) {

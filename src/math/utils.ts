@@ -20,6 +20,10 @@ function distance(p1: Point, p2: Point):number {
     return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 }
 
+export function average(p1: Point, p2: Point) {
+    return new Point((p1.x+p2.x)/2,(p1.y+p2.y)/2)
+}
+
 export function add(p1: Point, p2: Point):Point {
     return new Point(p1.x + p2.x, p1.y + p2.y);
 }
