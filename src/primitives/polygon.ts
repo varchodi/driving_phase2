@@ -1,6 +1,6 @@
 import { Point } from "./point";
 import { Segment } from "./segment";
-import { getIntersection } from "../math/utils";
+import { getIntersection ,getRandomColor} from "../math/utils";
 
 export class Polygon{
     private segments: Segment[];
@@ -30,12 +30,24 @@ export class Polygon{
 
                 if (int && int.offset != 1 && int.offset != 0) {
                     const point = new Point(int.x, int.y);
-                    intersections.push(point);
-                }
+                    let aux = segs1[i].p2;
+                    segs1[i].p2 = point;
+                    segs1.splice(i + 1, 0, new Segment(point, aux));
+                    aux = segs2[j].p2;
+                    segs2[j].p2 = point;
+                    segs2.splice(j + 1, 0, new Segment(point, aux));
+                 }
+                
             }
         }
 
         return intersections;
+    }
+
+    drawSegment(ctx: CanvasRenderingContext2D) {
+        for (const seg of this.segments) {
+            seg.draw(ctx,{color:getRandomColor(),width:5})
+        }
     }
 
     draw(ctx: CanvasRenderingContext2D, { stroke = "blue", lineWidth = 2, fill = "rgba(0,0,2255,0.3)" }={} ) {

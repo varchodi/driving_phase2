@@ -67,4 +67,9 @@ export function getIntersection(A: Point, B:Point, C:Point, D:Point) {
  
 export function lerp(a:number, b:number, t:number) {
     return a + (b - a) * t;
+}
+
+export function getRandomColor() {
+    const hue = 290 + Math.random() * 260;
+    return "hsl(" + hue + ", 100%, 60%)";
  }

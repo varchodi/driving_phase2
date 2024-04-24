@@ -38,5 +38,6 @@ export class Envelope{
 
     draw(ctx: CanvasRenderingContext2D) {
         this.poly.draw(ctx);
+        this.poly.drawSegment(ctx);
     }
 }
