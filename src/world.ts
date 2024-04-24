@@ -24,10 +24,7 @@ export class World{
             )
         }
 
-        this.intersections = Polygon.break(
-            this.envelopes[0].poly,
-            this.envelopes[1].poly
-        )
+        Polygon.multiBreak(this.envelopes.map((e) => e.poly));
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -35,9 +32,5 @@ export class World{
             env.draw(ctx);
         }
 
-        //draw intersections 
-        for (const int of this.intersections) {
-            int.draw(ctx,{color:"red",size:6})
-        }
     }
 }

@@ -16,11 +16,18 @@ export class Polygon{
       }
     }
 
-    static break(poly1: Polygon, poly2:Polygon):Array<Point> {
+    //!! break all polygons at intersection
+    static multiBreak(polys: Polygon[]) {
+        for (let i = 0; i < polys.length-1; i++){
+            for (let j = i + 1; j < polys.length; j++){
+                Polygon.break(polys[i], polys[j]);
+            }
+        }
+    }
+
+    static break(poly1: Polygon, poly2:Polygon) {
         const segs1 = poly1.segments;
         const segs2 = poly2.segments;
-
-        const intersections:Point[] = [];
 
         for (let i = 0; i < segs1.length; i++){
             for (let j = 0; j < segs2.length; j++){
@@ -41,7 +48,8 @@ export class Polygon{
             }
         }
 
-        return intersections;
+        
+        
     }
 
     drawSegment(ctx: CanvasRenderingContext2D) {
