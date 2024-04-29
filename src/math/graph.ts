@@ -25,6 +25,11 @@ export class Graph{
         return new Graph(points, segments);
     }
 
+    //graph hash
+    hash(): string{
+        return JSON.stringify(this);
+    }
+
     //add point
     addPoint(point: Point) {
         this.points.push(point);

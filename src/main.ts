@@ -21,12 +21,19 @@ const world = new World(graph);
 const viewport = new Viewport(myCanvas);
 const graphEditor = new GraphEditor(viewport, graph);
 
+
+let oldGraphHash = graph.hash();
 animate();
+
 function animate() {
     viewport.reset();
 
     //??
-    world.generate();
+    //regenerate graph only if graph changes
+    if (graph.hash() != oldGraphHash){
+        world.generate();
+        oldGraphHash = graph.hash()
+    }
     world.draw(ctx);
 
     //add transparency
