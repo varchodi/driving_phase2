@@ -69,12 +69,12 @@ export class World{
             //prevent from adding a tree on building or road poly
             let keep = true;
             for (const poly of illegalPolys) {
-                if (poly.containsPoint(p)) {
+                if (poly.containsPoint(p)||poly.distanceToPoint(p)<this.treeSize/2) {
                     keep = false;
                     break;
                 }
             }
-            //prevent tree overlaping
+            //prevent tree overlaping(intercept trees)
             if (keep) {
                 for (const tree of trees) {
                     if (distance(tree, p) < this.treeSize) {

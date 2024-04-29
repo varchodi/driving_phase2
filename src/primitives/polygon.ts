@@ -85,6 +85,11 @@ export class Polygon{
         }
     }
 
+    //distance between Point and polygon
+    distanceToPoint(p: Point) {
+        return Math.min(...this.segments.map(s=>s.distanceToPoint(p)))
+    }
+
     //chack if polgon intercepts (or overlap)
     intersectPoly(poly: Polygon) {
         for (let s1 of this.segments) {
