@@ -37,7 +37,7 @@ export class World{
     }
 
     //building generator
-    private generateBuildings():Segment[] {
+    private generateBuildings():Polygon[] {
         const tmpEnvelopes = [];
         for (const seg of this.graph.segments) {
             tmpEnvelopes.push(
@@ -82,9 +82,21 @@ export class World{
             }
         }
 
+        const bases:Polygon[] = [];
+        for (const seg of supports) {
+            bases.push(new Envelope(seg,this.buildingWidth).poly)
+        }
 
+        for (let i = 0; i < bases.length;i++){
+            for (let j = i + 1; j < bases.length; j++){
+                if (bases[i].intersectPoly(bases[j])) {
+                    bases.splice(j, 1);
+                    j--;
+                }
+            }
+        }
         
-        return supports;
+        return bases;
     }
 
     draw(ctx: CanvasRenderingContext2D) {
