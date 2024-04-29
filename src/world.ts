@@ -1,13 +1,15 @@
 import { Graph } from "./math/graph";
-import { add, scale } from "./math/utils";
+import { add, lerp, scale } from "./math/utils";
 import { Envelope } from "./primitives/envelope";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
-
+import { Point } from "./primitives/point";
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
-    private buildings: any[];
+    private buildings: Polygon[];
+    private trees: Point[] = [];
+
     constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50) {
         this.graph = graph;
         this.roadWidth = roadWidth;
@@ -20,7 +22,8 @@ export class World{
         this.envelopes = [];
         this.roadBoarders = [];
         this.buildings = [];        
-
+        this.trees = [];
+        
         this.generate();
     }
 
@@ -34,6 +37,31 @@ export class World{
 
         this.roadBoarders=Polygon.union(this.envelopes.map((e) => e.poly));
         this.buildings = this.generateBuildings();
+        this.trees=this.generateTrees();
+
+    }
+
+    //trees generator 
+    private generateTrees(count:number=10):Point[] {
+        const points = [
+            ...this.roadBoarders.map(s => [s.p1, s.p2]).flat(),
+            ...this.buildings.map(b=>b.points).flat()
+        ];
+
+        const left = Math.min(...points.map(p => p.x));
+        const right = Math.max(...points.map(p => p.x));
+        const top = Math.min(...points.map(p => p.y));
+        const bottom = Math.max(...points.map(p => p.y));
+        
+        const trees = [];
+        while (trees.length < count) {
+            const p = new Point(
+                lerp(left, right, Math.random()),
+                lerp(bottom,top,Math.random())
+            )
+            trees.push(p);
+        }
+        return trees;
     }
 
     //building generator
@@ -111,6 +139,11 @@ export class World{
 
         for (const seg of this.roadBoarders) {
             seg.draw(ctx,{color:"white",width:4});
+        }
+
+        //draw trees 
+        for (const tree of this.trees) {
+            tree.draw(ctx);
         }
 
         //display building enveloppes
