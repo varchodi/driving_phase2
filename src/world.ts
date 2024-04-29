@@ -1,21 +1,25 @@
 import { Graph } from "./math/graph";
 import { Envelope } from "./primitives/envelope";
-import { Point } from "./primitives/point";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
 
 export class World{
     private envelopes: Envelope[];
-    private intersections: Point[] = [];
     private roadBoarders:Segment[] = [];
-
-    constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10) {
+    private buildings: Envelope[];
+    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50) {
         this.graph = graph;
         this.roadWidth = roadWidth;
         this.roadRoundness = roadRoundness;
-        this.envelopes = [];
+        
+        this.buildingWidth = buildingWidth;
+        this.buildingMinLength = buildingMinLength;
+        this.spacing = spacing;
 
+        this.envelopes = [];
         this.roadBoarders = [];
+        this.buildings = [];        
+
         this.generate();
     }
 
@@ -28,6 +32,23 @@ export class World{
         }
 
         this.roadBoarders=Polygon.union(this.envelopes.map((e) => e.poly));
+        this.buildings = this.generateBuildings();
+    }
+
+    //building generator
+    private generateBuildings():Envelope[] {
+        const tmpEnvelopes = [];
+        for (const seg of this.graph.segments) {
+            tmpEnvelopes.push(
+                new Envelope(
+                    seg,
+                    this.roadWidth + this.buildingWidth + this.spacing * 2,
+                    this.roadRoundness
+                )
+            )
+        }
+
+        return tmpEnvelopes;
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -42,6 +63,11 @@ export class World{
 
         for (const seg of this.roadBoarders) {
             seg.draw(ctx,{color:"white",width:4});
+        }
+
+        //display building enveloppes
+        for (const bld of this.buildings) {
+            bld.draw(ctx);
         }
 
     }
