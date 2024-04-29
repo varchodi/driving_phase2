@@ -1,4 +1,5 @@
 import { Graph } from "./math/graph";
+import { add, scale } from "./math/utils";
 import { Envelope } from "./primitives/envelope";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
@@ -58,7 +59,23 @@ export class World{
             }
         }
 
-        return guides;
+        const supports = [];
+        for (const seg of guides) {
+            const len = seg.length() + this.spacing;
+            const buildingCount = Math.floor(
+                len / (this.buildingMinLength + this.spacing)
+            );
+
+            const buildingLength = len / buildingCount - this.spacing;
+            
+            const dir = seg.directionVector();
+
+            let q1 = seg.p1;
+            let q2 = add(q1, scale(dir, buildingLength));
+            supports.push(new Segment(q1, q2));
+        }
+
+        return supports;
     }
 
     draw(ctx: CanvasRenderingContext2D) {

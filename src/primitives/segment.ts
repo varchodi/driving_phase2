@@ -1,4 +1,4 @@
-import { distance } from "../math/utils";
+import { distance, normalize, substract } from "../math/utils";
 import { Point } from "./point";
 
 export class Segment{
@@ -13,6 +13,11 @@ export class Segment{
     //segment length
     length():number {
         return distance(this.p1, this.p2);
+    }
+
+    //direction vector
+    directionVector() {
+        return normalize(substract(this.p2, this.p1));
     }
 
     // chack if 2 sments r the same (or located at the same place)

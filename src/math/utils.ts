@@ -37,6 +37,14 @@ export function scale(p: Point, scaler: number): Point{
     return new Point(p.x * scaler, p.y * scaler);
 }
 
+export function normalize(p:Point):Point {
+    return scale(p, 1 / magnitude(p));
+}
+
+export function magnitude (p: Point):number {
+    return Math.hypot(p.x, p.y);
+}
+
 export function translate(loc: Point, angle: number, offset: number):Point {
     return new Point(
         loc.x + Math.cos(angle) * offset,
