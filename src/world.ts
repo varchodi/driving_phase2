@@ -53,13 +53,29 @@ export class World{
         const top = Math.min(...points.map(p => p.y));
         const bottom = Math.max(...points.map(p => p.y));
         
+        const illegalPolys = [
+            ...this.buildings,
+            ...this.envelopes.map(e=>e.poly)
+        ]
+
         const trees = [];
         while (trees.length < count) {
             const p = new Point(
                 lerp(left, right, Math.random()),
                 lerp(bottom,top,Math.random())
             )
-            trees.push(p);
+
+            //prevent from adding a tree on building or road poly
+            let keep = true;
+            for (const poly of illegalPolys) {
+                if (poly.containsPoint(p)) {
+                    keep = false;
+                    break;
+                }
+            }
+            if (keep) {
+                trees.push(p);
+            }
         }
         return trees;
     }
