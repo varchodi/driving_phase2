@@ -1,5 +1,5 @@
 import { Graph } from "./math/graph";
-import { add, lerp, scale } from "./math/utils";
+import { add, distance, lerp, scale } from "./math/utils";
 import { Envelope } from "./primitives/envelope";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
@@ -10,7 +10,7 @@ export class World{
     private buildings: Polygon[];
     private trees: Point[] = [];
 
-    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50) {
+    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=50) {
         this.graph = graph;
         this.roadWidth = roadWidth;
         this.roadRoundness = roadRoundness;
@@ -18,6 +18,7 @@ export class World{
         this.buildingWidth = buildingWidth;
         this.buildingMinLength = buildingMinLength;
         this.spacing = spacing;
+        this.treeSize = treeSize;
 
         this.envelopes = [];
         this.roadBoarders = [];
@@ -73,6 +74,15 @@ export class World{
                     break;
                 }
             }
+            //prevent tree overlaping
+            if (keep) {
+                for (const tree of trees) {
+                    if (distance(tree, p) < this.treeSize) {
+                        keep = false;
+                    }        
+                }
+            }
+
             if (keep) {
                 trees.push(p);
             }
@@ -159,7 +169,7 @@ export class World{
 
         //draw trees 
         for (const tree of this.trees) {
-            tree.draw(ctx);
+            tree.draw(ctx,{size:this.treeSize,color:"rgba(0,0,0,0.5)"});
         }
 
         //display building enveloppes
