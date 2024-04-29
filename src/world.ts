@@ -43,7 +43,7 @@ export class World{
     }
 
     //trees generator 
-    private generateTrees(count:number=10):Point[] {
+    private generateTrees():Point[] {
         const points = [
             ...this.roadBoarders.map(s => [s.p1, s.p2]).flat(),
             ...this.buildings.map(b=>b.points).flat()
@@ -60,7 +60,9 @@ export class World{
         ]
 
         const trees = [];
-        while (trees.length < count) {
+        let tryCount = 0;
+
+        while (tryCount<100) {
             const p = new Point(
                 lerp(left, right, Math.random()),
                 lerp(bottom,top,Math.random())
@@ -85,7 +87,9 @@ export class World{
 
             if (keep) {
                 trees.push(p);
+                tryCount = 0;
             }
+            tryCount++;
         }
         return trees;
     }
