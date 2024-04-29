@@ -84,6 +84,17 @@ export class World{
                     }        
                 }
             }
+            //keep tree wich are close to samething only
+            if(keep){
+                let closeToSamething = false;
+                for (const poly of illegalPolys) {
+                    if (poly.distanceToPoint(p) < this.treeSize * 2) {
+                        closeToSamething = true;
+                        break;
+                    }
+                }
+                keep = closeToSamething;
+            }
 
             if (keep) {
                 trees.push(p);
