@@ -6,7 +6,7 @@ import { Segment } from "./primitives/segment";
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
-    private buildings: Envelope[];
+    private buildings: any[];
     constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50) {
         this.graph = graph;
         this.roadWidth = roadWidth;
@@ -36,7 +36,7 @@ export class World{
     }
 
     //building generator
-    private generateBuildings():Envelope[] {
+    private generateBuildings():Segment[] {
         const tmpEnvelopes = [];
         for (const seg of this.graph.segments) {
             tmpEnvelopes.push(
@@ -48,7 +48,17 @@ export class World{
             )
         }
 
-        return tmpEnvelopes;
+        const guides = Polygon.union(tmpEnvelopes.map(e => e.poly));
+
+        for (let i = 0; i < guides.length; i++){
+            const seg = guides[i];
+            if (seg.length() < this.buildingMinLength) {
+                guides.splice(i, 1);
+                i--;
+            }
+        }
+
+        return guides;
     }
 
     draw(ctx: CanvasRenderingContext2D) {

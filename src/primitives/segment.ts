@@ -1,3 +1,4 @@
+import { distance } from "../math/utils";
 import { Point } from "./point";
 
 export class Segment{
@@ -8,6 +9,12 @@ export class Segment{
         this.p1 = p1;
         this.p2 = p2;
     }
+
+    //segment length
+    length():number {
+        return distance(this.p1, this.p2);
+    }
+
     // chack if 2 sments r the same (or located at the same place)
     equals(seg: this): boolean {
         //if include both points 

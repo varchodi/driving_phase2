@@ -16,7 +16,7 @@ export function getNearestPoint (loc: Point, points: Point[],threshold:number=Nu
 }
 
 //2points distance
-function distance(p1: Point, p2: Point):number {
+export function distance(p1: Point, p2: Point):number {
     return Math.hypot(p1.x - p2.x, p1.y - p2.y);
 }
 
