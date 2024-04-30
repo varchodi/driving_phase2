@@ -1,4 +1,4 @@
-import {scale, add, substract,lerp2D } from "../math/utils";
+import {scale, add, substract,lerp2D, lerp } from "../math/utils";
 import { Point } from "../primitives/point";
 import { Segment } from "../primitives/segment";
 
@@ -14,12 +14,16 @@ export class Tree{
         const diff=substract(this.center,viewPoint)
         const top = add(this.center, scale(diff,this.hightCoef));
         
+        //draw tree branches level
         const levelCount = 7; 
         for (let level = 0; level < levelCount; level++){
             const t = level / (levelCount - 1);
             const point = lerp2D(this.center, top, t);
-            point.draw(ctx, { size: this.size, color: "green" });
+            const color = `rgb(30,${lerp(50, 200, t)},70)`;// level colors (shading effect)
+            const size = lerp(this.size, 40, t);
+            point.draw(ctx, { size,color });
+            
         }
-        new Segment(this.center, top).draw(ctx);
+        
     }
 }
