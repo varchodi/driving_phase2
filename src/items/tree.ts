@@ -4,11 +4,15 @@ import { Polygon } from "../primitives/polygon";
 import { Segment } from "../primitives/segment";
 
 export class Tree{
+    private base: Polygon;
+
     constructor(public center: Point, public size: number,private hightCoef:number=0.3) {
         this.center = center;
         this.size = size; // size of base 
-        this.hightCoef=hightCoef // tree hight controller
+        this.hightCoef = hightCoef // tree hight controller
+        this.base = this.generateLevel(center, size);// generate base 
     }
+
     private generateLevel(point: Point, size: number):Polygon {
         const points = [];
         const rad = size / 2;
@@ -38,6 +42,7 @@ export class Tree{
             const poly = this.generateLevel(point, size);
             poly.draw(ctx,{fill:color,stroke:"rgba(0,0,0,0)"})
         }
+        
         
     }
 }
