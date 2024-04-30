@@ -27,6 +27,12 @@ export class Building{
             sides.push(poly);
         }
 
+        //make far backward side(farthest to the viewport) first ,then front's ones(closest one) 
+        sides.sort((a,b) =>
+            b.distanceToPoint(viewPoint) -
+            a.distanceToPoint(viewPoint)
+        )
+
         this.base.draw(ctx, { fill: "white", stroke: "#AAA" });
         //draw sides
         for (const side of sides) {
