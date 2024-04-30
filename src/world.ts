@@ -4,11 +4,12 @@ import { Envelope } from "./primitives/envelope";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
 import { Point } from "./primitives/point";
+import { Tree } from "./items/tree";
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
     private buildings: Polygon[];
-    private trees: Point[] = [];
+    private trees: Tree[] = [];
 
     constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=50) {
         this.graph = graph;
@@ -24,6 +25,8 @@ export class World{
         this.roadBoarders = [];
         this.buildings = [];        
         this.trees = [];
+
+
         
         this.generate();
     }
@@ -43,7 +46,7 @@ export class World{
     }
 
     //trees generator 
-    private generateTrees():Point[] {
+    private generateTrees():Tree[] {
         const points = [
             ...this.roadBoarders.map(s => [s.p1, s.p2]).flat(),
             ...this.buildings.map(b=>b.points).flat()
@@ -79,8 +82,9 @@ export class World{
             //prevent tree overlaping(intercept trees)
             if (keep) {
                 for (const tree of trees) {
-                    if (distance(tree, p) < this.treeSize) {
+                    if (distance(tree.center, p) < this.treeSize) {
                         keep = false;
+                        break;
                     }        
                 }
             }
@@ -97,7 +101,7 @@ export class World{
             }
 
             if (keep) {
-                trees.push(p);
+                trees.push(new Tree(p,this.treeSize));
                 tryCount = 0;
             }
             tryCount++;
@@ -185,7 +189,7 @@ export class World{
 
         //draw trees 
         for (const tree of this.trees) {
-            tree.draw(ctx,{size:this.treeSize,color:"rgba(0,0,0,0.5)"});
+            tree.draw(ctx);
         }
 
         //display building enveloppes
