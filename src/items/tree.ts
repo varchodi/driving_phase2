@@ -4,7 +4,7 @@ import { Polygon } from "../primitives/polygon";
 import { Segment } from "../primitives/segment";
 
 export class Tree{
-    private base: Polygon;
+    public base: Polygon;
 
     constructor(public center: Point, public size: number,private hightCoef:number=0.3) {
         this.center = center;

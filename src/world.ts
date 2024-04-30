@@ -190,15 +190,19 @@ export class World{
             seg.draw(ctx,{color:"white",width:4});
         }
 
-        //draw trees 
-        for (const tree of this.trees) {
-            tree.draw(ctx,viewPoint);
+        //combine buildings and trees
+        const items = [...this.buildings, ...this.trees];
+        //prevents items overlaping
+        items.sort(
+            (a, b) =>
+                b.base.distanceToPoint(viewPoint) -
+                a.base.distanceToPoint(viewPoint)
+        )
+        //draw items (trees and buildings); 
+        for (const item of items) {
+            item.draw(ctx,viewPoint);
         }
 
-        //display building enveloppes
-        for (const bld of this.buildings) {
-            bld.draw(ctx,viewPoint);
-        }
 
     }
 }
