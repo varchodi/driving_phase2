@@ -5,10 +5,12 @@ import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
 import { Point } from "./primitives/point";
 import { Tree } from "./items/tree";
+import { Building } from "./items/building";
+
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
-    private buildings: Polygon[];
+    private buildings: Building[];
     private trees: Tree[] = [];
 
     constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
@@ -49,7 +51,7 @@ export class World{
     private generateTrees():Tree[] {
         const points = [
             ...this.roadBoarders.map(s => [s.p1, s.p2]).flat(),
-            ...this.buildings.map(b=>b.points).flat()
+            ...this.buildings.map(b=>b.base.points).flat()
         ];
 
         const left = Math.min(...points.map(p => p.x));
@@ -58,7 +60,7 @@ export class World{
         const bottom = Math.max(...points.map(p => p.y));
         
         const illegalPolys = [
-            ...this.buildings,
+            ...this.buildings.map((b)=>b.base),
             ...this.envelopes.map(e=>e.poly)
         ]
 
@@ -110,7 +112,7 @@ export class World{
     }
 
     //building generator
-    private generateBuildings():Polygon[] {
+    private generateBuildings():Building[] {
         const tmpEnvelopes = [];
         for (const seg of this.graph.segments) {
             tmpEnvelopes.push(
@@ -170,7 +172,8 @@ export class World{
             }
         }
         
-        return bases;
+        return bases.map(b=>new Building(b));
+        
     }
 
     draw(ctx: CanvasRenderingContext2D,viewPoint:Point) {
@@ -194,7 +197,7 @@ export class World{
 
         //display building enveloppes
         for (const bld of this.buildings) {
-            bld.draw(ctx);
+            bld.draw(ctx,viewPoint);
         }
 
     }
