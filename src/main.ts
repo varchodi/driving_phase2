@@ -3,6 +3,7 @@ import { Graph } from './math/graph';
 import { GraphEditor } from './graphEditor';
 import { Viewport } from './viewport';
 import { World } from './world';
+import { scale } from './math/utils';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -34,7 +35,10 @@ function animate() {
         world.generate();
         oldGraphHash = graph.hash()
     }
-    world.draw(ctx);
+    //calculate the viewPoint
+    const viewPoint = scale(viewport.getOffset(), -1);
+
+    world.draw(ctx,viewPoint);
 
     //add transparency
     ctx.globalAlpha = 0.2;

@@ -11,7 +11,7 @@ export class World{
     private buildings: Polygon[];
     private trees: Tree[] = [];
 
-    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=50) {
+    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
         this.roadWidth = roadWidth;
         this.roadRoundness = roadRoundness;
@@ -173,7 +173,7 @@ export class World{
         return bases;
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D,viewPoint:Point) {
         for (const env of this.envelopes) {
             env.draw(ctx,{fill:"#bbb",stroke:"#bbb",lineWidth:15});
         }
@@ -189,7 +189,7 @@ export class World{
 
         //draw trees 
         for (const tree of this.trees) {
-            tree.draw(ctx);
+            tree.draw(ctx,viewPoint);
         }
 
         //display building enveloppes
