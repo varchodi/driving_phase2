@@ -4,13 +4,16 @@ import { Envelope } from "./primitives/envelope";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
 import { Point } from "./primitives/point";
+import { Tree } from "./items/tree";
+import { Building } from "./items/building";
+
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
-    private buildings: Polygon[];
-    private trees: Point[] = [];
+    private buildings: Building[];
+    private trees: Tree[] = [];
 
-    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=50) {
+    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
         this.roadWidth = roadWidth;
         this.roadRoundness = roadRoundness;
@@ -24,6 +27,8 @@ export class World{
         this.roadBoarders = [];
         this.buildings = [];        
         this.trees = [];
+
+
         
         this.generate();
     }
@@ -43,10 +48,10 @@ export class World{
     }
 
     //trees generator 
-    private generateTrees():Point[] {
+    private generateTrees():Tree[] {
         const points = [
             ...this.roadBoarders.map(s => [s.p1, s.p2]).flat(),
-            ...this.buildings.map(b=>b.points).flat()
+            ...this.buildings.map(b=>b.base.points).flat()
         ];
 
         const left = Math.min(...points.map(p => p.x));
@@ -55,7 +60,7 @@ export class World{
         const bottom = Math.max(...points.map(p => p.y));
         
         const illegalPolys = [
-            ...this.buildings,
+            ...this.buildings.map((b)=>b.base),
             ...this.envelopes.map(e=>e.poly)
         ]
 
@@ -79,8 +84,9 @@ export class World{
             //prevent tree overlaping(intercept trees)
             if (keep) {
                 for (const tree of trees) {
-                    if (distance(tree, p) < this.treeSize) {
+                    if (distance(tree.center, p) < this.treeSize) {
                         keep = false;
+                        break;
                     }        
                 }
             }
@@ -97,7 +103,7 @@ export class World{
             }
 
             if (keep) {
-                trees.push(p);
+                trees.push(new Tree(p,this.treeSize));
                 tryCount = 0;
             }
             tryCount++;
@@ -106,7 +112,7 @@ export class World{
     }
 
     //building generator
-    private generateBuildings():Polygon[] {
+    private generateBuildings():Building[] {
         const tmpEnvelopes = [];
         for (const seg of this.graph.segments) {
             tmpEnvelopes.push(
@@ -166,10 +172,11 @@ export class World{
             }
         }
         
-        return bases;
+        return bases.map(b=>new Building(b));
+        
     }
 
-    draw(ctx: CanvasRenderingContext2D) {
+    draw(ctx: CanvasRenderingContext2D,viewPoint:Point) {
         for (const env of this.envelopes) {
             env.draw(ctx,{fill:"#bbb",stroke:"#bbb",lineWidth:15});
         }
@@ -183,15 +190,19 @@ export class World{
             seg.draw(ctx,{color:"white",width:4});
         }
 
-        //draw trees 
-        for (const tree of this.trees) {
-            tree.draw(ctx,{size:this.treeSize,color:"rgba(0,0,0,0.5)"});
+        //combine buildings and trees
+        const items = [...this.buildings, ...this.trees];
+        //prevents items overlaping
+        items.sort(
+            (a, b) =>
+                b.base.distanceToPoint(viewPoint) -
+                a.base.distanceToPoint(viewPoint)
+        )
+        //draw items (trees and buildings); 
+        for (const item of items) {
+            item.draw(ctx,viewPoint);
         }
 
-        //display building enveloppes
-        for (const bld of this.buildings) {
-            bld.draw(ctx);
-        }
 
     }
 }
