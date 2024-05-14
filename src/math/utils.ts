@@ -1,4 +1,5 @@
 import { Point } from "../primitives/point";
+import { Viewport } from "../viewport";
 
 export function getNearestPoint (loc: Point, points: Point[],threshold:number=Number.MAX_SAFE_INTEGER){
     let minDist = Number.MAX_SAFE_INTEGER;
@@ -96,4 +97,11 @@ export function lerp2D(A: Point, B: Point, t: number) {
 export function getRandomColor() {
     const hue = 290 + Math.random() * 260;
     return "hsl(" + hue + ", 100%, 60%)";
+}
+ 
+export function getFake3dPoint(point:Point, viewPoint:Point, height:number) {
+    const dir = normalize(substract(point, viewPoint));
+    const dist = distance(point, viewPoint);
+    const scaler = Math.atan(dist / 300) / (Math.PI / 2);
+    return add(point, scale(dir, height * scaler));
  }
