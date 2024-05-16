@@ -219,8 +219,6 @@ export class World{
             item.draw(ctx, viewPoint);
         }
         
-        for (const seg of this.laneGuides) {
-            seg.draw(ctx, { color: "red" });
-        }
+        
       }
 }
