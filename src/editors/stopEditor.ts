@@ -1,3 +1,4 @@
+import { Stop } from "../markings/stop";
 import { getNearestSegment } from "../math/utils";
 import { Point } from "../primitives/point";
 import { Segment } from "../primitives/segment";
@@ -12,7 +13,7 @@ export class StopEditor{
     private boundMouseup: any;
     private boundContextMenu: any;
     private mouse: Point | null; 
-    private intent: Segment | null;
+    private intent: Stop | null;
 
     constructor(private viewport: Viewport, private world: World) {
         this.viewport = viewport;
@@ -59,7 +60,17 @@ export class StopEditor{
             const seg = getNearestSegment(this.mouse, this.world.graph.segments,10*this.viewport.zoom);
             
         if (seg) {
-            this.intent = seg;
+            const proj = seg.projectPoint(this.mouse);
+            if (proj.offset >= 0 && proj.offset <= 1) {
+                this.intent = new Stop(
+                    proj.point,
+                    seg.directionVector(),
+                    this.world.roadWidth,
+                    this.world.roadWidth/2
+                );
+            } else {
+                this.intent = null;
+            }
         } else {
             this.intent = null;
         }
