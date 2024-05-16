@@ -1,4 +1,5 @@
 import { Point } from "../primitives/point";
+import { Segment } from "../primitives/segment";
 import { Viewport } from "../viewport";
 
 export function getNearestPoint (loc: Point, points: Point[],threshold:number=Number.MAX_SAFE_INTEGER){
@@ -14,6 +15,21 @@ export function getNearestPoint (loc: Point, points: Point[],threshold:number=Nu
     }
 
     return nearest;
+}
+
+export function getNearestSegment(loc: Point, segments: Segment[], threshold: number = Number.MAX_SAFE_INTEGER):Segment {
+    let minDist = Number.MAX_SAFE_INTEGER;
+    let nearest = null;
+
+    for (const seg of segments) {
+        const dist = seg.distanceToPoint(loc);
+        if (dist < minDist && dist<threshold) {
+            minDist = dist;
+            nearest = seg;
+        }
+    }
+
+    return nearest!;
 }
 
 //2points distance

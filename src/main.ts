@@ -1,9 +1,10 @@
 import './style.css'
 import { Graph } from './math/graph';
-import { GraphEditor } from './graphEditor';
+import { GraphEditor } from './editors/graphEditor';
 import { Viewport } from './viewport';
 import { World } from './world';
 import { scale } from './math/utils';
+import { StopEditor } from './editors/stopEditor';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -23,6 +24,7 @@ const world = new World(graph);
 
 const viewport = new Viewport(myCanvas);
 const graphEditor = new GraphEditor(viewport, graph);
+const stopEditor = new StopEditor(viewport, world);
 
 
 let oldGraphHash = graph.hash();
@@ -47,11 +49,7 @@ function animate() {
     ctx.globalAlpha = 0.2;
 
     graphEditor.display();
-
-    // new Envelope(graph.segments[0],200,20).draw(ctx)
-
-    //draw polygon on segments ??points 
-    // new Polygon(graph?.points).draw(ctx);
+    stopEditor.display();
 
     requestAnimationFrame(animate);
 }
@@ -85,6 +83,7 @@ function setMode(mode: string) {
         case "stop":
             stopBtn.style.backgroundColor = "white";
             stopBtn.style.filter = "";
+            stopEditor.enable(); //enable stop marking dragging ...
             break;
     
         default:
@@ -98,4 +97,5 @@ function disableEditors() {
     graphEditor.disable();
     stopBtn.style.backgroundColor = "gray";
     stopBtn.style.filter = "grayscale(100%)";
+    stopEditor.disable();
 }
