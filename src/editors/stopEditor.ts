@@ -57,7 +57,7 @@ export class StopEditor{
     //Mouse mouve action handleler
     private handleMouseMouve(evt:MouseEvent) {
         this.mouse = this.viewport.getMouse(evt,true);
-            const seg = getNearestSegment(this.mouse, this.world.graph.segments,10*this.viewport.zoom);
+            const seg = getNearestSegment(this.mouse, this.world.laneGuides,10*this.viewport.zoom);
             
         if (seg) {
             const proj = seg.projectPoint(this.mouse);
@@ -65,7 +65,7 @@ export class StopEditor{
                 this.intent = new Stop(
                     proj.point,
                     seg.directionVector(),
-                    this.world.roadWidth,
+                    this.world.roadWidth/2,
                     this.world.roadWidth/2
                 );
             } else {

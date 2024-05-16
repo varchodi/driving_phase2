@@ -12,6 +12,7 @@ export class World{
     private roadBoarders:Segment[] = [];
     private buildings: Building[];
     private trees: Tree[] = [];
+    public laneGuides: any;
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -27,7 +28,7 @@ export class World{
         this.roadBoarders = [];
         this.buildings = [];        
         this.trees = [];
-
+        this.laneGuides = [];
 
         
         this.generate();
@@ -43,8 +44,28 @@ export class World{
 
         this.roadBoarders=Polygon.union(this.envelopes.map((e) => e.poly));
         this.buildings = this.generateBuildings();
-        this.trees=this.generateTrees();
+        this.trees = this.generateTrees();
+        
+        this.laneGuides.len = 0;
+        this.laneGuides.push(...this.generateLineGuides());
 
+    }
+
+    //gen line guides
+    private generateLineGuides() {
+        const tmpEnvelopes = [];
+        for (const seg of this.graph.segments) {
+           tmpEnvelopes.push(
+              new Envelope(
+                 seg,
+                 this.roadWidth / 2,
+                 this.roadRoundness
+              )
+           );
+        }  
+        
+        const segments = Polygon.union(tmpEnvelopes.map((e) => e.poly));
+        return segments;
     }
 
     //trees generator 
@@ -196,6 +217,10 @@ export class World{
          );
          for (const item of items) {
             item.draw(ctx, viewPoint);
-         }
+        }
+        
+        for (const seg of this.laneGuides) {
+            seg.draw(ctx, { color: "red" });
+        }
       }
 }
