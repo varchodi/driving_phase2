@@ -11,6 +11,10 @@ export class GraphEditor{
     private dragging: boolean;
     private mouse: Point | null; 
     public canvas: HTMLCanvasElement;
+    private boundMouseDown:any;
+    private boundMousemove: any;
+    private boundMouseup: any;
+    private boundContextMenu: any;
 
     constructor(public viewport:Viewport, public graph: Graph) {
         this.viewport=viewport;
@@ -21,27 +25,43 @@ export class GraphEditor{
         this.hovered = null;
         this.dragging = false;
         this.mouse = null;
+
         
-        //init events listeners
+    }
+
+    public enable() {
         this.addEventsListeners();
     }
 
+    public disable() {
+        this.removeEventsListeners();
+        this.selected = null;
+        this.hovered = null;
+    }
 
     private addEventsListeners() {
-        //use .bind(this) to make graphEditor object accessible in the function 
-        this.canvas.addEventListener("mousedown", this.handleMouseDouwn.bind(this))
+        this.boundMouseDown = this.handleMouseDouwn.bind(this);
+        this.boundMousemove = this.handleMouseMouve.bind(this);
+        this.boundMouseup = () => this.dragging = false
+        this.boundContextMenu = (evt: MouseEvent) => evt.preventDefault();
 
-        this.canvas.addEventListener("mousemove", this.handleMouseMouve.bind(this));
+        this.canvas.addEventListener("mousedown", this.boundMouseDown)
+        this.canvas.addEventListener("mousemove", this.boundMousemove);
 
         //??context menu ??
-        this.canvas.addEventListener("contextmenu", (evt: MouseEvent) => {
-            evt.preventDefault();
-        })
+        this.canvas.addEventListener("contextmenu",this.boundContextMenu )
         
-        this.canvas.addEventListener("mouseup", () => {
-            this.dragging = false;
-        })
+        this.canvas.addEventListener("mouseup", this.boundMouseup)
     }
+
+    private removeEventsListeners() {
+        this.canvas.removeEventListener("mousedown", this.boundMouseDown);
+        this.canvas.removeEventListener("mousemove", this.boundMousemove);
+        this.canvas.removeEventListener("contextmenu", this.boundContextMenu);
+        
+        this.canvas.removeEventListener("mouseup", this.boundMouseup)
+    }
+
 
     //Mouse mouve action handleler
     private handleMouseMouve(evt:MouseEvent) {

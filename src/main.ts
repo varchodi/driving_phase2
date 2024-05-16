@@ -8,6 +8,8 @@ import { scale } from './math/utils';
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
 const disposeBtn = document.getElementById("dispose") as HTMLButtonElement;
+const graphBtn = document.getElementById("graphBtn") as HTMLButtonElement;
+const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
 
 const ctx = myCanvas.getContext("2d")!;
 
@@ -24,6 +26,7 @@ const graphEditor = new GraphEditor(viewport, graph);
 
 
 let oldGraphHash = graph.hash();
+setMode("graph");
 animate();
 
 function animate() {
@@ -56,6 +59,8 @@ function animate() {
 //btn evnts
 saveBtn.onclick = save;
 disposeBtn.onclick = dispose;
+graphBtn.onclick = ()=>setMode("graph");
+stopBtn.onclick = () => setMode("stop");
 
 //!! dispose
 function dispose() {
@@ -66,4 +71,31 @@ function dispose() {
 //!! save 
 function save() {
     localStorage.setItem("graph", JSON.stringify(graph));
+}
+
+//??
+function setMode(mode: string) {
+    disableEditors();
+    switch (mode) {
+        case "graph":
+            graphBtn.style.backgroundColor = "white";
+            graphBtn.style.filter = "";
+            graphEditor.enable();
+            break;
+        case "stop":
+            stopBtn.style.backgroundColor = "white";
+            stopBtn.style.filter = "";
+            break;
+    
+        default:
+            break;
+    }
+}
+
+function disableEditors() {
+    graphBtn.style.backgroundColor = "gray";
+    graphBtn.style.filter = "grayscale(100%)";
+    graphEditor.disable();
+    stopBtn.style.backgroundColor = "gray";
+    stopBtn.style.filter = "grayscale(100%)";
 }
