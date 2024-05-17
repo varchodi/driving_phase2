@@ -1,4 +1,4 @@
-import { add, angle, scale, translate } from "../math/utils";
+import { add, angle, perpendicular, scale, translate } from "../math/utils";
 import { Envelope } from "../primitives/envelope";
 import { Point } from "../primitives/point";
 import { Polygon } from "../primitives/polygon";
@@ -7,7 +7,7 @@ import { Segment } from "../primitives/segment";
 export class Crossing{
     private support: Segment;
     public poly: Polygon;
-    private boder: Segment;
+    private boders: Segment[];
 
     constructor(private center: Point, private directionVector: Point, private width: number, private height: number) {
         this.center = center;
@@ -21,7 +21,7 @@ export class Crossing{
         )
         this.poly = new Envelope(this.support, width, 0).poly;
         //stop border
-        this.boder = this.poly.segments[2];
+        this.boders = [this.poly.segments[0],this.poly.segments[2]];
     }
 
     draw(ctx: CanvasRenderingContext2D) {
@@ -31,7 +31,12 @@ export class Crossing{
             add(this.center,scale(perp,-this.width/2))
         )
 
-        line.draw(ctx);
+        line.draw(ctx, {
+            width: this.height,
+            color: "white",
+            dash:[11,11]
+        });
+
         
     }
 }

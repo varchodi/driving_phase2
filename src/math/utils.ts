@@ -1,6 +1,5 @@
 import { Point } from "../primitives/point";
 import { Segment } from "../primitives/segment";
-import { Viewport } from "../viewport";
 
 export function getNearestPoint (loc: Point, points: Point[],threshold:number=Number.MAX_SAFE_INTEGER){
     let minDist = Number.MAX_SAFE_INTEGER;
@@ -64,6 +63,10 @@ export function normalize(p:Point):Point {
 
 export function magnitude (p: Point):number {
     return Math.hypot(p.x, p.y);
+}
+
+export function perpendicular(p: Point) {
+    return new Point(-p.y, p.x);
 }
 
 export function translate(loc: Point, angle: number, offset: number):Point {
