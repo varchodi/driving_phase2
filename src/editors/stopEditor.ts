@@ -1,7 +1,6 @@
 import { Stop } from "../markings/stop";
 import { getNearestSegment } from "../math/utils";
 import { Point } from "../primitives/point";
-import { Segment } from "../primitives/segment";
 import { Viewport } from "../viewport";
 import { World } from "../world";
 
@@ -14,6 +13,7 @@ export class StopEditor{
     private boundContextMenu: any;
     private mouse: Point | null; 
     private intent: Stop | null;
+    public markings: typeof this.world.markings ;
 
     constructor(private viewport: Viewport, private world: World) {
         this.viewport = viewport;
@@ -24,6 +24,8 @@ export class StopEditor{
 
         this.mouse = null;
         this.intent = null;
+
+        this.markings = this.world.markings;;
     }
 
     public enable() {
@@ -77,7 +79,13 @@ export class StopEditor{
     }
 
     private handleMouseDouwn(evt:MouseEvent) {
-        
+        //left click
+        if (evt.button == 0) {
+            if (this.intent) {
+                this.markings.push(this.intent);
+                this.intent = null;
+            }
+        }
     }
 
     public display() {

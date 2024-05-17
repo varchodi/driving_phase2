@@ -7,6 +7,7 @@ import { Segment } from "../primitives/segment";
 export class Stop{
     private support: Segment;
     private poly: Polygon;
+    private boder: Segment;
 
     constructor(private center: Point, private directionVector: Point, private width: number, private height: number) {
         this.center = center;
@@ -14,16 +15,17 @@ export class Stop{
         this.width = width;
         this.height = height;
 
-
         this.support = new Segment(
             translate(center, angle(directionVector), height / 2),
             translate(center, angle(directionVector), -height / 2)
         )
         this.poly = new Envelope(this.support, width, 0).poly;
+        //stop border
+        this.boder = this.poly.segments[2];
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        this.poly.draw(ctx);
+        this.boder.draw(ctx,{width:5,color:"white"})
         ctx.save();
         ctx.translate(this.center.x, this.center.y);
         ctx.rotate(angle(this.directionVector) - Math.PI / 2);

@@ -6,6 +6,7 @@ import { Segment } from "./primitives/segment";
 import { Point } from "./primitives/point";
 import { Tree } from "./items/tree";
 import { Building } from "./items/building";
+import { Stop } from "./markings/stop";
 
 export class World{
     private envelopes: Envelope[];
@@ -13,6 +14,7 @@ export class World{
     private buildings: Building[];
     private trees: Tree[] = [];
     public laneGuides: any;
+    public markings: Stop[];
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -30,6 +32,7 @@ export class World{
         this.trees = [];
         this.laneGuides = [];
 
+        this.markings = [];
         
         this.generate();
     }
@@ -201,7 +204,11 @@ export class World{
     draw(ctx: CanvasRenderingContext2D,viewPoint:Point) {
         for (const env of this.envelopes) {
             env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
-         }
+        }
+        //draw markings
+        for (const marking of this.markings) {
+            marking.draw(ctx);
+        }
          for (const seg of this.graph.segments) {
             seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] });
          }

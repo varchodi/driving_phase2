@@ -3,7 +3,7 @@ import { Segment } from "./segment";
 import { getIntersection ,getRandomColor,average} from "../math/utils";
 
 export class Polygon{
-    private segments: Segment[];
+    public segments: Segment[];
     constructor(public points: Point[]) {
         this.points = points;
         this.segments = [];
