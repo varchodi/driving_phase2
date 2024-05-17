@@ -7,7 +7,7 @@ import { Segment } from "../primitives/segment";
 export class Crossing{
     private support: Segment;
     public poly: Polygon;
-    private boders: Segment[];
+    public boders: Segment[];
 
     constructor(private center: Point, private directionVector: Point, private width: number, private height: number) {
         this.center = center;

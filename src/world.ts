@@ -15,7 +15,7 @@ export class World{
     private buildings: Building[];
     private trees: Tree[] = [];
     public laneGuides: any;
-    public markings: (Stop|Crossing)[];
+    public markings: ( any| Stop | Crossing)[];
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
