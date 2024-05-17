@@ -6,7 +6,7 @@ import { Segment } from "../primitives/segment";
 
 export class Stop{
     private support: Segment;
-    private poly: Polygon;
+    public poly: Polygon;
     private boder: Segment;
 
     constructor(private center: Point, private directionVector: Point, private width: number, private height: number) {

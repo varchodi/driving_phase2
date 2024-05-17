@@ -64,6 +64,7 @@ stopBtn.onclick = () => setMode("stop");
 function dispose() {
     graphEditor.dispose();
     localStorage.removeItem("graph");
+    world.markings.length = 0;
 }
 
 //!! save 
