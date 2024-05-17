@@ -6,6 +6,7 @@ import { World } from './world';
 import { scale } from './math/utils';
 import { StopEditor } from './editors/stopEditor';
 import { CrossingEditor } from './editors/crossingEdito';
+import { StartEditor } from './editors/startEditor';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -13,6 +14,7 @@ const disposeBtn = document.getElementById("dispose") as HTMLButtonElement;
 const graphBtn = document.getElementById("graphBtn") as HTMLButtonElement;
 const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
 const crossingBtn = document.getElementById("crossingBtn") as HTMLButtonElement;
+const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
 
 const ctx = myCanvas.getContext("2d")!;
 
@@ -30,7 +32,8 @@ const viewport = new Viewport(myCanvas);
 const tools = {
     graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
     stop: { button: stopBtn, editor:  new StopEditor(viewport, world) },
-    crossing:{button:crossingBtn,editor: new CrossingEditor(viewport, world)},
+    crossing: { button: crossingBtn, editor: new CrossingEditor(viewport, world) },
+    start:{button:startBtn,editor: new StartEditor(viewport, world)},
 };
 
 let oldGraphHash = graph.hash();
@@ -68,6 +71,7 @@ disposeBtn.onclick = dispose;
 graphBtn.onclick = ()=>setMode("graph");
 stopBtn.onclick = () => setMode("stop");
 crossingBtn.onclick = () => setMode("crossing");
+startBtn.onclick = () => setMode("start");
 
 //!! dispose
 function dispose() {
