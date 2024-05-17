@@ -5,12 +5,14 @@ import { Viewport } from './viewport';
 import { World } from './world';
 import { scale } from './math/utils';
 import { StopEditor } from './editors/stopEditor';
+import { CrossingEditor } from './editors/crossingEdito';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
 const disposeBtn = document.getElementById("dispose") as HTMLButtonElement;
 const graphBtn = document.getElementById("graphBtn") as HTMLButtonElement;
 const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
+const crossingBtn = document.getElementById("crossingBtn") as HTMLButtonElement;
 
 const ctx = myCanvas.getContext("2d")!;
 
@@ -25,7 +27,7 @@ const world = new World(graph);
 const viewport = new Viewport(myCanvas);
 const graphEditor = new GraphEditor(viewport, graph);
 const stopEditor = new StopEditor(viewport, world);
-
+const crossingEditor = new CrossingEditor(viewport, world);
 
 let oldGraphHash = graph.hash();
 setMode("graph");
@@ -50,6 +52,7 @@ function animate() {
 
     graphEditor.display();
     stopEditor.display();
+    crossingEditor.display();
 
     requestAnimationFrame(animate);
 }
@@ -59,6 +62,7 @@ saveBtn.onclick = save;
 disposeBtn.onclick = dispose;
 graphBtn.onclick = ()=>setMode("graph");
 stopBtn.onclick = () => setMode("stop");
+crossingBtn.onclick = () => setMode("crossing");
 
 //!! dispose
 function dispose() {
@@ -86,6 +90,11 @@ function setMode(mode: string) {
             stopBtn.style.filter = "";
             stopEditor.enable(); //enable stop marking dragging ...
             break;
+        case "crossing":
+            crossingBtn.style.backgroundColor = "white";
+            crossingBtn.style.filter = "";
+            crossingEditor.enable(); //enable stop marking dragging ...
+            break;
     
         default:
             break;
@@ -96,7 +105,12 @@ function disableEditors() {
     graphBtn.style.backgroundColor = "gray";
     graphBtn.style.filter = "grayscale(100%)";
     graphEditor.disable();
+
     stopBtn.style.backgroundColor = "gray";
     stopBtn.style.filter = "grayscale(100%)";
     stopEditor.disable();
+
+    crossingBtn.style.backgroundColor = "gray";
+    crossingBtn.style.filter = "grayscale(100%)";
+    crossingEditor.disable();
 }

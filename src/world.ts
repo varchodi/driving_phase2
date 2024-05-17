@@ -7,6 +7,7 @@ import { Point } from "./primitives/point";
 import { Tree } from "./items/tree";
 import { Building } from "./items/building";
 import { Stop } from "./markings/stop";
+import { Crossing } from "./markings/crossing";
 
 export class World{
     private envelopes: Envelope[];
@@ -14,7 +15,7 @@ export class World{
     private buildings: Building[];
     private trees: Tree[] = [];
     public laneGuides: any;
-    public markings: Stop[];
+    public markings: (Stop|Crossing)[];
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
