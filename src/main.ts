@@ -7,6 +7,10 @@ import { scale } from './math/utils';
 import { StopEditor } from './editors/stopEditor';
 import { CrossingEditor } from './editors/crossingEdito';
 import { StartEditor } from './editors/startEditor';
+import { ParkingEditor } from './editors/parkingEditor';
+import { LightEditor } from './editors/lightEditor';
+import { TargetEditor } from './editors/targetEditor';
+import { YieldEditor } from './editors/yeildEditor';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -15,6 +19,10 @@ const graphBtn = document.getElementById("graphBtn") as HTMLButtonElement;
 const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
 const crossingBtn = document.getElementById("crossingBtn") as HTMLButtonElement;
 const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
+const yieldBtn = document.getElementById("yieldBtn") as HTMLButtonElement;
+const parkingBtn = document.getElementById("parkingBtn") as HTMLButtonElement;
+const lightBtn = document.getElementById("lightBtn") as HTMLButtonElement;
+const targetBtn = document.getElementById("targetBtn") as HTMLButtonElement;
 
 const ctx = myCanvas.getContext("2d")!;
 
@@ -31,9 +39,14 @@ const viewport = new Viewport(myCanvas);
 
 const tools = {
     graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
-    stop: { button: stopBtn, editor:  new StopEditor(viewport, world) },
-    crossing: { button: crossingBtn, editor: new CrossingEditor(viewport, world) },
-    start:{button:startBtn,editor: new StartEditor(viewport, world)},
+            stop: { button: stopBtn, editor: new StopEditor(viewport, world) },
+            crossing: { button: crossingBtn, editor: new CrossingEditor(viewport, world) },
+            start: { button: startBtn, editor: new StartEditor(viewport, world) },
+            parking: { button: parkingBtn, editor: new ParkingEditor(viewport, world) },
+            light: { button: lightBtn, editor: new LightEditor(viewport, world) },
+            target: { button: targetBtn, editor: new TargetEditor(viewport, world) },
+            yield: { button: yieldBtn, editor: new YieldEditor(viewport, world) },
+    
 };
 
 let oldGraphHash = graph.hash();
@@ -68,10 +81,16 @@ function animate() {
 //btn evnts
 saveBtn.onclick = save;
 disposeBtn.onclick = dispose;
-graphBtn.onclick = ()=>setMode("graph");
-stopBtn.onclick = () => setMode("stop");
-crossingBtn.onclick = () => setMode("crossing");
-startBtn.onclick = () => setMode("start");
+// graphBtn.onclick = ()=>setMode("graph");
+// stopBtn.onclick = () => setMode("stop");
+// crossingBtn.onclick = () => setMode("crossing");
+// startBtn.onclick = () => setMode("start");
+
+
+for (const mode of Object.keys(tools)) {
+    const mody = mode as keyof typeof tools;
+    tools[mody].button.onclick = () => setMode(mody);
+}
 
 //!! dispose
 function dispose() {
