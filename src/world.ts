@@ -6,14 +6,18 @@ import { Segment } from "./primitives/segment";
 import { Point } from "./primitives/point";
 import { Tree } from "./items/tree";
 import { Building } from "./items/building";
+import { Stop } from "./markings/stop";
+import { Crossing } from "./markings/crossing";
 
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
     private buildings: Building[];
     private trees: Tree[] = [];
+    public laneGuides: any;
+    public markings: ( any| Stop | Crossing)[];
 
-    constructor(public graph: Graph, private roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
+    constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
         this.roadWidth = roadWidth;
         this.roadRoundness = roadRoundness;
@@ -27,8 +31,9 @@ export class World{
         this.roadBoarders = [];
         this.buildings = [];        
         this.trees = [];
+        this.laneGuides = [];
 
-
+        this.markings = [];
         
         this.generate();
     }
@@ -43,8 +48,28 @@ export class World{
 
         this.roadBoarders=Polygon.union(this.envelopes.map((e) => e.poly));
         this.buildings = this.generateBuildings();
-        this.trees=this.generateTrees();
+        this.trees = this.generateTrees();
+        
+        this.laneGuides.len = 0;
+        this.laneGuides.push(...this.generateLineGuides());
 
+    }
+
+    //gen line guides
+    private generateLineGuides() {
+        const tmpEnvelopes = [];
+        for (const seg of this.graph.segments) {
+           tmpEnvelopes.push(
+              new Envelope(
+                 seg,
+                 this.roadWidth / 2,
+                 this.roadRoundness
+              )
+           );
+        }  
+        
+        const segments = Polygon.union(tmpEnvelopes.map((e) => e.poly));
+        return segments;
     }
 
     //trees generator 
@@ -114,95 +139,94 @@ export class World{
     //building generator
     private generateBuildings():Building[] {
         const tmpEnvelopes = [];
-        for (const seg of this.graph.segments) {
-            tmpEnvelopes.push(
-                new Envelope(
-                    seg,
-                    this.roadWidth + this.buildingWidth + this.spacing * 2,
-                    this.roadRoundness
-                )
+      for (const seg of this.graph.segments) {
+         tmpEnvelopes.push(
+            new Envelope(
+               seg,
+               this.roadWidth + this.buildingWidth + this.spacing * 2,
+               this.roadRoundness
             )
-        }
+         );
+      }
 
-        const guides = Polygon.union(tmpEnvelopes.map(e => e.poly));
+      const guides = Polygon.union(tmpEnvelopes.map((e) => e.poly));
 
-        for (let i = 0; i < guides.length; i++){
-            const seg = guides[i];
-            if (seg.length() < this.buildingMinLength) {
-                guides.splice(i, 1);
-                i--;
-            }
-        }
+      for (let i = 0; i < guides.length; i++) {
+         const seg = guides[i];
+         if (seg.length() < this.buildingMinLength) {
+            guides.splice(i, 1);
+            i--;
+         }
+      }
 
-        const supports = [];
-        for (const seg of guides) {
-            const len = seg.length() + this.spacing;
-            const buildingCount = Math.floor(
-                len / (this.buildingMinLength + this.spacing)
-            );
+      const supports = [];
+      for (let seg of guides) {
+         const len = seg.length() + this.spacing;
+         const buildingCount = Math.floor(
+            len / (this.buildingMinLength + this.spacing)
+         );
+         const buildingLength = len / buildingCount - this.spacing;
 
-            const buildingLength = len / buildingCount - this.spacing;
-            
-            const dir = seg.directionVector();
+         const dir = seg.directionVector();
 
-            let q1 = seg.p1;
-            let q2 = add(q1, scale(dir, buildingLength));
+         let q1 = seg.p1;
+         let q2 = add(q1, scale(dir, buildingLength));
+         supports.push(new Segment(q1, q2));
+
+         for (let i = 2; i <= buildingCount; i++) {
+            q1 = add(q2, scale(dir, this.spacing));
+            q2 = add(q1, scale(dir, buildingLength));
             supports.push(new Segment(q1, q2));
+         }
+      }
 
-            for (let i = 2; i <= buildingCount; i++){
-                q1 = add(q2, scale(dir, this.spacing));
-                q2 = add(q1, scale(dir, buildingLength));
+      const bases = [];
+      for (const seg of supports) {
+         bases.push(new Envelope(seg, this.buildingWidth).poly);
+      }
 
-                supports.push(new Segment(q1, q2));
+      const eps = 0.001;
+      for (let i = 0; i < bases.length - 1; i++) {
+         for (let j = i + 1; j < bases.length; j++) {
+            if (
+               bases[i].intersectPoly(bases[j]) ||
+               bases[i].distanceToPoly(bases[j]) < this.spacing - eps
+            ) {
+               bases.splice(j, 1);
+               j--;
             }
-        }
+         }
+      }
 
-        const bases:Polygon[] = [];
-        for (const seg of supports) {
-            bases.push(new Envelope(seg,this.buildingWidth).poly)
-        }
-
-        const eps = 0.001;
-        for (let i = 0; i < bases.length;i++){
-            for (let j = i + 1; j < bases.length; j++){
-                if (bases[i].intersectPoly(bases[j] || bases[i].distanceToPoly(bases[j])<this.spacing-eps)) {
-                    bases.splice(j, 1);
-                    j--;
-                }
-            }
-        }
-        
-        return bases.map(b=>new Building(b));
+      return bases.map((b) => new Building(b));
         
     }
 
     draw(ctx: CanvasRenderingContext2D,viewPoint:Point) {
         for (const env of this.envelopes) {
-            env.draw(ctx,{fill:"#bbb",stroke:"#bbb",lineWidth:15});
+            env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
         }
-
-        //draw middle line of the road
-        for (const seg of this.graph.segments) {
+        //draw markings
+        for (const marking of this.markings) {
+            marking.draw(ctx);
+        }
+         for (const seg of this.graph.segments) {
             seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] });
-        }
-
-        for (const seg of this.roadBoarders) {
-            seg.draw(ctx,{color:"white",width:4});
-        }
-
-        //combine buildings and trees
-        const items = [...this.buildings, ...this.trees];
-        //prevents items overlaping
-        items.sort(
+         }
+         for (const seg of this.roadBoarders) {
+            seg.draw(ctx, { color: "white", width: 4 });
+         }
+   
+         const items = [...this.buildings, ...this.trees];
+         items.sort(
             (a, b) =>
-                b.base.distanceToPoint(viewPoint) -
-                a.base.distanceToPoint(viewPoint)
-        )
-        //draw items (trees and buildings); 
-        for (const item of items) {
-            item.draw(ctx,viewPoint);
+               b.base.distanceToPoint(viewPoint) -
+               a.base.distanceToPoint(viewPoint)
+         );
+         for (const item of items) {
+            item.draw(ctx, viewPoint);
         }
-
-
-    }
+        
+        
+      }
 }

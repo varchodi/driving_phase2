@@ -1,4 +1,5 @@
 import { Point } from "../primitives/point";
+import { Segment } from "../primitives/segment";
 
 export function getNearestPoint (loc: Point, points: Point[],threshold:number=Number.MAX_SAFE_INTEGER){
     let minDist = Number.MAX_SAFE_INTEGER;
@@ -13,6 +14,21 @@ export function getNearestPoint (loc: Point, points: Point[],threshold:number=Nu
     }
 
     return nearest;
+}
+
+export function getNearestSegment(loc: Point, segments: Segment[], threshold: number = Number.MAX_SAFE_INTEGER):Segment {
+    let minDist = Number.MAX_SAFE_INTEGER;
+    let nearest = null;
+
+    for (const seg of segments) {
+        const dist = seg.distanceToPoint(loc);
+        if (dist < minDist && dist<threshold) {
+            minDist = dist;
+            nearest = seg;
+        }
+    }
+
+    return nearest!;
 }
 
 //2points distance
@@ -47,6 +63,10 @@ export function normalize(p:Point):Point {
 
 export function magnitude (p: Point):number {
     return Math.hypot(p.x, p.y);
+}
+
+export function perpendicular(p: Point) {
+    return new Point(-p.y, p.x);
 }
 
 export function translate(loc: Point, angle: number, offset: number):Point {
@@ -96,4 +116,11 @@ export function lerp2D(A: Point, B: Point, t: number) {
 export function getRandomColor() {
     const hue = 290 + Math.random() * 260;
     return "hsl(" + hue + ", 100%, 60%)";
+}
+ 
+export function getFake3dPoint(point:Point, viewPoint:Point, height:number) {
+    const dir = normalize(substract(point, viewPoint));
+    const dist = distance(point, viewPoint);
+    const scaler = Math.atan(dist / 300) / (Math.PI / 2);
+    return add(point, scale(dir, height * scaler));
  }

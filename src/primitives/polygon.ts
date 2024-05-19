@@ -3,7 +3,7 @@ import { Segment } from "./segment";
 import { getIntersection ,getRandomColor,average} from "../math/utils";
 
 export class Polygon{
-    private segments: Segment[];
+    public segments: Segment[];
     constructor(public points: Point[]) {
         this.points = points;
         this.segments = [];
@@ -128,7 +128,7 @@ export class Polygon{
         return intersectionCount % 2 == 1;//if count is even true
     }
 
-    draw(ctx: CanvasRenderingContext2D, { stroke = "blue", lineWidth = 2, fill = "rgba(0,0,2255,0.3)" }={} ) {
+    draw(ctx: CanvasRenderingContext2D, { stroke = "blue", lineWidth = 2, fill = "rgba(0,0,2255,0.3)" ,join="line"}={} ) {
          ctx.beginPath();
       ctx.fillStyle = fill;
       ctx.strokeStyle = stroke;
