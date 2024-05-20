@@ -27,12 +27,12 @@ const targetBtn = document.getElementById("targetBtn") as HTMLButtonElement;
 const ctx = myCanvas.getContext("2d")!;
 
 //load graph from local storage
-const graphString = localStorage.getItem("graph");
-const graphInfo = graphString ? JSON.parse(graphString) as Graph : null;
+const worldString = localStorage.getItem("world");
+const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
-const graph = graphInfo ? Graph.load(graphInfo) : new Graph();
-
-const world = new World(graph);
+//load .../ if not def new world with empty graph
+const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+const graph = world.graph;
 
 const viewport = new Viewport(myCanvas);
 
@@ -101,7 +101,7 @@ function dispose() {
 
 //!! save 
 function save() {
-    localStorage.setItem("graph", JSON.stringify(graph));
+    localStorage.setItem("world", JSON.stringify(world));
 }
 
 //??
