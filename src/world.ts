@@ -38,6 +38,13 @@ export class World{
         this.generate();
     }
 
+    //load a pregenerated world 
+    static load(info: World) {
+        return new World(
+            Graph.load(info.graph)
+        );
+    }
+
     generate() {
         this.envelopes.length = 0;
         for (const seg of this.graph.segments) {
