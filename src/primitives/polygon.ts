@@ -16,6 +16,12 @@ export class Polygon{
       }
     }
 
+    static load(info: Polygon): Polygon{
+        return new Polygon(
+            info.points.map((i)=>new Point(i.x,i.y))
+        )
+    }
+
     //?? unify broken polygon
     static union(polys: Polygon[]) {
         Polygon.multiBreak(polys);
