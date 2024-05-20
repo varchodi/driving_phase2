@@ -10,8 +10,9 @@ export class Light extends Marking{
     constructor(public center: Point, public directionVector: Point, public width: number, public height: number) {
         super(center, directionVector, width,height);
        this.height = 18;
-        this.state = "red";
-        this.border = this.poly.segments[0];
+        this.state = "off";
+       this.border = this.poly.segments[0];
+       this.type="light";
      }
   
      draw(ctx:CanvasRenderingContext2D) {

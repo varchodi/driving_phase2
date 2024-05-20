@@ -8,7 +8,7 @@ import { Stop } from "./stop";
 import { Target } from "./target";
 import { Yield } from "./yield";
 
-export function operation(info: Marking) {
+export function retrieve(info: Marking) {
     const point = new Point(info.center.x, info.center.y);
         const dir = new Point(info.directionVector.x, info.directionVector.y);
 

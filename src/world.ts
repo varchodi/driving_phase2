@@ -8,13 +8,14 @@ import { Tree } from "./items/tree";
 import { Building } from "./items/building";
 import { Stop } from "./markings/stop";
 import { Crossing } from "./markings/crossing";
+import { retrieve } from "./markings/retrieve";
 
 export class World{
     private envelopes: Envelope[];
     private roadBoarders:Segment[] = [];
     private buildings: Building[];
     private trees: Tree[] = [];
-    public laneGuides: any;
+    public laneGuides: Segment[];
     public markings: ( any| Stop | Crossing)[];
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
@@ -38,6 +39,26 @@ export class World{
         this.generate();
     }
 
+    static load(info:World){
+        const world = new World(new Graph());
+        world.graph = Graph.load(info.graph);
+        world.roadWidth = info.roadWidth;
+        world.roadRoundness = info.roadRoundness;
+        world.buildingWidth = info.buildingWidth;
+        world.buildingMinLength = info.buildingMinLength;
+        world.spacing = info.spacing;
+        world.treeSize = info.treeSize;
+        world.envelopes = info.envelopes.map((e) => Envelope.load(e));
+        world.roadBoarders = info.roadBoarders.map((b) => new Segment(b.p1, b.p2));
+        world.buildings = info.buildings.map((e) => Building.load(e));
+        world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
+        world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
+        world.markings = info.markings.map((m) => retrieve(m));
+        // world.zoom = info.zoom;
+        // world.offset = info.offset;
+        return world;
+     }
+
     generate() {
         this.envelopes.length = 0;
         for (const seg of this.graph.segments) {
@@ -50,7 +71,7 @@ export class World{
         this.buildings = this.generateBuildings();
         this.trees = this.generateTrees();
         
-        this.laneGuides.len = 0;
+        this.laneGuides.length = 0;
         this.laneGuides.push(...this.generateLineGuides());
 
     }

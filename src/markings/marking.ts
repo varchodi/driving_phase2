@@ -30,7 +30,28 @@ export class Marking{
     
     }
 
-    
+    // static load(info: any) {
+        
+    //     const point = new Point(info.center.x, info.center.y);
+    //     const dir = new Point(info.directionVector.x, info.directionVector.y);
+
+    //     switch (info.type) {
+    //         case "crossing":
+    //             return new Crossing(point, dir, info.width, info.height);
+    //         case "light":
+    //             return new Light(point, dir, info.width, info.height);
+    //         case "parking":
+    //             return new Parking(point, dir, info.width, info.height);
+    //         case "start":
+    //             return new Start(point, dir, info.width, info.height);
+    //         case "stop":
+    //             return new Stop(point, dir, info.width, info.height);
+    //         case "target":
+    //             return new Target(point, dir, info.width, info.height);
+    //         case "yeild":
+    //             return new Yield(point, dir, info.width, info.height);
+    //     }
+    // }
 
     draw(ctx: CanvasRenderingContext2D) {
         if (this.poly) {

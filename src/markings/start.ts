@@ -10,6 +10,7 @@ export class Start extends Marking{
         //stop border
         this.image = new Image();
         this.image.src = "/src/items/images/car.png";
+        this.type = "start";
     }
 
     draw(ctx: CanvasRenderingContext2D) {

@@ -10,6 +10,7 @@ export class Stop extends Marking{
         super(center,directionVector,width,height)
         //stop border
         this.boder = this.poly.segments[2];
+        this.type = "stop";
     }
 
     draw(ctx: CanvasRenderingContext2D) {
