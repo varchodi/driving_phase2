@@ -23,6 +23,7 @@ const yieldBtn = document.getElementById("yieldBtn") as HTMLButtonElement;
 const parkingBtn = document.getElementById("parkingBtn") as HTMLButtonElement;
 const lightBtn = document.getElementById("lightBtn") as HTMLButtonElement;
 const targetBtn = document.getElementById("targetBtn") as HTMLButtonElement;
+const fileInput = document.getElementById("fileInput") as HTMLInputElement;
 
 const ctx = myCanvas.getContext("2d")!;
 
@@ -31,10 +32,10 @@ const worldString = localStorage.getItem("world");
 const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
 //load .../ if not def new world with empty graph
-const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+let world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
 const graph = world.graph;
 
-const viewport = new Viewport(myCanvas);
+const viewport = new Viewport(myCanvas,world.zoom,world.offset);
 
 
 const tools = {
@@ -81,12 +82,7 @@ function animate() {
 //btn evnts
 saveBtn.onclick = save;
 disposeBtn.onclick = dispose;
-// graphBtn.onclick = ()=>setMode("graph");
-// stopBtn.onclick = () => setMode("stop");
-// crossingBtn.onclick = () => setMode("crossing");
-// startBtn.onclick = () => setMode("start");
-
-
+fileInput.onchange = (e: any)=>load(e)
 for (const mode of Object.keys(tools)) {
     const mody = mode as keyof typeof tools;
     tools[mody].button.onclick = () => setMode(mody);
@@ -101,7 +97,49 @@ function dispose() {
 
 //!! save 
 function save() {
+    world.zoom = viewport.zoom;
+    world.offset = viewport.offset;
+
+    const element = document.createElement("a");
+    //element.href = `data:application/json;charset=utf-8;${encodeURIComponent(JSON.stringify(world))}`;
+    const fileName = `name_${Math.random()*100+1}.world`;
+    //element.download = fileName;
+    
+    const blob = new Blob([JSON.stringify(world)], { type: "application/json", });
+    const url = window.URL.createObjectURL(blob);
+    element.href = url;
+    element.download = fileName;
+    element.click();
+  // Revoke the temporary URL after download (optional)
+    window.URL.revokeObjectURL(url);
     localStorage.setItem("world", JSON.stringify(world));
+}
+
+//?? load from file 
+function load(event:Event & { target: HTMLInputElement, files: FileList}) {
+    const files = event?.target?.files as unknown as FileList;
+    const file = files[0]! as File;
+
+    if (!file) {
+        alert("No file Selected");
+        return;
+    }
+
+    //read world as text
+    const reader = new FileReader();
+    reader.readAsText(file);
+
+    //convert to Object
+    reader.onload = (event: ProgressEvent<FileReader>)=>{
+        const fileContent = event.target?.result;
+        const jsonData = JSON.parse(fileContent as string);
+
+        world = World.load(jsonData);
+        //save new in LS
+        localStorage.setItem("world", JSON.stringify(world));
+        //reload page
+        location.reload();
+    }
 }
 
 //??

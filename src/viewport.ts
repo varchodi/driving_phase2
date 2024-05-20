@@ -12,13 +12,13 @@ export class Viewport{
     }
 
     public offset: Point; //point to whic scaling(zoom) will be focused
-    constructor(public canvas: HTMLCanvasElement) {
+    constructor(public canvas: HTMLCanvasElement,zoom:number=1.4, offset=null) {
         this.canvas = canvas;
         this.ctx = canvas.getContext("2d")!;
 
-        this.zoom = 1.8;
+        this.zoom = zoom;
         this.center = new Point(canvas.width / 2, canvas.height / 2);//default center
-        this.offset = scale(this.center,-1)//default offsetp
+        this.offset =offset ? offset: scale(this.center,-1)//default offsetp
         
         this.drag = {
             start: new Point(0, 0),

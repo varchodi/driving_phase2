@@ -17,6 +17,8 @@ export class World{
     private trees: Tree[] = [];
     public laneGuides: Segment[];
     public markings: ( any| Stop | Crossing)[];
+    public zoom: any;
+    public offset: any;
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -54,8 +56,8 @@ export class World{
         world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
         world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
         world.markings = info.markings.map((m) => retrieve(m));
-        // world.zoom = info.zoom;
-        // world.offset = info.offset;
+        world.zoom = info.zoom;
+        world.offset = info.offset;
         return world;
      }
 
