@@ -1,7 +1,7 @@
+import { Marking } from "./marking";
 import { add, perpendicular, scale } from "../math/utils";
 import { Point } from "../primitives/point";
 import { Segment } from "../primitives/segment";
-import { Marking } from "./marking";
 
 export class Crossing extends Marking{
     public boders: Segment[];
@@ -9,6 +9,7 @@ export class Crossing extends Marking{
     constructor( center: Point,  directionVector: Point,  width: number,  height: number) {
         super(center, directionVector, width, height);
         this.boders = [this.poly.segments[0],this.poly.segments[2]];
+        this.type="crossing";
     }
 
     draw(ctx: CanvasRenderingContext2D) {

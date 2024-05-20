@@ -9,7 +9,8 @@ export class Yield extends Marking{
     constructor( center: Point,  directionVector: Point,  width: number, height: number) {
       super(center, directionVector, width, height);
 
-      this.border = this.poly.segments[2];
+       this.border = this.poly.segments[2];
+       this.type="yeild"
    }
 
    draw(ctx:CanvasRenderingContext2D) {

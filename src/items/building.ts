@@ -1,4 +1,4 @@
-import { scale, substract ,add, average, getFake3dPoint} from "../math/utils";
+import {  average, getFake3dPoint} from "../math/utils";
 import { Point } from "../primitives/point";
 import { Polygon } from "../primitives/polygon";
 
@@ -9,6 +9,13 @@ export class Building{
         this.base = poly;
         this.height = height;   
     }
+
+   static load(info: Building) {
+      return new Building(
+         Polygon.load(info.base),
+         info.height
+      )
+   }
 
     draw(ctx: CanvasRenderingContext2D, viewPoint: Point) {
         const topPoints = this.base.points.map((p) =>
