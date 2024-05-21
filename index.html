@@ -1,35 +1,20 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>World Editor</title>
+    <title>Js self driving car</title>
   </head>
   <body>
-    <h1>World Editor</h1>
-    <canvas id="myCanvas"></canvas>
-    <div id="controls">
-      <button id="dispose">🗑️</button>
-      <button id="save">💾</button>
-      <label for="fileInput" class="file-input-label">
-        📁
-        <input type="file" name="fileInput" id="fileInput" accept=".world">
-      </label>
-      &nbsp;
-      <button id="graphBtn">🌐</button>
-      <button id="stopBtn">🛑</button>
-      <button id="yieldBtn">⚠️</button>
-      <button id="crossingBtn">🚸</button>
-      <button id="parkingBtn">🅿️</button>
-      <button id="lightBtn">🚦</button>
-      <button id="startBtn">🚓</button>
-      <button id="targetBtn">🎯</button>
+    <canvas id="carCanvas"></canvas>
+    <div id="verticalButtons">
+      <button type="button" id="save">💾</button>
+      <button type="reset" id="reset">🔁</button>
+      <button type="reset" id="discard">🗑️</button>
     </div>
-    <script>
-      myCanvas.width = 600;
-      myCanvas.height = 600;
-    </script>
+    <canvas id="networkCanvas"></canvas>
     <script type="module" src="/src/main.ts"></script>
+    <!-- <script type="module" src="/src/world/main.ts"></script> -->
   </body>
 </html>

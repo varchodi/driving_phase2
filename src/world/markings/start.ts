@@ -9,7 +9,7 @@ export class Start extends Marking{
         super(center,directionVector,width,height)
         //stop border
         this.image = new Image();
-        this.image.src = "/src/items/images/car.png";
+        this.image.src = "/src/world/items/images/car.png";
         this.type = "start";
     }
 

@@ -1,161 +1,132 @@
-import './style.css'
-import { Graph } from './math/graph';
-import { GraphEditor } from './editors/graphEditor';
-import { Viewport } from './viewport';
-import { World } from './world';
-import { scale } from './math/utils';
-import { StopEditor } from './editors/stopEditor';
-import { CrossingEditor } from './editors/crossingEdito';
-import { StartEditor } from './editors/startEditor';
-import { ParkingEditor } from './editors/parkingEditor';
-import { LightEditor } from './editors/lightEditor';
-import { TargetEditor } from './editors/targetEditor';
-import { YieldEditor } from './editors/yeildEditor';
+import Car from './car';
+import './styles/style.css'
+import { Visualizer } from './visualizer';
+import { NeuralNetwork } from './network';
+import { getRandomColor } from './util';
+import { World } from './world/world';
+import { Graph } from './world/math/graph';
+import { Viewport } from './world/viewport';
+import { angle, scale } from './world/math/utils';
+import { Start } from './world/markings/start';
+import { Point } from './world/primitives/point';
 
-const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
-const saveBtn = document.getElementById("save") as HTMLButtonElement;
-const disposeBtn = document.getElementById("dispose") as HTMLButtonElement;
-const graphBtn = document.getElementById("graphBtn") as HTMLButtonElement;
-const stopBtn = document.getElementById("stopBtn") as HTMLButtonElement;
-const crossingBtn = document.getElementById("crossingBtn") as HTMLButtonElement;
-const startBtn = document.getElementById("startBtn") as HTMLButtonElement;
-const yieldBtn = document.getElementById("yieldBtn") as HTMLButtonElement;
-const parkingBtn = document.getElementById("parkingBtn") as HTMLButtonElement;
-const lightBtn = document.getElementById("lightBtn") as HTMLButtonElement;
-const targetBtn = document.getElementById("targetBtn") as HTMLButtonElement;
-const fileInput = document.getElementById("fileInput") as HTMLInputElement;
+const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
+const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
 
-const ctx = myCanvas.getContext("2d")!;
+networkCanvas.width = 300;
+networkCanvas.height = window.innerHeight;
+carCanvas.width = window.innerWidth-330;
+carCanvas.height=window.innerHeight;
 
-//load graph from local storage
+const carCtx = carCanvas.getContext("2d") as CanvasRenderingContext2D;
+const networkCtx = networkCanvas.getContext("2d") as CanvasRenderingContext2D;
+
+//load world
 const worldString = localStorage.getItem("world");
 const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
 //load .../ if not def new world with empty graph
-let world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
 const graph = world.graph;
+//set viewport
+const viewport = new Viewport(carCanvas,world.zoom,world.offset);
 
-const viewport = new Viewport(myCanvas,world.zoom,world.offset);
+const N=1;
+const cars=generateCars(N);
+let bestCar=cars[0];
+if(localStorage.getItem("bestBrain")){
+    for(let i=0;i<cars.length;i++){
+        cars[i].brain=JSON.parse(
+            localStorage.getItem("bestBrain")!);
+        if(i!=0){
+            NeuralNetwork.mutate(cars[i].brain!,0.1);
+        }
+    }
+}
 
 
-const tools = {
-    graph: { button: graphBtn, editor: new GraphEditor(viewport, graph) },
-            stop: { button: stopBtn, editor: new StopEditor(viewport, world) },
-            crossing: { button: crossingBtn, editor: new CrossingEditor(viewport, world) },
-            start: { button: startBtn, editor: new StartEditor(viewport, world) },
-            parking: { button: parkingBtn, editor: new ParkingEditor(viewport, world) },
-            light: { button: lightBtn, editor: new LightEditor(viewport, world) },
-            target: { button: targetBtn, editor: new TargetEditor(viewport, world) },
-            yield: { button: yieldBtn, editor: new YieldEditor(viewport, world) },
-    
-};
+const traffic: Car[] = [];
+//make car world borders
+const roadBorders = world.roadBoarders.map(s=>[s.p1,s.p2]);
 
-let oldGraphHash = graph.hash();
-setMode("graph");
+
+//animate ...
 animate();
 
-function animate() {
-    viewport.reset();
+//save n styff;
+document.getElementById("save")?.addEventListener("click", () => {
+    save();
+})
 
-    //??
-    //regenerate graph only if graph changes
-    if (graph.hash() != oldGraphHash){
-        world.generate();
-        oldGraphHash = graph.hash()
+document.getElementById("retry")?.addEventListener("click", () => {
+    console.log("brain saved");
+    discard();
+    console.log("load")
+})
+
+document.getElementById("discard")?.addEventListener("click",()=>{discard()});
+
+function save() {
+    console.log(bestCar.brain);
+    localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
+}
+
+function discard() {
+    localStorage.removeItem("bestBrain");
+}
+
+function generateCars(N: number): Car[] {
+    const startPoints = world.markings.filter((m) => m instanceof Start);
+    const startPoint = startPoints.length > 0 ? startPoints[0].center : new Point(100, 100); 
+    const cars = [];
+
+    const dir = startPoints.length > 0 ? startPoints[0].directionVector : new Point(0, -1);
+    const startAngle = -angle(dir)+Math.PI / 2;
+
+    for(let i=1;i<=N;i++){
+        cars.push(new Car(startPoint.x,startPoint.y,30,50,"AI",startAngle)!);
     }
+    return cars;
+}
+
+function animate(time?:number) {
+
+    for(let i=0;i<traffic.length;i++){
+        traffic[i].update(roadBorders,[]);
+    }
+    for(let i=0;i<cars.length;i++){
+        cars[i].update(roadBorders,traffic);
+    }
+    bestCar=cars.find(
+        c=>c.fittness==Math.max(
+            ...cars.map(c=>c.fittness)
+        ))!;
+
+    //pass cars to world
+    world.cars = cars;
+    world.bestCar = bestCar;
+
+    //!! camera follows bestCar
+    viewport.offset.x = -bestCar.x;
+    viewport.offset.y = -bestCar.y;
+    
+    //draw world ??-------------------
+    viewport.reset();
+    //??
     //calculate the viewPoint
     const viewPoint = scale(viewport.getOffset(), -1);
+    world.draw(carCtx, viewPoint,false);
+    //-----------------------------------
 
-    world.draw(ctx,viewPoint);
 
-    //add transparency
-    ctx.globalAlpha = 0.2;
-
-    //display editors
-    for (const tool of Object.values(tools)) {
-        tool.editor.display();
+    for(let i=0;i<traffic.length;i++){
+        traffic[i].draw(carCtx);
     }
 
+    networkCtx.lineDashOffset = -time! / 50;
+    networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+    Visualizer.drawNetwork(networkCtx, bestCar.brain!);
+    
     requestAnimationFrame(animate);
 }
 
-//btn evnts
-saveBtn.onclick = save;
-disposeBtn.onclick = dispose;
-fileInput.onchange = (e: any)=>load(e)
-for (const mode of Object.keys(tools)) {
-    const mody = mode as keyof typeof tools;
-    tools[mody].button.onclick = () => setMode(mody);
-}
-
-//!! dispose
-function dispose() {
-    tools["graph"].editor.dispose();
-    localStorage.removeItem("graph");
-    world.markings.length = 0;
-}
-
-//!! save 
-function save() {
-    world.zoom = viewport.zoom;
-    world.offset = viewport.offset;
-
-    const element = document.createElement("a");
-    //element.href = `data:application/json;charset=utf-8;${encodeURIComponent(JSON.stringify(world))}`;
-    const fileName = `name_${Math.random()*100+1}.world`;
-    //element.download = fileName;
-    
-    const blob = new Blob([JSON.stringify(world)], { type: "application/json", });
-    const url = window.URL.createObjectURL(blob);
-    element.href = url;
-    element.download = fileName;
-    element.click();
-  // Revoke the temporary URL after download (optional)
-    window.URL.revokeObjectURL(url);
-    localStorage.setItem("world", JSON.stringify(world));
-}
-
-//?? load from file 
-function load(event:Event & { target: HTMLInputElement, files: FileList}) {
-    const files = event?.target?.files as unknown as FileList;
-    const file = files[0]! as File;
-
-    if (!file) {
-        alert("No file Selected");
-        return;
-    }
-
-    //read world as text
-    const reader = new FileReader();
-    reader.readAsText(file);
-
-    //convert to Object
-    reader.onload = (event: ProgressEvent<FileReader>)=>{
-        const fileContent = event.target?.result;
-        const jsonData = JSON.parse(fileContent as string);
-
-        world = World.load(jsonData);
-        //save new in LS
-        localStorage.setItem("world", JSON.stringify(world));
-        //reload page
-        location.reload();
-    }
-}
-
-//??
-function setMode(mode: keyof typeof tools) {
-    disableEditors();
-    tools[mode].button.style.backgroundColor = "white";
-    tools[mode].button.style.filter = "";
-    tools[mode].editor.enable();
-}
-
-
-function disableEditors() {
-    //disable tools
-    for (const tool of Object.values(tools)) {
-        tool.button.style.backgroundColor = "gray";
-        tool.button.style.filter = "grayscale(100%)";
-        tool.editor.disable();
-    }
-}
