@@ -14,7 +14,7 @@ import { Start } from "./markings/start";
 
 export class World{
     private envelopes: Envelope[];
-    private roadBoarders:Segment[] = [];
+    public roadBoarders:Segment[] = [];
     private buildings: Building[];
     private trees: Tree[] = [];
     public laneGuides: Segment[];
@@ -51,22 +51,22 @@ export class World{
 
     static load(info:World){
         const world = new World(new Graph());
-        world.graph = Graph.load(info.graph);
-        world.roadWidth = info.roadWidth;
-        world.roadRoundness = info.roadRoundness;
-        world.buildingWidth = info.buildingWidth;
-        world.buildingMinLength = info.buildingMinLength;
-        world.spacing = info.spacing;
-        world.treeSize = info.treeSize;
-        world.envelopes = info.envelopes.map((e) => Envelope.load(e));
-        world.roadBoarders = info.roadBoarders.map((b) => new Segment(b.p1, b.p2));
-        world.buildings = info.buildings.map((e) => Building.load(e));
-        world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
-        world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
-        world.markings = info.markings.map((m) => retrieve(m));
-        world.zoom = info.zoom;
-        world.offset = info.offset;
-        return world;
+      world.graph = Graph.load(info.graph);
+      world.roadWidth = info.roadWidth;
+      world.roadRoundness = info.roadRoundness;
+      world.buildingWidth = info.buildingWidth;
+      world.buildingMinLength = info.buildingMinLength;
+      world.spacing = info.spacing;
+      world.treeSize = info.treeSize;
+       world.envelopes = info.envelopes.map((e) => Envelope.load(e));
+      world.roadBoarders = info.roadBoarders.map((b) => new Segment(b.p1, b.p2));
+      world.buildings = info.buildings.map((e) => Building.load(e));
+      world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
+      world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));
+      world.markings = info.markings.map((m) => retrieve(m));
+      world.zoom = info.zoom;
+      world.offset = info.offset;
+      return world;
      }
 
     generate() {
@@ -239,7 +239,7 @@ export class World{
         }
         //draw markings
         for (const marking of this.markings) {
-            if (!(marking instanceof Start || showStartMarking)) {
+            if (!(marking instanceof Start) ||showStartMarking) {
                 marking.draw(ctx);
             }
         }

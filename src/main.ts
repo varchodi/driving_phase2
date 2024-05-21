@@ -31,7 +31,7 @@ const graph = world.graph;
 //set viewport
 const viewport = new Viewport(carCanvas,world.zoom,world.offset);
 
-const N=1;
+const N=100;
 const cars=generateCars(N);
 let bestCar=cars[0];
 if(localStorage.getItem("bestBrain")){
@@ -46,7 +46,8 @@ if(localStorage.getItem("bestBrain")){
 
 
 const traffic: Car[] = [];
-const roadBorders: any[] = [];
+//make car world borders
+const roadBorders = world.roadBoarders.map(s=>[s.p1,s.p2]);
 
 
 //animate ...
@@ -83,7 +84,7 @@ function generateCars(N: number): Car[] {
     const startAngle = -angle(dir)+Math.PI / 2;
 
     for(let i=1;i<=N;i++){
-        cars.push(new Car(startPoint.x,startPoint.y,30,50,"KEYS",startAngle)!);
+        cars.push(new Car(startPoint.x,startPoint.y,30,50,"AI",startAngle)!);
     }
     return cars;
 }
