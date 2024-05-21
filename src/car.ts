@@ -8,7 +8,6 @@ export default class Car {
     acceleration: number;
     maxSpeed: number;
     friction: number;
-    angle: number;
     sensor?: Sensor;
     brain?: NeuralNetwork;
     polygon: { x: number; y: number; }[]=[];
@@ -17,7 +16,7 @@ export default class Car {
     img: HTMLImageElement;
     mask: HTMLCanvasElement;
 
-    constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,maxSpeed:number=3,public color:string="blue") {
+    constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,public angle:number=0,maxSpeed:number=3,public color:string="blue") {
         this.x=x;
         this.y=y;
         this.width=width;
@@ -27,7 +26,7 @@ export default class Car {
         this.acceleration=0.2;
         this.maxSpeed=maxSpeed;
         this.friction=0.05;
-        this.angle=0;
+        this.angle=angle;
         this.damaged=false;
 
         this.useBrain=controlType=="AI";

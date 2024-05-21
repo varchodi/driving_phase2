@@ -3,23 +3,34 @@ import './styles/style.css'
 import { Visualizer } from './visualizer';
 import { NeuralNetwork } from './network';
 import { getRandomColor } from './util';
+import { World } from './world/world';
+import { Graph } from './world/math/graph';
+import { Viewport } from './world/viewport';
+import { angle, scale } from './world/math/utils';
+import { Start } from './world/markings/start';
+import { Point } from './world/primitives/point';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
 
-carCanvas.height = window.innerHeight - 330;
-carCanvas.width = 200;
-
+networkCanvas.width = 300;
 networkCanvas.height = window.innerHeight;
-networkCanvas.width = 450;
+carCanvas.width = window.innerWidth-330;
+carCanvas.height=window.innerHeight;
 
 const carCtx = carCanvas.getContext("2d") as CanvasRenderingContext2D;
 const networkCtx = networkCanvas.getContext("2d") as CanvasRenderingContext2D;
 
+//load world
+const worldString = localStorage.getItem("world");
+const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
-const road: any = null;
-//add controlType prop to car
-// const car = new Car(100, 100, 30, 50,"AI");
+//load .../ if not def new world with empty graph
+const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+const graph = world.graph;
+//set viewport
+const viewport = new Viewport(carCanvas,world.zoom,world.offset);
+
 const N=1;
 const cars=generateCars(N);
 let bestCar=cars[0];
@@ -63,10 +74,16 @@ function discard() {
     localStorage.removeItem("bestBrain");
 }
 
-function generateCars(N:number):Car[] {
-    const cars=[];
+function generateCars(N: number): Car[] {
+    const startPoints = world.markings.filter((m) => m instanceof Start);
+    const startPoint = startPoints.length > 0 ? startPoints[0].center : new Point(100, 100); 
+    const cars = [];
+
+    const dir = startPoints.length > 0 ? startPoints[0].directionVector : new Point(0, -1);
+    const startAngle = -angle(dir)+Math.PI / 2;
+
     for(let i=1;i<=N;i++){
-        cars.push(new Car(100,100,30,50,"KEYS")!);
+        cars.push(new Car(startPoint.x,startPoint.y,30,50,"KEYS",startAngle)!);
     }
     return cars;
 }
@@ -84,21 +101,31 @@ function animate(time?:number) {
             ...cars.map(c=>c.y)
         ))!;
 
-    carCanvas.height=window.innerHeight;
-    networkCanvas.height=window.innerHeight;
+    //pass cars to world
+    world.cars = cars;
+    world.bestCar = bestCar;
+
+    //!! camera follows bestCar
+    viewport.offset.x = -bestCar.x;
+    viewport.offset.y = -bestCar.y;
+    
+    //draw world ??-------------------
+    viewport.reset();
+    //??
+    //calculate the viewPoint
+    const viewPoint = scale(viewport.getOffset(), -1);
+    world.draw(carCtx, viewPoint,false);
+    //-----------------------------------
+
 
     for(let i=0;i<traffic.length;i++){
         traffic[i].draw(carCtx);
     }
-    carCtx.globalAlpha=0.2;
-    for(let i=0;i<cars.length;i++){
-        cars[i].draw(carCtx);
-    }
-    carCtx.globalAlpha=1;
-    bestCar.draw(carCtx,true);
 
-    networkCtx.lineDashOffset=-time!/50;
-    Visualizer.drawNetwork(networkCtx,bestCar.brain!);
+    networkCtx.lineDashOffset = -time! / 50;
+    networkCtx.clearRect(0, 0, networkCanvas.width, networkCanvas.height);
+    Visualizer.drawNetwork(networkCtx, bestCar.brain!);
+    
     requestAnimationFrame(animate);
 }
 

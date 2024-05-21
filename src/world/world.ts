@@ -9,6 +9,8 @@ import { Building } from "./items/building";
 import { Stop } from "./markings/stop";
 import { Crossing } from "./markings/crossing";
 import { retrieve } from "./markings/retrieve";
+import Car from "../car";
+import { Start } from "./markings/start";
 
 export class World{
     private envelopes: Envelope[];
@@ -19,6 +21,8 @@ export class World{
     public markings: ( any| Stop | Crossing)[];
     public zoom: any;
     public offset: any;
+    public cars: Car[];
+    public bestCar: Car;
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -35,6 +39,10 @@ export class World{
         this.buildings = [];        
         this.trees = [];
         this.laneGuides = [];
+
+        //init cars n bestCar
+        this.cars = [];
+        this.bestCar = null!;
 
         this.markings = [];
         
@@ -225,13 +233,15 @@ export class World{
         
     }
 
-    draw(ctx: CanvasRenderingContext2D,viewPoint:Point) {
+    draw(ctx: CanvasRenderingContext2D,viewPoint:Point,showStartMarking:boolean=true) {
         for (const env of this.envelopes) {
             env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
         }
         //draw markings
         for (const marking of this.markings) {
-            marking.draw(ctx);
+            if (!(marking instanceof Start || showStartMarking)) {
+                marking.draw(ctx);
+            }
         }
          for (const seg of this.graph.segments) {
             seg.draw(ctx, { color: "white", width: 4, dash: [10, 10] });
@@ -240,6 +250,16 @@ export class World{
             seg.draw(ctx, { color: "white", width: 4 });
          }
    
+        //draw cars n bestCars
+        ctx.globalAlpha = .2;
+        for (const car of this.cars) {
+            car.draw(ctx);
+        }
+        ctx.globalAlpha = 1;
+        if (this.bestCar) {
+            this.bestCar.draw(ctx, true);// draw with sensors
+        }
+
          const items = [...this.buildings, ...this.trees];
          items.sort(
             (a, b) =>
