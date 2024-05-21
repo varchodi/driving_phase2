@@ -41,7 +41,7 @@ export default class Car {
         this.controls=new Controls(controlType);
 
         this.img=new Image();
-        this.img.src="car.png"
+        this.img.src = "/src/world/items/images/car.png";
 
         this.mask=document.createElement("canvas");
         this.mask.width=width;

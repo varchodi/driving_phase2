@@ -15,6 +15,7 @@ export default class Controls{
                 this.addKeyboardListener();
                 break;
             case "DUMMY":
+                console.log("here dummy");
                 this.forward = true;
                 break;
             default:
