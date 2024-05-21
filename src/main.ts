@@ -31,7 +31,7 @@ const graph = world.graph;
 //set viewport
 const viewport = new Viewport(carCanvas,world.zoom,world.offset);
 
-const N=100;
+const N=1;
 const cars=generateCars(N);
 let bestCar=cars[0];
 if(localStorage.getItem("bestBrain")){
@@ -56,15 +56,15 @@ animate();
 //save n styff;
 document.getElementById("save")?.addEventListener("click", () => {
     save();
-    console.log("brain saved");
 })
 
 document.getElementById("retry")?.addEventListener("click", () => {
+    console.log("brain saved");
     discard();
     console.log("load")
 })
 
-document.getElementById("discard")?.onclick != discard;
+document.getElementById("discard")?.addEventListener("click",()=>{discard()});
 
 function save() {
     console.log(bestCar.brain);
@@ -98,8 +98,8 @@ function animate(time?:number) {
         cars[i].update(roadBorders,traffic);
     }
     bestCar=cars.find(
-        c=>c.y==Math.min(
-            ...cars.map(c=>c.y)
+        c=>c.fittness==Math.max(
+            ...cars.map(c=>c.fittness)
         ))!;
 
     //pass cars to world

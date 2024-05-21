@@ -15,6 +15,7 @@ export default class Car {
     useBrain?: boolean;
     img: HTMLImageElement;
     mask: HTMLCanvasElement;
+    fittness: number;
 
     constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,public angle:number=0,maxSpeed:number=3,public color:string="blue") {
         this.x=x;
@@ -28,6 +29,9 @@ export default class Car {
         this.friction=0.05;
         this.angle=angle;
         this.damaged=false;
+
+        //?? Hoe much car move(travel)<->Still exist
+        this.fittness = 0;
 
         this.useBrain=controlType=="AI";
 
@@ -65,6 +69,9 @@ export default class Car {
         //?? if car not damaged ; can't move anymore ... (car stop)
         if(!this.damaged){
             this.#move();
+            //update 
+            this.fittness += this.speed;
+            
             this.polygon=this.#createPolygon();
             this.damaged=this.assessDamage(roadBorders,traffic);
         }
