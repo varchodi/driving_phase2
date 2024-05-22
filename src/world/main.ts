@@ -11,6 +11,7 @@ import { ParkingEditor } from './editors/parkingEditor';
 import { LightEditor } from './editors/lightEditor';
 import { TargetEditor } from './editors/targetEditor';
 import { YieldEditor } from './editors/yeildEditor';
+import { Osm } from './math/osm';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -26,7 +27,7 @@ const targetBtn = document.getElementById("targetBtn") as HTMLButtonElement;
 const loadBtn = document.getElementById("load") as HTMLButtonElement;
 const parseOsmDataBtn = document.getElementById("parseOsmData") as HTMLButtonElement;
 const closeOsmPanelBtn = document.getElementById("closeOsmPanel") as HTMLButtonElement;
-const osmDataContainer = document.getElementById("osmDataContainer") as HTMLAreaElement;
+const osmDataContainer = document.getElementById("osmDataContainer") as HTMLTextAreaElement;
 const osmPanel = document.getElementById("osmPanel") as HTMLDivElement;
 const fileInput = document.getElementById("fileInput") as HTMLInputElement;
 
@@ -176,7 +177,14 @@ function openOsmPanel() {
 };
 
 function parseOsmData() {
-    
+    if (osmDataContainer.value == "") {
+        alert("paste data first");
+        return;
+    }
+
+     Osm.parseRoads(JSON.parse(osmDataContainer.value));
+    //console.log(JSON.parse(osmDataContainer.value).elements)
+    closeOsmPanel();
 }
 
 //close modal
