@@ -6,6 +6,7 @@ import { degToRad, inveLerp } from "./utils";
 export type Node = { type: string, id: number, lat: number, lon: number };
 
 export type Tags = {
+    oneway:boolean,
     highway:string
     lanes:number
     lit:'yes'|"no",
@@ -57,7 +58,8 @@ export const Osm = {
             for (let i = 1; i < ids.length; i++){
                 const prev = points.find((p) => p.id == ids[i - 1]);
                 const current = points.find((p) => p.id == ids[i]);
-                segments.push(new Segment(prev!, current!));
+                const oneWay = way.tags.oneway || way.tags.lanes == 1;
+                segments.push(new Segment(prev!, current!,oneWay));
             }
         }
 

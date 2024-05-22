@@ -5,9 +5,10 @@ export class Segment{
     public p1: Point;
     public p2: Point;
 
-    constructor(p1: Point, p2: Point) {
+    constructor(p1: Point, p2: Point,public oneWay:boolean=false) {
         this.p1 = p1;
         this.p2 = p2;
+        this.oneWay = oneWay;
     }
 
     //segment length
@@ -58,11 +59,14 @@ export class Segment{
      }
   
 
-    draw(ctx: CanvasRenderingContext2D, { width = 2, color = "black", dash= [],cap="butt" }:{width?:number,color?:string,dash?:number[],cap?:CanvasLineCap}={}) {
+    draw(ctx: CanvasRenderingContext2D, { width = 2, color = "black", dash = [], cap = "butt" }: { width?: number, color?: string, dash?: number[], cap?: CanvasLineCap } = {}) {
         ctx.beginPath();
         ctx.lineWidth = width;
         ctx.strokeStyle = color;
         ctx.lineCap = cap;
+        if (this.oneWay) {
+            dash = [4, 4];
+        }
         ctx.setLineDash(dash);
         ctx.moveTo(this.p1.x, this.p1.y);
         ctx.lineTo(this.p2.x, this.p2.y);

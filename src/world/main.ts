@@ -186,6 +186,7 @@ function parseOsmData() {
     const result = Osm.parseRoads(JSON.parse(osmDataContainer.value));
     graph.points = result.points;
     graph.segments = result.segments;
+    
     closeOsmPanel();
 }
 
