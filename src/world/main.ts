@@ -12,6 +12,7 @@ import { LightEditor } from './editors/lightEditor';
 import { TargetEditor } from './editors/targetEditor';
 import { YieldEditor } from './editors/yeildEditor';
 import { Osm } from './math/osm';
+import { Point } from './primitives/point';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -182,7 +183,7 @@ function parseOsmData() {
         return;
     }
 
-     Osm.parseRoads(JSON.parse(osmDataContainer.value));
+     Osm.parseRoads(JSON.parse(osmDataContainer.value),graph,myCanvas);
     //console.log(JSON.parse(osmDataContainer.value).elements)
     closeOsmPanel();
 }
