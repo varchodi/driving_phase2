@@ -233,7 +233,7 @@ export class World{
         
     }
 
-    draw(ctx: CanvasRenderingContext2D,viewPoint:Point,showStartMarking:boolean=true) {
+    draw(ctx: CanvasRenderingContext2D,viewPoint:Point,showStartMarking:boolean=true,renderRadius:number=1000) {
         for (const env of this.envelopes) {
             env.draw(ctx, { fill: "#BBB", stroke: "#BBB", lineWidth: 15 });
         }
@@ -260,7 +260,7 @@ export class World{
             this.bestCar.draw(ctx, true);// draw with sensors
         }
 
-         const items = [...this.buildings, ...this.trees];
+         const items = [...this.buildings, ...this.trees].filter(i=>i.base.distanceToPoint(viewPoint)<renderRadius);
          items.sort(
             (a, b) =>
                b.base.distanceToPoint(viewPoint) -
