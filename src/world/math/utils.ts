@@ -113,6 +113,14 @@ export function lerp2D(A: Point, B: Point, t: number) {
     )
 }
 
+export function inveLerp(a: number, b: number, v: number):number{
+    return (v - a) / (b - a);
+}
+
+export function degToRad(deg: number) {
+    return deg * Math.PI / 180;
+}
+
 export function getRandomColor() {
     const hue = 290 + Math.random() * 260;
     return "hsl(" + hue + ", 100%, 60%)";
