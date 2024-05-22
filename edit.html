@@ -10,21 +10,30 @@
     <h1>World Editor</h1>
     <canvas id="myCanvas"></canvas>
     <div id="controls">
-      <button id="dispose">🗑️</button>
-      <button id="save">💾</button>
+      <button type="button" id="dispose">🗑️</button>
+      <button type="button" id="save">💾</button>
       <label for="fileInput" class="file-input-label">
         📁
         <input type="file" name="fileInput" id="fileInput" accept=".world">
       </label>
+      <button type="button" id="load">🗺️</button> 
       &nbsp;
-      <button id="graphBtn">🌐</button>
-      <button id="stopBtn">🛑</button>
-      <button id="yieldBtn">⚠️</button>
-      <button id="crossingBtn">🚸</button>
-      <button id="parkingBtn">🅿️</button>
-      <button id="lightBtn">🚦</button>
-      <button id="startBtn">🚓</button>
-      <button id="targetBtn">🎯</button>
+      <button type="button" id="graphBtn">🌐</button>
+      <button type="button" id="stopBtn">🛑</button>
+      <button type="button" id="yieldBtn">⚠️</button>
+      <button type="button" id="crossingBtn">🚸</button>
+      <button type="button" id="parkingBtn">🅿️</button>
+      <button type="button" id="lightBtn">🚦</button>
+      <button type="button" id="startBtn">🚓</button>
+      <button type="button" id="targetBtn">🎯</button>
+
+      <div id="osmPanel" style="display: none;">
+        <textarea title="osmDataContainer" id="osmDataContainer" rows="10" cols="50" placeholder="Paste Osm data Here"></textarea>
+        <div>
+          <button type="button" id="parseOsmData">✔️</button>
+          <button id="closeOsmPanel" type="button">❌</button>
+        </div>
+      </div>
     </div>
     <script>
       myCanvas.width = 600;

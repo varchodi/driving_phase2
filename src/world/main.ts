@@ -23,6 +23,11 @@ const yieldBtn = document.getElementById("yieldBtn") as HTMLButtonElement;
 const parkingBtn = document.getElementById("parkingBtn") as HTMLButtonElement;
 const lightBtn = document.getElementById("lightBtn") as HTMLButtonElement;
 const targetBtn = document.getElementById("targetBtn") as HTMLButtonElement;
+const loadBtn = document.getElementById("load") as HTMLButtonElement;
+const parseOsmDataBtn = document.getElementById("parseOsmData") as HTMLButtonElement;
+const closeOsmPanelBtn = document.getElementById("closeOsmPanel") as HTMLButtonElement;
+const osmDataContainer = document.getElementById("osmDataContainer") as HTMLAreaElement;
+const osmPanel = document.getElementById("osmPanel") as HTMLDivElement;
 const fileInput = document.getElementById("fileInput") as HTMLInputElement;
 
 const ctx = myCanvas.getContext("2d")!;
@@ -88,6 +93,12 @@ for (const mode of Object.keys(tools)) {
     tools[mody].button.onclick = () => setMode(mody);
 }
 
+//OpenSteetMap stuffs
+loadBtn.onclick = openOsmPanel;
+parseOsmDataBtn.onclick = parseOsmData;
+closeOsmPanelBtn.onclick = closeOsmPanel;
+
+
 //!! dispose
 function dispose() {
     tools["graph"].editor.dispose();
@@ -128,7 +139,7 @@ function load(event:Event & { target: HTMLInputElement, files: FileList}) {
     //read world as text
     const reader = new FileReader();
     reader.readAsText(file);
-
+    
     //convert to Object
     reader.onload = (event: ProgressEvent<FileReader>)=>{
         const fileContent = event.target?.result;
@@ -158,4 +169,17 @@ function disableEditors() {
         tool.button.style.filter = "grayscale(100%)";
         tool.editor.disable();
     }
+}
+//open OsmPannel
+function openOsmPanel() {
+    osmPanel.style.display = "block";
+};
+
+function parseOsmData() {
+    
+}
+
+//close modal
+function closeOsmPanel() {
+    osmPanel.style.display = "none";
 }
