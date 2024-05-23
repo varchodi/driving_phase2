@@ -3,7 +3,6 @@ import './styles/style.css'
 import { Visualizer } from './visualizer';
 import { NeuralNetwork } from './network';
 import { World } from './world/world';
-import { Graph } from './world/math/graph';
 import { Viewport } from './world/viewport';
 import { angle, scale } from './world/math/utils';
 import { Start } from './world/markings/start';
@@ -11,9 +10,12 @@ import { Point } from './world/primitives/point';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
+const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElement;
 
+miniMapCanvas.width = 300;
+miniMapCanvas.height = 300;
 networkCanvas.width = 300;
-networkCanvas.height = window.innerHeight;
+networkCanvas.height = window.innerHeight-300;
 carCanvas.width = window.innerWidth-330;
 carCanvas.height=window.innerHeight;
 
@@ -48,7 +50,8 @@ const world = World.load(worldy);
 
 console.log(worldy)
 //set viewport
-const viewport = new Viewport(carCanvas,world.zoom,world.offset);
+const viewport = new Viewport(carCanvas, world.zoom, world.offset);
+
 
 const N=1;
 const cars=generateCars(N);
