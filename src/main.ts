@@ -2,36 +2,59 @@ import Car from './car';
 import './styles/style.css'
 import { Visualizer } from './visualizer';
 import { NeuralNetwork } from './network';
-import { getRandomColor } from './util';
 import { World } from './world/world';
-import { Graph } from './world/math/graph';
 import { Viewport } from './world/viewport';
 import { angle, scale } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
+import { MiniMap } from './miniMap';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
+const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElement;
 
+miniMapCanvas.width = 300;
+miniMapCanvas.height = 300;
 networkCanvas.width = 300;
-networkCanvas.height = window.innerHeight;
+networkCanvas.height = window.innerHeight-300;
 carCanvas.width = window.innerWidth-330;
 carCanvas.height=window.innerHeight;
 
 const carCtx = carCanvas.getContext("2d") as CanvasRenderingContext2D;
 const networkCtx = networkCanvas.getContext("2d") as CanvasRenderingContext2D;
 
-//load world
-const worldString = localStorage.getItem("world");
-const worldInfo = worldString ? JSON.parse(worldString) as World : null;
+// load world
+// const worldString = localStorage.getItem("world");
+// const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
-//load .../ if not def new world with empty graph
-const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
-const graph = world.graph;
+// //load .../ if not def new world with empty graph
+// const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+// const graph = world.graph;
+
+
+async function loadWorldData() {
+  try {
+    const response = await fetch("/src/world/items/worlds/big.world");
+    const data = await response.json();
+    return data // Assuming data represents your world data structure
+  } catch (error) {
+    console.error("Error loading world data:", error);
+    // Handle loading a default world or displaying an error message
+  }
+}
+
+// Use the loaded world data
+const worldy = await loadWorldData();
+const world = World.load(worldy);
+// Now you can use the 'world' object for world generation
+
+
+console.log(worldy)
 //set viewport
-const viewport = new Viewport(carCanvas,world.zoom,world.offset);
+const viewport = new Viewport(carCanvas, world.zoom, world.offset);
+const minimap = new MiniMap(miniMapCanvas,world.graph,300);
 
-const N=1;
+const N=3;
 const cars=generateCars(N);
 let bestCar=cars[0];
 if(localStorage.getItem("bestBrain")){
@@ -117,7 +140,8 @@ function animate(time?:number) {
     const viewPoint = scale(viewport.getOffset(), -1);
     world.draw(carCtx, viewPoint,false);
     //-----------------------------------
-
+    //?? draw minimap
+    minimap.update(viewPoint);
 
     for(let i=0;i<traffic.length;i++){
         traffic[i].draw(carCtx);

@@ -14,7 +14,8 @@ import { Start } from "./markings/start";
 
 export class World{
     private envelopes: Envelope[];
-    public roadBoarders:Segment[] = [];
+    public roadBoarders: Segment[] = [];
+    public roadBorders?:Segment[] = [];
     private buildings: Building[];
     private trees: Tree[] = [];
     public laneGuides: Segment[];
@@ -58,8 +59,8 @@ export class World{
       world.buildingMinLength = info.buildingMinLength;
       world.spacing = info.spacing;
       world.treeSize = info.treeSize;
-       world.envelopes = info.envelopes.map((e) => Envelope.load(e));
-      world.roadBoarders = info.roadBoarders.map((b) => new Segment(b.p1, b.p2));
+      world.envelopes = info.envelopes.map((e) => Envelope.load(e));
+      world.roadBoarders =info.roadBoarders? info.roadBoarders.map((b) => new Segment(b.p1, b.p2)):info?.roadBorders?.map((b) => new Segment(b.p1, b.p2))!;
       world.buildings = info.buildings.map((e) => Building.load(e));
       world.trees = info.trees.map((t) => new Tree(t.center, info.treeSize));
       world.laneGuides = info.laneGuides.map((g) => new Segment(g.p1, g.p2));

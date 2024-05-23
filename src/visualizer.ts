@@ -38,7 +38,7 @@ export class Visualizer{
 
         const {inputs,outputs,weights,biases}=level;
 
-        for(let i=0;i<inputs.length;i++){
+        for(let i=0;i<inputs?.length ;i++){
             for(let j=0;j<outputs.length;j++){
                 ctx.beginPath();
                 ctx.moveTo(
@@ -56,7 +56,7 @@ export class Visualizer{
         }
 
         const nodeRadius=18;
-        for(let i=0;i<inputs.length;i++){
+        for(let i=0;i<inputs?.length;i++){
             const x=Visualizer.getNodeX(inputs,i,left,right);
             ctx.beginPath();
             ctx.arc(x,bottom,nodeRadius,0,Math.PI*2);

@@ -76,13 +76,13 @@ export class Level{
     }
 
     static feedForward(givenInputs: Array<number>, level: Level):number[] {
-        for(let i=0;i<level.inputs.length;i++){
+        for(let i=0;i<level.inputs?.length ?? 0;i++){
             level.inputs[i]=givenInputs[i];
         }
 
         for(let i=0;i<level.outputs.length;i++){
             let sum=0
-            for(let j=0;j<level.inputs.length;j++){
+            for(let j=0;j<level.inputs?.length;j++){
                 sum+=level.inputs[j]*level.weights[j][i];
             }
 
