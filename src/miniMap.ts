@@ -31,7 +31,7 @@ export class MiniMap{
         }
         this.ctx.restore();
 
-        //?? map center => wich is alco the car
-        new Point(this.size / 2, this.size / 2).draw(this.ctx,{color:"blue"});
+        //?? map center => wich is also the car
+        new Point(this.size / 2, this.size / 2).draw(this.ctx,{color:"blue",outline:true});
     }
 }
