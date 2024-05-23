@@ -2,7 +2,6 @@ import Car from './car';
 import './styles/style.css'
 import { Visualizer } from './visualizer';
 import { NeuralNetwork } from './network';
-import { getRandomColor } from './util';
 import { World } from './world/world';
 import { Graph } from './world/math/graph';
 import { Viewport } from './world/viewport';
@@ -21,13 +20,33 @@ carCanvas.height=window.innerHeight;
 const carCtx = carCanvas.getContext("2d") as CanvasRenderingContext2D;
 const networkCtx = networkCanvas.getContext("2d") as CanvasRenderingContext2D;
 
-//load world
-const worldString = localStorage.getItem("world");
-const worldInfo = worldString ? JSON.parse(worldString) as World : null;
+// load world
+// const worldString = localStorage.getItem("world");
+// const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
-//load .../ if not def new world with empty graph
-const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
-const graph = world.graph;
+// //load .../ if not def new world with empty graph
+// const world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+// const graph = world.graph;
+
+
+async function loadWorldData() {
+  try {
+    const response = await fetch("/src/world/items/worlds/big.world");
+    const data = await response.json();
+    return data // Assuming data represents your world data structure
+  } catch (error) {
+    console.error("Error loading world data:", error);
+    // Handle loading a default world or displaying an error message
+  }
+}
+
+// Use the loaded world data
+const worldy = await loadWorldData();
+const world = World.load(worldy);
+// Now you can use the 'world' object for world generation
+
+
+console.log(worldy)
 //set viewport
 const viewport = new Viewport(carCanvas,world.zoom,world.offset);
 
