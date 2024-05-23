@@ -7,6 +7,7 @@ import { Viewport } from './world/viewport';
 import { angle, scale } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
+import { MiniMap } from './miniMap';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
@@ -51,9 +52,9 @@ const world = World.load(worldy);
 console.log(worldy)
 //set viewport
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
+const minimap = new MiniMap(miniMapCanvas,world.graph,300);
 
-
-const N=1;
+const N=3;
 const cars=generateCars(N);
 let bestCar=cars[0];
 if(localStorage.getItem("bestBrain")){
@@ -139,7 +140,8 @@ function animate(time?:number) {
     const viewPoint = scale(viewport.getOffset(), -1);
     world.draw(carCtx, viewPoint,false);
     //-----------------------------------
-
+    //?? draw minimap
+    minimap.update(viewPoint);
 
     for(let i=0;i<traffic.length;i++){
         traffic[i].draw(carCtx);
