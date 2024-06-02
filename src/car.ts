@@ -74,7 +74,6 @@ export default class Car {
         this.sensor.raySpread = info.sensor.raySpread;
         this.sensor.rayLength = info.sensor.rayLength;
             this.sensor.rayOffset = info.sensor.rayOffset;
-            console.log(info.brain)
         } catch (error) {
             console.log("oups, samething in here")
         }
