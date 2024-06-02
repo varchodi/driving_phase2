@@ -17,7 +17,7 @@ export default class Car {
     mask: HTMLCanvasElement;
     fittness: number;
 
-    constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,public angle:number=0,maxSpeed:number=3,public color:string="blue") {
+    constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,public angle:number=0,maxSpeed:number=7,public color:string="blue") {
         this.x=x;
         this.y=y;
         this.width=width;
