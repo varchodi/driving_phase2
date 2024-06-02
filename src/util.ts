@@ -61,4 +61,16 @@ export function getRandomColor():string{
     const hue=290+Math.random()*260;
     return "hsl("+hue+", 100%, 60%)";
 }
+
+
+export async function loadData(link:string) {
+    try {
+      const response = await fetch(link);
+      const data = await response.json();
+      return data // Assuming data represents your world data structure
+    } catch (error) {
+      console.error("Error loading world data:", error);
+      // Handle loading a default world or displaying an error message
+    }
+  }
     

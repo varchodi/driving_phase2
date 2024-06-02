@@ -8,6 +8,7 @@ import { angle, scale } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
+import { loadData } from './util';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
@@ -32,29 +33,19 @@ const networkCtx = networkCanvas.getContext("2d") as CanvasRenderingContext2D;
 // const graph = world.graph;
 
 
-async function loadWorldData() {
-  try {
-    const response = await fetch("/src/world/items/worlds/big.world");
-    const data = await response.json();
-    return data // Assuming data represents your world data structure
-  } catch (error) {
-    console.error("Error loading world data:", error);
-    // Handle loading a default world or displaying an error message
-  }
-}
+
 
 // Use the loaded world data
-const worldy = await loadWorldData();
+const worldy = await loadData("/src/world/items/worlds/big2.world");
 const world = World.load(worldy);
-// Now you can use the 'world' object for world generation
 
-
-console.log(worldy)
+//load external car 
+const carInfo = await loadData("/src/saves/right_hand_rule.car");
 //set viewport
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
 const minimap = new MiniMap(miniMapCanvas,world.graph,300);
 
-const N=3;
+const N=1;
 const cars=generateCars(N);
 let bestCar=cars[0];
 if(localStorage.getItem("bestBrain")){
@@ -106,8 +97,10 @@ function generateCars(N: number): Car[] {
     const dir = startPoints.length > 0 ? startPoints[0].directionVector : new Point(0, -1);
     const startAngle = -angle(dir)+Math.PI / 2;
 
-    for(let i=1;i<=N;i++){
-        cars.push(new Car(startPoint.x,startPoint.y,30,50,"AI",startAngle)!);
+    for (let i = 1; i <= N; i++){
+        const car = new Car(startPoint.x, startPoint.y, 30, 50, "AI", startAngle)!;
+        car.load(carInfo);
+        cars.push(car);
     }
     return cars;
 }
