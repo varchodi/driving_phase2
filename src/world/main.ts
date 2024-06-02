@@ -13,6 +13,7 @@ import { TargetEditor } from './editors/targetEditor';
 import { YieldEditor } from './editors/yeildEditor';
 import { Osm } from './math/osm';
 import { Point } from './primitives/point';
+import { loadData } from '../util';
 
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 const saveBtn = document.getElementById("save") as HTMLButtonElement;
@@ -40,6 +41,10 @@ const worldInfo = worldString ? JSON.parse(worldString) as World : null;
 
 //load .../ if not def new world with empty graph
 let world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
+
+// const worldy = await loadData("/src/world/items/worlds/big.world");
+// const world = World.load(worldy);
+
 const graph = world.graph;
 
 const viewport = new Viewport(myCanvas,world.zoom,world.offset);
