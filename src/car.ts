@@ -8,7 +8,7 @@ export default class Car {
     acceleration: number;
     maxSpeed: number;
     friction: number;
-    sensor?: Sensor;
+    sensor: Sensor;
     brain?: NeuralNetwork;
     polygon: { x: number; y: number; }[]=[];
     damaged: boolean;
@@ -28,7 +28,9 @@ export default class Car {
         this.maxSpeed=maxSpeed;
         this.friction=0.05;
         this.angle=angle;
-        this.damaged=false;
+        this.damaged = false;
+        
+        this.sensor = new Sensor(this);
 
         //?? Hoe much car move(travel)<->Still exist
         this.fittness = 0;
@@ -61,6 +63,25 @@ export default class Car {
         }
     }
 
+    // ?? load car
+    public load(info: any) {
+        try {
+            this.brain = info.brain;
+        this.maxSpeed = info.maxSpeed;
+        this.friction = info.friction;
+        this.acceleration = info.acceleration;
+        this.sensor.rayCount = info.sensor.rayCount;
+        this.sensor.raySpread = info.sensor.raySpread;
+        this.sensor.rayLength = info.sensor.rayLength;
+            this.sensor.rayOffset = info.sensor.rayOffset;
+            console.log(info.brain)
+        } catch (error) {
+            console.log("oups, samething in here")
+        }
+        
+
+    }
+
     //update stuff while car control
     update(roadBorders: {
         x: number;
@@ -79,7 +100,7 @@ export default class Car {
             this.sensor.update(roadBorders,traffic);
             const offsets=this.sensor.readings.map(
                 s=>s==null?0:1-s.offset
-            );
+            ).concat([this.speed/this.maxSpeed]);
             const outputs=NeuralNetwork.feedForward(offsets,this.brain!);
 
             if(this.useBrain){

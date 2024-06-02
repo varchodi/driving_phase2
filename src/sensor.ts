@@ -6,12 +6,15 @@ export default class Sensor {
     rayLength: number;
     raySpread: number;
     rays: { x: number, y: number }[][];
+    rayOffset: number;
     readings: { x: number; y: number; offset: number; }[];
     constructor(public car:Car) {
         this.car=car;
         this.rayCount=5;
         this.rayLength=150;
-        this.raySpread=Math.PI/2;
+        this.raySpread = Math.PI / 2;
+        
+        this.rayOffset = 0;
 
         this.rays=[];
         this.readings=[];
@@ -84,7 +87,7 @@ export default class Sensor {
                 this.raySpread/2,
                 -this.raySpread/2,
                 this.rayCount==1?0.5:i/(this.rayCount-1)
-            )+this.car.angle;
+            )+this.car.angle+this.rayOffset;
 
             const start={x:this.car.x, y:this.car.y};
             const end={
