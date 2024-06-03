@@ -37,8 +37,8 @@ const ctx = myCanvas.getContext("2d")!;
 
 //load graph from local storage
 const worldString = localStorage.getItem("world");
-const worldInfo = worldString ? JSON.parse(worldString) as World : null;
-// const worldInfo = await loadData('/src/world/items/worlds/path_finding.world');
+//const worldInfo = worldString ? JSON.parse(worldString) as World : null;
+ const worldInfo = await loadData('/src/world/items/worlds/big2.world');
 
 //load .../ if not def new world with empty graph
 let world = worldInfo ? World.load(worldInfo) as World : new World(new Graph());
@@ -73,7 +73,7 @@ function animate() {
     //??
     //regenerate graph only if graph changes
     if (graph.hash() != oldGraphHash){
-        world.generate();
+        // world.generate();
         oldGraphHash = graph.hash()
     }
     //calculate the viewPoint
