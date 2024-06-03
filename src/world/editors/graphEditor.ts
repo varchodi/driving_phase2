@@ -151,6 +151,9 @@ export class GraphEditor{
     
         for(const point of path) {
             point.draw(this.ctx,{size:50,color:"blue"})
+            if (point.prev) {
+                new Segment(point, point.prev).draw(this.ctx,{width:20});
+            }
         }
     }
 

@@ -107,16 +107,17 @@ export class Graph{
         //!! visit point
         let currentPoint=start;
         currentPoint.dist = 0;
-        for (let i = 1; i <= 2; i++) {
+        while (!end.visited) {
             const segs = this.getSegmentWithPoint(currentPoint);
             for (const seg of segs) {
                 const otherPoint = seg.p1.equals(currentPoint) ? seg.p2 : seg.p1;
                 //fix startpoint reconsideration
-                
+
                 if (currentPoint.dist + seg.length() < otherPoint.dist) {
                     path.push(otherPoint);
                     //?? get others Point dist
                     otherPoint.dist = currentPoint.dist + seg.length();
+                    otherPoint.prev = currentPoint;
                 }
             }
             currentPoint.visited = true;

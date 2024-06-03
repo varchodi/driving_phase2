@@ -3,7 +3,8 @@ export class Point{
     public y: number;
     public id?: number;
     public dist: number = null!;
-    public visited: Boolean=false;
+    public visited: Boolean = false;
+    public prev: Point = null!;
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
