@@ -92,6 +92,26 @@ export class Graph{
         return segs;
     }
 
+    //-. seg leaving with point
+    getSegmentLeavingFromPoint(point: Point): Segment[]{
+        const segs:Segment[] = [];
+        for (const seg of this.segments) {
+            if (seg.oneWay) {
+                if (seg.p1.equals(point)) {
+                    segs.push(seg);
+                }
+            }
+            //allowed both ways
+            else { 
+                if (seg.include(point)) {
+                    segs.push(seg);
+                }
+            }
+
+        }
+        return segs;
+    }
+
     //?? implement shortPath algo
     getShortestPath(start:Point, end:Point) {
 
@@ -105,7 +125,7 @@ export class Graph{
         let currentPoint=start;
         currentPoint.dist = 0;
         while (!end.visited) {
-            const segs = this.getSegmentWithPoint(currentPoint);
+            const segs = this.getSegmentLeavingFromPoint(currentPoint);
             for (const seg of segs) {
                 const otherPoint = seg.p1.equals(currentPoint) ? seg.p2 : seg.p1;
                 //fix startpoint reconsideration
