@@ -92,6 +92,16 @@ export class Graph{
         return segs;
     }
 
+    //!! implement shortPath algo
+    getShortestPath(start:Point, end:Point) {
+        const path = [];
+        path.push(start);
+        path.push(end);
+
+        return path;
+    }
+
+
     dispose() {
         this.points.length = 0;
         this.segments.length = 0;
