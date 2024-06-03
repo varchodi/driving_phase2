@@ -107,20 +107,22 @@ export class Graph{
         //!! visit point
         let currentPoint=start;
         currentPoint.dist = 0;
+        for (let i = 1; i <= 2; i++) {
+            const segs = this.getSegmentWithPoint(currentPoint);
+            for (const seg of segs) {
+                const otherPoint = seg.p1.equals(currentPoint) ? seg.p2 : seg.p1;
+                path.push(otherPoint);
+                //?? get others Point dist
+                otherPoint.dist =currentPoint.dist + seg.length();
+            }
+            currentPoint.visited = true;
 
-        const segs = this.getSegmentWithPoint(currentPoint);
-        for (const seg of segs) {
-            const otherPoint = seg.p1.equals(currentPoint) ? seg.p2 : seg.p1;
-            path.push(otherPoint);
-            //?? get others Point dist
-            otherPoint.dist = seg.length();
+            const unvisited = this.points.filter((p) => p.visited === false); // univisited points
+            const dists = unvisited.map((p) => p.dist); //univisited points distances
+            //?? univisited point with the smallest dist with current Point, n set it as current
+            currentPoint = unvisited.find((p) => p.dist == Math.min(...dists))!
+            
         }
-        currentPoint.visited = true;
-
-        const unvisited = this.points.filter((p) => p.visited === false); // univisited points
-        const dists = unvisited.map((p) => p.dist); //univisited points distances
-        //?? univisited point with the smallest dist with current Point, n set it as current
-        currentPoint=unvisited.find((p)=>p.dist == Math.min(...dists))!
 
         return path;
     }
