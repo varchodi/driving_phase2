@@ -15,6 +15,8 @@ export class GraphEditor{
     private boundMousemove: any;
     private boundMouseup: any;
     private boundContextMenu: any;
+    public start: Point = null!;
+    public end: Point = null!;
 
     constructor(public viewport:Viewport, public graph: Graph) {
         this.viewport=viewport;
@@ -59,7 +61,20 @@ export class GraphEditor{
         this.canvas.removeEventListener("mousemove", this.boundMousemove);
         this.canvas.removeEventListener("contextmenu", this.boundContextMenu);
         
-        this.canvas.removeEventListener("mouseup", this.boundMouseup)
+        this.canvas.removeEventListener("mouseup", this.boundMouseup);
+
+        //?? events for selecting end  or start point on path stuff
+        window.addEventListener("keydown", (evt: KeyboardEvent) => {
+            if (this.hovered) {
+                if(evt.key=="s"){
+                    this.start = this.hovered;
+                }
+
+                if(evt.key=="e"){
+                    this.end = this.hovered;
+                }
+            }
+        })
     }
 
 
@@ -142,5 +157,21 @@ export class GraphEditor{
             new Segment(this.selected, intent!).draw(this.ctx,{dash:[3,3]});
             this.selected.draw(this.ctx, { outline: true });
         }
+
+        //?? calculate shorted path n draw it
+        if (this.start && this.end) {
+            const path = this.graph.getShortestPath(
+                this.start, this.end
+            )
+        
+    
+            for (const point of path) {
+                point.draw(this.ctx, { size: 50, color: "blue" })
+                if (point.prev) {
+                    new Segment(point, point.prev).draw(this.ctx, { width: 20 });
+                }
+            }
+        }
     }
+
 }

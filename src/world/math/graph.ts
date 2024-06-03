@@ -92,6 +92,80 @@ export class Graph{
         return segs;
     }
 
+    //-. seg leaving with point
+    getSegmentLeavingFromPoint(point: Point): Segment[]{
+        const segs:Segment[] = [];
+        for (const seg of this.segments) {
+            if (seg.oneWay) {
+                if (seg.p1.equals(point)) {
+                    segs.push(seg);
+                }
+            }
+            //allowed both ways
+            else { 
+                if (seg.include(point)) {
+                    segs.push(seg);
+                }
+            }
+
+        }
+        return segs;
+    }
+
+    //?? implement shortPath algo
+    getShortestPath(start:Point, end:Point) {
+
+        //! init point diat to the largest number
+        for (const point of this.points) {
+            point.dist = Number.MAX_SAFE_INTEGER;
+            point.visited = false;
+        }
+
+        //!! visit point
+        let currentPoint=start;
+        currentPoint.dist = 0;
+        while (!end.visited) {
+            const segs = this.getSegmentLeavingFromPoint(currentPoint);
+            for (const seg of segs) {
+                const otherPoint = seg.p1.equals(currentPoint) ? seg.p2 : seg.p1;
+                //fix startpoint reconsideration
+
+                if (currentPoint.dist + seg.length() < otherPoint.dist) {
+                    //?? get others Point dist
+                    otherPoint.dist = currentPoint.dist + seg.length();
+                    otherPoint.prev = currentPoint;
+                }
+            }
+            currentPoint.visited = true;
+
+            const unvisited = this.points.filter((p) => p.visited === false); // univisited points
+            const dists = unvisited.map((p) => p.dist); //univisited points distances
+            //?? univisited point with the smallest dist with current Point, n set it as current
+            currentPoint = unvisited.find((p) => p.dist == Math.min(...dists))!
+            
+        }
+
+        const path = [];
+        currentPoint = end;
+        //!! reverse order (from end to start)
+        while (currentPoint) {
+            path.unshift(currentPoint);
+            currentPoint = currentPoint.prev;
+        }
+        //??!! att (resets same point attrs)
+        for (const point of this.points){
+            // point.dist=null!;
+            // point.visited=null!;
+            // point.prev = null!;
+
+            delete point.dist;
+            delete point.visited;
+            delete point.prev;
+        }
+        return path;
+    }
+
+
     dispose() {
         this.points.length = 0;
         this.segments.length = 0;
