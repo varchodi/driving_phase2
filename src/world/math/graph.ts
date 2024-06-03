@@ -94,9 +94,6 @@ export class Graph{
 
     //?? implement shortPath algo
     getShortestPath(start:Point, end:Point) {
-        const path = [];
-        path.push(start);
-        path.push(end);
 
         //! init point diat to the largest number
         for (const point of this.points) {
@@ -114,7 +111,6 @@ export class Graph{
                 //fix startpoint reconsideration
 
                 if (currentPoint.dist + seg.length() < otherPoint.dist) {
-                    path.push(otherPoint);
                     //?? get others Point dist
                     otherPoint.dist = currentPoint.dist + seg.length();
                     otherPoint.prev = currentPoint;
@@ -129,6 +125,13 @@ export class Graph{
             
         }
 
+        const path = [];
+        currentPoint = end;
+        //reverse order (from end to start)
+        while (currentPoint) {
+            path.unshift(currentPoint);
+            currentPoint = currentPoint.prev;
+        }
         return path;
     }
 
