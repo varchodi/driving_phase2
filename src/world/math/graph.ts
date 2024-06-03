@@ -92,11 +92,35 @@ export class Graph{
         return segs;
     }
 
-    //!! implement shortPath algo
+    //?? implement shortPath algo
     getShortestPath(start:Point, end:Point) {
         const path = [];
         path.push(start);
         path.push(end);
+
+        //! init point diat to the largest number
+        for (const point of this.points) {
+            point.dist = Number.MAX_SAFE_INTEGER;
+            point.visited = false;
+        }
+
+        //!! visit point
+        let currentPoint=start;
+        currentPoint.dist = 0;
+
+        const segs = this.getSegmentWithPoint(currentPoint);
+        for (const seg of segs) {
+            const otherPoint = seg.p1.equals(currentPoint) ? seg.p2 : seg.p1;
+            path.push(otherPoint);
+            //?? get others Point dist
+            otherPoint.dist = seg.length();
+        }
+        currentPoint.visited = true;
+
+        const unvisited = this.points.filter((p) => p.visited === false); // univisited points
+        const dists = unvisited.map((p) => p.dist); //univisited points distances
+        //?? univisited point with the smallest dist with current Point, n set it as current
+        currentPoint=unvisited.find((p)=>p.dist == Math.min(...dists))!
 
         return path;
     }

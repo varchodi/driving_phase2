@@ -2,6 +2,8 @@ export class Point{
     public x:number;
     public y: number;
     public id?: number;
+    public dist: number = null!;
+    public visited: Boolean=false;
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
