@@ -127,10 +127,20 @@ export class Graph{
 
         const path = [];
         currentPoint = end;
-        //reverse order (from end to start)
+        //!! reverse order (from end to start)
         while (currentPoint) {
             path.unshift(currentPoint);
             currentPoint = currentPoint.prev;
+        }
+        //??!! att (resets same point attrs)
+        for (const point of this.points){
+            // point.dist=null!;
+            // point.visited=null!;
+            // point.prev = null!;
+
+            delete point.dist;
+            delete point.visited;
+            delete point.prev;
         }
         return path;
     }
