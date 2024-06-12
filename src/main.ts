@@ -9,6 +9,7 @@ import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
 import { loadData } from './util';
+import { Target } from './world/markings/target';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const networkCanvas = document.getElementById("networkCanvas") as HTMLCanvasElement;
@@ -61,8 +62,15 @@ if(localStorage.getItem("bestBrain")){
 
 
 const traffic: Car[] = [];
+//?? fech target n ....
+const target = world.markings.find((m) => m instanceof Target)
 //make car world borders
-const roadBorders = world.roadBoarders.map(s=>[s.p1,s.p2]);
+let roadBorders = world.roadBoarders.map(s=>[s.p1,s.p2]);
+if (target) {
+    world.generateCorridor(new Point(bestCar.x, bestCar.y), target.center);
+    roadBorders=world.corridor.map((s)=>[s.p1,s.p2]) // assign car to corridor paths;
+}
+    
 
 
 //animate ...
