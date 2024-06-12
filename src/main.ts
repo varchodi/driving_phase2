@@ -37,6 +37,7 @@ const networkCtx = networkCanvas.getContext("2d") as CanvasRenderingContext2D;
 
 // Use the loaded world data
 const worldy = await loadData("/src/world/items/worlds/path_finding.world");
+
 const world = World.load(worldy);
 
 //load external car 
