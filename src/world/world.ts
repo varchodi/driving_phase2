@@ -24,6 +24,7 @@ export class World{
     public offset: any;
     public cars: Car[];
     public bestCar: Car;
+    public corridor: Envelope[] = new Array();
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -85,6 +86,21 @@ export class World{
         this.laneGuides.length = 0;
         this.laneGuides.push(...this.generateLineGuides());
 
+    }
+
+    //generate path's corridor
+    generateCorridor(start: Point, end: Point) {
+        const path = this.graph.getShortestPath(start, end);
+        const segs = [];
+        for (let i = 1; i < path.length; i++){
+            segs.push(new Segment(path[i-1],path[i]))
+        }
+
+        //wrap segs in env
+        const tmpEnvelopes = segs.map(
+            (s)=>new Envelope(s,this.roadWidth,this.roadRoundness)
+        )
+        this.corridor = tmpEnvelopes;
     }
 
     //gen line guides
@@ -249,7 +265,14 @@ export class World{
          }
          for (const seg of this.roadBoarders) {
             seg.draw(ctx, { color: "white", width: 4 });
-         }
+        }
+        
+        //draw corridor
+        if (this.corridor) {
+            for (const seg of this.corridor) {
+                seg.draw(ctx);
+            }
+        }
    
         //draw cars n bestCars
         ctx.globalAlpha = .2;
