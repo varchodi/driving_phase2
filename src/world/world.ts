@@ -1,5 +1,5 @@
 import { Graph } from "./math/graph";
-import { add, distance, lerp, scale } from "./math/utils";
+import { add, distance, getNearestSegment, lerp, scale } from "./math/utils";
 import { Envelope } from "./primitives/envelope";
 import { Polygon } from "./primitives/polygon";
 import { Segment } from "./primitives/segment";
@@ -90,7 +90,36 @@ export class World{
 
     //generate path's corridor
     generateCorridor(start: Point, end: Point) {
-        const path = this.graph.getShortestPath(start, end);
+
+        const startSeg = getNearestSegment(start, this.graph.segments);
+        const endSeg = getNearestSegment(end, this.graph.segments);
+
+        const { point: projStart } = startSeg.projectPoint(start);
+        const { point: ProjEnd } = endSeg.projectPoint(end);
+
+        this.graph.points.push(projStart);
+        this.graph.points.push(ProjEnd);
+
+        const tmpSegs = [
+            new Segment(startSeg.p1, projStart),
+            new Segment(projStart, startSeg.p2),
+            new Segment(endSeg.p1, ProjEnd),
+            new Segment(ProjEnd,endSeg.p2)
+        ]
+
+        if (startSeg.equals(endSeg)) {
+            tmpSegs.push(new Segment(projStart,ProjEnd))
+        }
+
+        this.graph.segments = this.graph.segments.concat(tmpSegs);
+
+        const path = this.graph.getShortestPath(projStart, ProjEnd);
+
+        //cleanup
+        this.graph.removePoint(projStart);
+        this.graph.removePoint(ProjEnd);
+        
+        
         const segs = [];
         for (let i = 1; i < path.length; i++){
             segs.push(new Segment(path[i-1],path[i]))
@@ -100,6 +129,8 @@ export class World{
         const tmpEnvelopes = segs.map(
             (s)=>new Envelope(s,this.roadWidth,this.roadRoundness)
         )
+
+        
         this.corridor = tmpEnvelopes;
     }
 

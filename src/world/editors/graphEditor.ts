@@ -67,14 +67,12 @@ export class GraphEditor{
 
         //?? events for selecting end  or start point on path stuff
         window.addEventListener("keydown", (evt: KeyboardEvent) => {
-            if (this.hovered) {
-                if(evt.key=="s"){
-                    this.start = this.hovered;
-                }
+            if(evt.key=="s"){
+                this.start = this.mouse!;
+            }
 
-                if(evt.key=="e"){
-                    this.end = this.hovered;
-                }
+            if(evt.key=="e"){
+                this.end = this.mouse!;
             }
 
             if (this.start && this.end) {
