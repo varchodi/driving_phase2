@@ -65,10 +65,12 @@ const traffic: Car[] = [];
 //?? fech target n ....
 const target = world.markings.find((m) => m instanceof Target)
 //make car world borders
-let roadBorders = world.roadBoarders.map(s=>[s.p1,s.p2]);
+let roadBorders:Point[][]=[]
 if (target) {
     world.generateCorridor(new Point(bestCar.x, bestCar.y), target.center);
     roadBorders=world.corridor.map((s)=>[s.p1,s.p2]) // assign car to corridor paths;
+} else {
+    roadBorders=world.roadBoarders.map(s=>[s.p1,s.p2])
 }
     
 
