@@ -7,7 +7,7 @@ import { angle, scale } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
-import { loadData } from './util';
+import { getRandomColor, loadData } from './util';
 import { Target } from './world/markings/target';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
@@ -83,7 +83,8 @@ function discard() {
     localStorage.removeItem("bestBrain");
 }
 
-function generateCars(N: number,type?:"DUMMY"|"AI"|"KEYS"): Car[] {
+function generateCars(N: number, type?: "DUMMY" | "AI" | "KEYS"): Car[] {
+    const color = type == "AI" ? getRandomColor() : "blue";
     const startPoints = world.markings.filter((m) => m instanceof Start);
     const startPoint = startPoints.length > 0 ? startPoints[0].center : new Point(100, 100); 
     const cars = [];
@@ -92,7 +93,7 @@ function generateCars(N: number,type?:"DUMMY"|"AI"|"KEYS"): Car[] {
     const startAngle = -angle(dir)+Math.PI / 2;
 
     for (let i = 1; i <= N; i++){
-        const car = new Car(startPoint.x, startPoint.y, 30, 50, type!, startAngle)!;
+        const car = new Car(startPoint.x, startPoint.y, 30, 50, type!, startAngle,7,color)!;
         car.load(carInfo);
         cars.push(car);
     }
