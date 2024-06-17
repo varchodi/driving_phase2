@@ -4,22 +4,16 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Js self driving car - simulator</title>
+    <title>Race</title>
   </head>
   <body>
     <canvas id="carCanvas"></canvas>
-    <div id="verticalButtons">
-      <button type="button" id="save">💾</button>
-      <button type="reset" id="reset">🔁</button>
-      <button type="reset" id="discard">🗑️</button>
-    </div>
     <!-- net and minimap -->
     <div>
-      <canvas id="networkCanvas"></canvas>
-    <canvas id="minimapCanvas"></canvas>
+    <canvas id="minimapCanvas" class="mimiMap"></canvas>
     </div>
     
-    <script type="module" src="/src/main.ts"></script>
+    <script type="module" src="/src/race.ts"></script>
     <!-- <script type="module" src="/src/world/main.ts"></script> -->
   </body>
 </html>

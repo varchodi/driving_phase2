@@ -34,3 +34,13 @@ button:hover{
 #carCanvas{
   background:#2a5;
 }
+
+.mimiMap{
+  width: 15em;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  opacity: 50%;
+  border: white 2px solid;
+}
