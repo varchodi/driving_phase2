@@ -31,9 +31,9 @@ const carInfo = await loadData("/src/saves/right_hand_rule.car");
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
 const minimap = new MiniMap(miniMapCanvas,world.graph,300);
 
-const N=1;
-const cars=generateCars(N);
-let bestCar=cars[0];
+const N=10;
+const cars=generateCars(1,"KEYS").concat(generateCars(N,"AI"));
+const myCar=cars[0];
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
         cars[i].brain=JSON.parse(
@@ -45,13 +45,12 @@ if(localStorage.getItem("bestBrain")){
 }
 
 
-const traffic: Car[] = [];
 //?? fech target n ....
 const target = world.markings.find((m) => m instanceof Target)
 //make car world borders
 let roadBorders:Point[][]=[]
 if (target) {
-    world.generateCorridor(new Point(bestCar.x, bestCar.y), target.center);
+    world.generateCorridor(new Point(myCar.x, myCar.y), target.center);
     roadBorders=world.corridor.map((s)=>[s.p1,s.p2]) // assign car to corridor paths;
 } else {
     roadBorders=world.roadBoarders.map(s=>[s.p1,s.p2])
@@ -76,15 +75,15 @@ document.getElementById("retry")?.addEventListener("click", () => {
 document.getElementById("discard")?.addEventListener("click",()=>{discard()});
 
 function save() {
-    console.log(bestCar.brain);
-    localStorage.setItem("bestBrain", JSON.stringify(bestCar.brain));
+    console.log(myCar.brain);
+    localStorage.setItem("bestBrain", JSON.stringify(myCar.brain));
 }
 
 function discard() {
     localStorage.removeItem("bestBrain");
 }
 
-function generateCars(N: number): Car[] {
+function generateCars(N: number,type?:"DUMMY"|"AI"|"KEYS"): Car[] {
     const startPoints = world.markings.filter((m) => m instanceof Start);
     const startPoint = startPoints.length > 0 ? startPoints[0].center : new Point(100, 100); 
     const cars = [];
@@ -93,7 +92,7 @@ function generateCars(N: number): Car[] {
     const startAngle = -angle(dir)+Math.PI / 2;
 
     for (let i = 1; i <= N; i++){
-        const car = new Car(startPoint.x, startPoint.y, 30, 50, "AI", startAngle)!;
+        const car = new Car(startPoint.x, startPoint.y, 30, 50, type!, startAngle)!;
         car.load(carInfo);
         cars.push(car);
     }
@@ -102,24 +101,17 @@ function generateCars(N: number): Car[] {
 
 function animate(time?:number) {
 
-    for(let i=0;i<traffic.length;i++){
-        traffic[i].update(roadBorders,[]);
-    }
     for(let i=0;i<cars.length;i++){
-        cars[i].update(roadBorders,traffic);
+        cars[i].update(roadBorders,[]);
     }
-    bestCar=cars.find(
-        c=>c.fittness==Math.max(
-            ...cars.map(c=>c.fittness)
-        ))!;
 
     //pass cars to world
     world.cars = cars;
-    world.bestCar = bestCar;
+    world.bestCar = myCar;
 
     //!! camera follows bestCar
-    viewport.offset.x = -bestCar.x;
-    viewport.offset.y = -bestCar.y;
+    viewport.offset.x = -myCar.x;
+    viewport.offset.y = -myCar.y;
     
     //draw world ??-------------------
     viewport.reset();
@@ -130,10 +122,6 @@ function animate(time?:number) {
     //-----------------------------------
     //?? draw minimap
     minimap.update(viewPoint);
-
-    for(let i=0;i<traffic.length;i++){
-        traffic[i].draw(carCtx);
-    }
 
     
     requestAnimationFrame(animate);
