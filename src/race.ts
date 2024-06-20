@@ -125,7 +125,13 @@ function animate(time?:number) {
 
     //---------------------
     const carSeg = getNearestSegment(new Point(myCar.x, myCar.y), world.corridor.skeleton);
-    carSeg.draw(carCtx, { color: "red", width: 5 });
+    for (let i = 0; i < world.corridor.skeleton.length; i++){
+        const s = world.corridor.skeleton[i];
+        s.draw(carCtx, { color: "red", width: 5 });
+        if (s.equals(carSeg)) {
+            break; 
+        }
+    }
 
     
     requestAnimationFrame(animate);
