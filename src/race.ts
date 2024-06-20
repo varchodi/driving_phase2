@@ -141,8 +141,10 @@ function animate(time?:number) {
             myCar.progress += s.length();
         }
     }
-
-    // console.log(myCar.progress)
+    const totalDistance = world.corridor.skeleton.reduce(
+        (acc,s)=>acc+s.length(),0)
+    myCar.progress /= totalDistance;
+    console.log(myCar.progress)
     requestAnimationFrame(animate);
 }
 
