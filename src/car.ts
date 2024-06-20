@@ -16,13 +16,17 @@ export default class Car {
     img: HTMLImageElement;
     mask: HTMLCanvasElement;
     fittness: number;
+    public type:'AI'|'DUMMY'|'KEYS'
     public progress: number = null!;
+    public finishTime: number = null!;
 
-    constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,public angle:number=0,maxSpeed:number=7,public color:string="blue") {
+    constructor(public x: number, public y: number, public width: number, public height: number,public controlType:'AI'|'DUMMY'|'KEYS',public angle:number=0,maxSpeed:number=7,public color:string="blue") {
         this.x=x;
         this.y=y;
         this.width=width;
-        this.height=height;
+        this.height = height;
+        this.color = color;
+        this.type = controlType;
 
         this.speed=0;
         this.acceleration=0.2;
