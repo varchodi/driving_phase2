@@ -19,6 +19,7 @@ export default class Car {
     public type:'AI'|'DUMMY'|'KEYS'
     public progress: number = null!;
     public finishTime: number = null!;
+    public name: string = null!;
 
     constructor(public x: number, public y: number, public width: number, public height: number,public controlType:'AI'|'DUMMY'|'KEYS',public angle:number=0,maxSpeed:number=7,public color:string="blue") {
         this.x=x;

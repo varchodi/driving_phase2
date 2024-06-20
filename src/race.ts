@@ -44,7 +44,7 @@ if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
         cars[i].brain=JSON.parse(
             localStorage.getItem("bestBrain")!);
-        if(i!=0){
+        if(i>1){
             NeuralNetwork.mutate(cars[i].brain!,0.1);
         }
     }
@@ -108,8 +108,9 @@ function generateCars(N: number, type?: "DUMMY" | "AI" | "KEYS"): Car[] {
     const startAngle = -angle(dir)+Math.PI / 2;
     
     for (let i = 1; i <= N; i++){
-        const color = type == "AI" ? getRandomColor() : "blue";
+        const color = type === "AI" ? getRandomColor() : "blue";
         const car = new Car(startPoint.x, startPoint.y, 30, 50, type!, startAngle,7,color)!;
+        car.name = type === "AI" ? `AI ${i}` : "Me";
         car.load(carInfo);
         cars.push(car);
     }
@@ -124,13 +125,10 @@ function UpdateCarProgress(car:Car) {
             const s = world.corridor.skeleton[i];
             if (s.equals(carSeg)) {
                 const proj = s.projectPoint(new Point(car.x, car.y));
-                proj.point.draw(carCtx, { color: "yellow" });
                 const firstPartofSegment = new Segment(s.p1, proj.point);
-                firstPartofSegment.draw(carCtx, { color: "red", width: 5 });
                 car.progress += firstPartofSegment.length();
                 break;
             } else {
-                s.draw(carCtx, { color: "red", width: 5 });
                 car.progress += s.length();
             }
         }
@@ -176,7 +174,11 @@ function animate(time?:number) {
     for (let i = 0; i < cars.length; i++) {
         const stat = document.getElementById(`stat_${i}`) as HTMLDivElement;
         stat.style.color = cars[i].color;
-        stat.innerText=`${i+1}: ${(cars[i].progress*100).toFixed(1)}%`
+        stat.innerText = `${i + 1}: ${cars[i].name} ${cars[i].damaged ?"💀":""}`
+        stat.style.backgroundColor=cars[i].type ==='AI'?'black':'white'
+        if (cars[i].finishTime) {
+            stat.innerHTML+= `<span style="float:right"> ${(cars[i].finishTime/60).toFixed(1)}s </span>`;
+        }
     }
     //!! inc frame 
     frameCount++;
