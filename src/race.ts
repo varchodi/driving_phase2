@@ -9,6 +9,7 @@ import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
 import { getRandomColor, loadData } from './util';
 import { Target } from './world/markings/target';
+import { Segment } from './world/primitives/segment';
 
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElement;
@@ -127,9 +128,14 @@ function animate(time?:number) {
     const carSeg = getNearestSegment(new Point(myCar.x, myCar.y), world.corridor.skeleton);
     for (let i = 0; i < world.corridor.skeleton.length; i++){
         const s = world.corridor.skeleton[i];
-        s.draw(carCtx, { color: "red", width: 5 });
         if (s.equals(carSeg)) {
+            const proj = s.projectPoint(new Point(myCar.x, myCar.y));
+            proj.point.draw(carCtx, { color: "yellow" });
+            const firstPartofSegment = new Segment(s.p1, proj.point);
+            firstPartofSegment.draw(carCtx, { color: "red", width: 5 });
             break; 
+        } else {
+            s.draw(carCtx, { color: "red", width: 5 });
         }
     }
 
