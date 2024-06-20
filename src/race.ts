@@ -3,7 +3,7 @@ import './styles/style.css'
 import { NeuralNetwork } from './network';
 import { World } from './world/world';
 import { Viewport } from './world/viewport';
-import { angle, scale } from './world/math/utils';
+import { angle, getNearestSegment, scale } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
@@ -122,6 +122,10 @@ function animate(time?:number) {
     //-----------------------------------
     //?? draw minimap
     minimap.update(viewPoint);
+
+    //---------------------
+    const carSeg = getNearestSegment(new Point(myCar.x, myCar.y), world.corridor.skeleton);
+    carSeg.draw(carCtx, { color: "red", width: 5 });
 
     
     requestAnimationFrame(animate);
