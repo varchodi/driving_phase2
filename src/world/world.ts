@@ -24,7 +24,7 @@ export class World{
     public offset: any;
     public cars: Car[];
     public bestCar: Car;
-    public corridor: Segment[] = new Array();
+    public corridor: Record<"borders"|"skeleton",Segment[]>={skeleton:new Array(),borders:new Array()}
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -134,7 +134,7 @@ export class World{
         const segments=Polygon.union(tmpEnvelopes.map((e)=>e.poly))
 
 
-        this.corridor = segments;
+        this.corridor = { borders: segments ,skeleton:segs};
     }
 
     //gen line guides
@@ -303,7 +303,7 @@ export class World{
         
         //draw corridor
         if (this.corridor) {
-            for (const seg of this.corridor) {
+            for (const seg of this.corridor.borders) {
                 seg.draw(ctx,{color:"red",width:4});
             }
         }

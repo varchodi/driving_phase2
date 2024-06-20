@@ -51,11 +51,10 @@ const target = world.markings.find((m) => m instanceof Target)
 let roadBorders:Point[][]=[]
 if (target) {
     world.generateCorridor(new Point(myCar.x, myCar.y), target.center);
-    roadBorders=world.corridor.map((s)=>[s.p1,s.p2]) // assign car to corridor paths;
+    roadBorders=world.corridor.borders.map((s)=>[s.p1,s.p2]) // assign car to corridor paths;
 } else {
     roadBorders=world.roadBoarders.map(s=>[s.p1,s.p2])
 }
-    
 
 
 //animate ...
