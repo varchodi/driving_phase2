@@ -16,6 +16,7 @@ export default class Car {
     img: HTMLImageElement;
     mask: HTMLCanvasElement;
     fittness: number;
+    public progress: number = null!;
 
     constructor(public x: number, public y: number, public width: number, public height: number,public controlType:string,public angle:number=0,maxSpeed:number=7,public color:string="blue") {
         this.x=x;

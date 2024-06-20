@@ -125,6 +125,7 @@ function animate(time?:number) {
     minimap.update(viewPoint);
 
     //---------------------
+    myCar.progress = 0;
     const carSeg = getNearestSegment(new Point(myCar.x, myCar.y), world.corridor.skeleton);
     for (let i = 0; i < world.corridor.skeleton.length; i++){
         const s = world.corridor.skeleton[i];
@@ -133,13 +134,15 @@ function animate(time?:number) {
             proj.point.draw(carCtx, { color: "yellow" });
             const firstPartofSegment = new Segment(s.p1, proj.point);
             firstPartofSegment.draw(carCtx, { color: "red", width: 5 });
+            myCar.progress += firstPartofSegment.length();
             break; 
         } else {
             s.draw(carCtx, { color: "red", width: 5 });
+            myCar.progress += s.length();
         }
     }
 
-    
+    // console.log(myCar.progress)
     requestAnimationFrame(animate);
 }
 
