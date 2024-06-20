@@ -14,6 +14,7 @@ import { Segment } from './world/primitives/segment';
 const rightPanelWidth = 300;
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
 const statisticsEl = document.getElementById("statistics") as HTMLDivElement;
+const counterEl = document.getElementById("counter") as HTMLDivElement;
 const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElement;
 
 miniMapCanvas.width = rightPanelWidth;
@@ -72,7 +73,11 @@ if (target) {
     roadBorders=world.roadBoarders.map(s=>[s.p1,s.p2])
 }
 
-let frameCount=0;
+let frameCount = 0;
+let started = false;
+
+// ---------- counter  timeout ----------
+startCounter();
 
 //animate ...
 animate();
@@ -142,15 +147,36 @@ function UpdateCarProgress(car:Car) {
     }
 }
 
-function animate(time?:number) {
 
-    for(let i=0;i<cars.length;i++){
-        cars[i].update(roadBorders,[]);
+
+function startCounter() {
+    counterEl.innerText = "3";
+    setTimeout(() => {
+       counterEl.innerText = "2";
+       setTimeout(() => {
+          counterEl.innerText = "1";
+          setTimeout(() => {
+             counterEl.innerText = "GO!";
+             setTimeout(() => {
+                counterEl.innerText = "";
+                 started = true;
+                frameCount = 0;
+             }, 1000);
+          }, 1000);
+       }, 1000);
+    }, 1000);
+ }
+
+function animate(time?: number) {
+    if (started) {
+        for (let i = 0; i < cars.length; i++) {
+            cars[i].update(roadBorders, []);
+        }
+
+        //pass cars to world
+        world.cars = cars;
+        world.bestCar = myCar;
     }
-
-    //pass cars to world
-    world.cars = cars;
-    world.bestCar = myCar;
 
     //!! camera follows bestCar
     viewport.offset.x = -myCar.x;
