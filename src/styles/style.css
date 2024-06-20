@@ -34,3 +34,43 @@ button:hover{
 #carCanvas{
   background:#2a5;
 }
+
+.mimiMap{
+  width: 15em;
+  position: absolute;
+  right: 20px;
+  bottom: 20px;
+  border-radius: 50%;
+  opacity: 50%;
+  border: white 2px solid;
+}
+
+#statistics{
+  background:black;
+  width: 15em;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  border-radius: 10px;
+  opacity: 50%;
+  border: white 2px solid;
+  overflow-y: auto;
+}
+
+.stat{
+  font-size:x-large;
+  font-family: Arial;
+  padding:.5rem;
+
+}
+
+#counter {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%,-50%);
+  font-size: 40vmin;
+  font-family: Arial;
+  opacity: 50%;
+  color: white;
+}

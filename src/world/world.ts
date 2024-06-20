@@ -24,7 +24,7 @@ export class World{
     public offset: any;
     public cars: Car[];
     public bestCar: Car;
-    public corridor: Segment[] = new Array();
+    public corridor: Record<"borders"|"skeleton",Segment[]>={skeleton:new Array(),borders:new Array()}
 
     constructor(public graph: Graph, public roadWidth: number = 100, public roadRoundness: number = 10,public buildingWidth:number=150,public buildingMinLength:number=150,public spacing =50,private treeSize=160) {
         this.graph = graph;
@@ -89,7 +89,7 @@ export class World{
     }
 
     //generate path's corridor
-    generateCorridor(start: Point, end: Point) {
+    generateCorridor(start: Point, end: Point, extendEnd:boolean=false) {
 
         const startSeg = getNearestSegment(start, this.graph.segments);
         const endSeg = getNearestSegment(end, this.graph.segments);
@@ -125,16 +125,29 @@ export class World{
             segs.push(new Segment(path[i-1],path[i]))
         }
 
+        if (extendEnd) {
+            const lastSegment = segs[segs.length - 1];
+            const lastSegDir = lastSegment.directionVector();
+            segs.push(
+                new Segment(
+                    lastSegment.p2,
+                    add(lastSegment.p2, scale(lastSegDir, this.roadWidth * 2))
+                )
+            )
+        }
+
         //wrap segs in env
         const tmpEnvelopes = segs.map(
-            (s)=>new Envelope(s,this.roadWidth,this.roadRoundness)
-        )
+            (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
+        );
+        
+        if(extendEnd) segs.pop();
 
         //!! cleanup corridor envellopes
         const segments=Polygon.union(tmpEnvelopes.map((e)=>e.poly))
 
 
-        this.corridor = segments;
+        this.corridor = { borders: segments ,skeleton:segs};
     }
 
     //gen line guides
@@ -303,7 +316,7 @@ export class World{
         
         //draw corridor
         if (this.corridor) {
-            for (const seg of this.corridor) {
+            for (const seg of this.corridor.borders) {
                 seg.draw(ctx,{color:"red",width:4});
             }
         }
