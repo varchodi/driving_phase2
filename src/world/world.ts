@@ -89,7 +89,7 @@ export class World{
     }
 
     //generate path's corridor
-    generateCorridor(start: Point, end: Point) {
+    generateCorridor(start: Point, end: Point, extendEnd:boolean=false) {
 
         const startSeg = getNearestSegment(start, this.graph.segments);
         const endSeg = getNearestSegment(end, this.graph.segments);
@@ -125,10 +125,23 @@ export class World{
             segs.push(new Segment(path[i-1],path[i]))
         }
 
+        if (extendEnd) {
+            const lastSegment = segs[segs.length - 1];
+            const lastSegDir = lastSegment.directionVector();
+            segs.push(
+                new Segment(
+                    lastSegment.p2,
+                    add(lastSegment.p2, scale(lastSegDir, this.roadWidth * 2))
+                )
+            )
+        }
+
         //wrap segs in env
         const tmpEnvelopes = segs.map(
-            (s)=>new Envelope(s,this.roadWidth,this.roadRoundness)
-        )
+            (s) => new Envelope(s, this.roadWidth, this.roadRoundness)
+        );
+        
+        if(extendEnd) segs.pop();
 
         //!! cleanup corridor envellopes
         const segments=Polygon.union(tmpEnvelopes.map((e)=>e.poly))
