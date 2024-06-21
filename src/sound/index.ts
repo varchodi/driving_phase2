@@ -3,7 +3,20 @@ const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
 
 let analyzer:AnalyserNode = null!;
 
-window.addEventListener("click", beep);
+window.addEventListener("click", () => {
+    beep(400);
+    setTimeout(() => {
+        beep(400);
+
+        setTimeout(() => {
+            beep(400);
+            setTimeout(() => {
+                beep(700);
+            },1000)
+        }, 1000);
+    }, 1000);
+});
+
 animate();
 
 function animate() {
@@ -30,13 +43,13 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-function beep() {
+function beep(frequency:number) {
     const audioContext = new window.AudioContext();
     const osc = audioContext.createOscillator();
     //??other nodes 
     const envellope = audioContext.createGain();
 
-    osc.frequency.setValueAtTime(400, 0);
+    osc.frequency.setValueAtTime(frequency, 0);
     //?? connect to enveloppe
     osc.connect(envellope);
     osc.start();
@@ -49,6 +62,6 @@ function beep() {
     envellope.connect(audioContext.destination)
 
     analyzer = audioContext.createAnalyser();
-    analyzer.fftSize = 2 ** 13
+    analyzer.fftSize = 2 ** 15
     envellope.connect(analyzer);
 }
