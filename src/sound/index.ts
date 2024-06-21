@@ -47,7 +47,7 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
-function beep(frequency:number) {
+export function beep(frequency:number) {
     const audioContext = new window.AudioContext();
     const osc = audioContext.createOscillator();
     //??other nodes 
@@ -71,7 +71,10 @@ function beep(frequency:number) {
 }
 
 
-class Engine {
+export class Engine {
+    public volume: AudioParam;
+    public frequency: AudioParam;
+
     constructor() {
         const audioContext = new window.AudioContext();
         const osc = audioContext.createOscillator();
@@ -87,10 +90,30 @@ class Engine {
         masterGain.gain.value = 0.2;
         masterGain.connect(audioContext.destination)
 
-        //
+        //modulation (control signal using props of other signal)
+        const lfo = audioContext.createOscillator();
+        lfo.frequency.setValueAtTime(30, 0);
+        //special gain
+        const mod = audioContext.createGain();
+        mod.gain.value = 60;
+        lfo.connect(mod);
+        mod.connect(osc.frequency);
+        lfo.start();
+
+        //control volume
+        this.volume = masterGain.gain;
+        this.frequency = osc.frequency;
 
         analyzer = audioContext.createAnalyser();
         analyzer.fftSize = 2 ** 15
         masterGain.connect(analyzer);
+    }
+
+    public setVolume(percent: number) {
+        this.volume.value = percent;
+    }
+
+    public setPitch(percent: number) {
+        this.frequency.setValueAtTime(percent * 200 + 100, 0);
     }
 }
