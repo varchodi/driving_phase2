@@ -36,12 +36,15 @@ function beep() {
     //??other nodes 
     const envellope = audioContext.createGain();
 
-    osc.frequency.setValueAtTime(100, 0);
+    osc.frequency.setValueAtTime(400, 0);
     //?? connect to enveloppe
     osc.connect(envellope);
     osc.start();
+    osc.stop(4);
     //?? setup env gain 
-    envellope.gain.value = 0.5;
+    envellope.gain.value = 0;
+    envellope.gain.linearRampToValueAtTime(1, .1);
+    envellope.gain.linearRampToValueAtTime(0, 0.4);
     //conect grain to ctx (speakers)
     envellope.connect(audioContext.destination)
 
