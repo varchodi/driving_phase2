@@ -1,20 +1,24 @@
 const myCanvas = document.getElementById("soundVis") as HTMLCanvasElement;
 const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
 
-let analyzer:AnalyserNode = null!;
+let analyzer: AnalyserNode = null!;
+let engine:Engine = null!
 
 window.addEventListener("click", () => {
-    beep(400);
-    setTimeout(() => {
-        beep(400);
+    
+    const engine = new Engine();
 
-        setTimeout(() => {
-            beep(400);
-            setTimeout(() => {
-                beep(700);
-            },1000)
-        }, 1000);
-    }, 1000);
+    // beep(400);
+    // setTimeout(() => {
+    //     beep(400);
+
+    //     setTimeout(() => {
+    //         beep(400);
+    //         setTimeout(() => {
+    //             beep(700);
+    //         },1000)
+    //     }, 1000);
+    // }, 1000);
 });
 
 animate();
@@ -64,4 +68,29 @@ function beep(frequency:number) {
     analyzer = audioContext.createAnalyser();
     analyzer.fftSize = 2 ** 15
     envellope.connect(analyzer);
+}
+
+
+class Engine {
+    constructor() {
+        const audioContext = new window.AudioContext();
+        const osc = audioContext.createOscillator();
+        //??other nodes 
+        const masterGain = audioContext.createGain();
+
+        osc.frequency.setValueAtTime(200, 0);
+        //?? connect to enveloppe
+        osc.connect(masterGain);
+        osc.start();
+
+        //?? setup env gain 
+        masterGain.gain.value = 0.2;
+        masterGain.connect(audioContext.destination)
+
+        //
+
+        analyzer = audioContext.createAnalyser();
+        analyzer.fftSize = 2 ** 15
+        masterGain.connect(analyzer);
+    }
 }
