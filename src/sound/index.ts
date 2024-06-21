@@ -33,9 +33,19 @@ function animate() {
 function beep() {
     const audioContext = new window.AudioContext();
     const osc = audioContext.createOscillator();
-    osc.connect(audioContext.destination);
+    //??other nodes 
+    const envellope = audioContext.createGain();
+
+    osc.frequency.setValueAtTime(100, 0);
+    //?? connect to enveloppe
+    osc.connect(envellope);
     osc.start();
+    //?? setup env gain 
+    envellope.gain.value = 0.5;
+    //conect grain to ctx (speakers)
+    envellope.connect(audioContext.destination)
 
     analyzer = audioContext.createAnalyser();
-    osc.connect(analyzer);
+    analyzer.fftSize = 2 ** 13
+    envellope.connect(analyzer);
 }
