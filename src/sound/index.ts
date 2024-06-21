@@ -1,51 +1,51 @@
-const myCanvas = document.getElementById("soundVis") as HTMLCanvasElement;
-const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
+// const myCanvas = document.getElementById("soundVis") as HTMLCanvasElement;
+// const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
 
 let analyzer: AnalyserNode = null!;
 let engine:Engine = null!
 
-window.addEventListener("click", () => {
+// window.addEventListener("click", () => {
     
-    const engine = new Engine();
+//     const engine = new Engine();
 
-    // beep(400);
-    // setTimeout(() => {
-    //     beep(400);
+//     // beep(400);
+//     // setTimeout(() => {
+//     //     beep(400);
 
-    //     setTimeout(() => {
-    //         beep(400);
-    //         setTimeout(() => {
-    //             beep(700);
-    //         },1000)
-    //     }, 1000);
-    // }, 1000);
-});
+//     //     setTimeout(() => {
+//     //         beep(400);
+//     //         setTimeout(() => {
+//     //             beep(700);
+//     //         },1000)
+//     //     }, 1000);
+//     // }, 1000);
+// });
 
-animate();
+// animate();
 
-function animate() {
-    ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+// function animate() {
+//     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
 
-    if (analyzer) {
-        //!create an empy array of 8 bits cars x size (2048 ??)
-        const data = new Uint8Array(analyzer.fftSize);
-        analyzer.getByteTimeDomainData(data); //?? put sound wave datas in the array(data)
+//     if (analyzer) {
+//         //!create an empy array of 8 bits cars x size (2048 ??)
+//         const data = new Uint8Array(analyzer.fftSize);
+//         analyzer.getByteTimeDomainData(data); //?? put sound wave datas in the array(data)
 
-        ctx.beginPath();
-        for (let i = 0; i < data.length; i++){
-            const x = myCanvas.width * i / data.length; 
-            const y = data[i];
+//         ctx.beginPath();
+//         for (let i = 0; i < data.length; i++){
+//             const x = myCanvas.width * i / data.length; 
+//             const y = data[i];
 
-            if (i === 0) {
-                ctx.moveTo(x, y);
-            } else {
-                ctx.lineTo(x, y);
-            }
-        }
-        ctx.stroke();
-    }
-    requestAnimationFrame(animate);
-}
+//             if (i === 0) {
+//                 ctx.moveTo(x, y);
+//             } else {
+//                 ctx.lineTo(x, y);
+//             }
+//         }
+//         ctx.stroke();
+//     }
+//     requestAnimationFrame(animate);
+// }
 
 export function beep(frequency:number) {
     const audioContext = new window.AudioContext();

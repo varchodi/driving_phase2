@@ -2,6 +2,7 @@ import Controls from "./controls";
 import Sensor from "./sensor";
 import { polysIntersect } from "./util";
 import { NeuralNetwork } from "./network";
+import { Engine } from "./sound";
 export default class Car {
     controls: Controls;
     speed: number;
@@ -20,6 +21,7 @@ export default class Car {
     public progress: number = null!;
     public finishTime: number = null!;
     public name: string = null!;
+    public engine: Engine = null!;
 
     constructor(public x: number, public y: number, public width: number, public height: number,public controlType:'AI'|'DUMMY'|'KEYS',public angle:number=0,maxSpeed:number=7,public color:string="blue") {
         this.x=x;
@@ -99,7 +101,11 @@ export default class Car {
             this.fittness += this.speed;
             
             this.polygon=this.#createPolygon();
-            this.damaged=this.assessDamage(roadBorders,traffic);
+            this.damaged = this.assessDamage(roadBorders, traffic);
+            
+            if (this.damaged) {
+                this.speed = 0;
+            }
         }
         if(this.sensor){
             this.sensor.update(roadBorders,traffic);
@@ -114,6 +120,12 @@ export default class Car {
                 this.controls.right=outputs[2];
                 this.controls.reverse=outputs[3];
             }
+        }
+        if (this.engine) {
+            const percent = Math.abs(this.speed / this.maxSpeed);
+            this.engine.setVolume(percent);
+            this.engine.setPitch(percent);
+            
         }
     }
 

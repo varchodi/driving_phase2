@@ -10,6 +10,7 @@ import { MiniMap } from './miniMap';
 import { getRandomColor, loadData } from './util';
 import { Target } from './world/markings/target';
 import { Segment } from './world/primitives/segment';
+import { Engine, beep } from './sound';
 
 const rightPanelWidth = 300;
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
@@ -151,16 +152,21 @@ function UpdateCarProgress(car:Car) {
 
 function startCounter() {
     counterEl.innerText = "3";
+    beep(400);
     setTimeout(() => {
-       counterEl.innerText = "2";
+        counterEl.innerText = "2";
+        beep(400);
        setTimeout(() => {
-          counterEl.innerText = "1";
+           counterEl.innerText = "1";
+           beep(400);
           setTimeout(() => {
              counterEl.innerText = "GO!";
+             beep(700);
              setTimeout(() => {
                 counterEl.innerText = "";
                  started = true;
-                frameCount = 0;
+                 frameCount = 0;
+                 myCar.engine = new Engine();
              }, 1000);
           }, 1000);
        }, 1000);
