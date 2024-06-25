@@ -10,7 +10,7 @@ import { MiniMap } from './miniMap';
 import { getRandomColor, loadData } from './util';
 import { Target } from './world/markings/target';
 import { Segment } from './world/primitives/segment';
-import { Engine, beep } from './sound';
+import { Engine, beep, taDaa } from './sound';
 
 const rightPanelWidth = 300;
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
@@ -144,7 +144,11 @@ function UpdateCarProgress(car:Car) {
         if (car.progress >= 1) {
             car.progress = 1;
             car.finishTime = frameCount;
+            if (car == myCar) {
+                taDaa()
+            }
         }
+
     }
 }
 
@@ -194,7 +198,7 @@ function animate(time?: number) {
     //calculate the viewPoint
     const viewPoint = scale(viewport.getOffset(), -1);
     world.draw(carCtx, viewPoint,false);
-    //-----------------------------------
+    //--------------------------------
     //?? draw minimap
     minimap.update(viewPoint);
 

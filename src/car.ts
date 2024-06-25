@@ -2,7 +2,7 @@ import Controls from "./controls";
 import Sensor from "./sensor";
 import { polysIntersect } from "./util";
 import { NeuralNetwork } from "./network";
-import { Engine } from "./sound";
+import { Engine, explode } from "./sound";
 export default class Car {
     controls: Controls;
     speed: number;
@@ -105,6 +105,7 @@ export default class Car {
             
             if (this.damaged) {
                 this.speed = 0;
+                if (this.type == 'KEYS') explode();
             }
         }
         if(this.sensor){

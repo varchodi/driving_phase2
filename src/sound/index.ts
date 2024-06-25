@@ -47,27 +47,23 @@ let engine:Engine = null!
 //     requestAnimationFrame(animate);
 // }
 
-export function beep(frequency:number) {
-    const audioContext = new window.AudioContext();
-    const osc = audioContext.createOscillator();
-    //??other nodes 
-    const envellope = audioContext.createGain();
+export function beep(frequency:number,waveType:OscillatorType = "sine") {
+    const audioContext = new 
+      (window.AudioContext)();
 
-    osc.frequency.setValueAtTime(frequency, 0);
-    //?? connect to enveloppe
-    osc.connect(envellope);
-    osc.start();
-    osc.stop(4);
-    //?? setup env gain 
-    envellope.gain.value = 0;
-    envellope.gain.linearRampToValueAtTime(1, .1);
-    envellope.gain.linearRampToValueAtTime(0, 0.4);
-    //conect grain to ctx (speakers)
-    envellope.connect(audioContext.destination)
+   const osc = audioContext.createOscillator();
+   const envelope = audioContext.createGain();
 
-    analyzer = audioContext.createAnalyser();
-    analyzer.fftSize = 2 ** 15
-    envellope.connect(analyzer);
+   osc.frequency.setValueAtTime(frequency, 0);
+   osc.type = waveType;
+   osc.connect(envelope);
+   osc.start();
+   osc.stop(0.4);
+
+   envelope.gain.value = 0;
+   envelope.gain.linearRampToValueAtTime(1, 0.1);
+   envelope.gain.linearRampToValueAtTime(0, 0.4);
+   envelope.connect(audioContext.destination);
 }
 
 
@@ -117,3 +113,31 @@ export class Engine {
         this.frequency.setValueAtTime(percent * 200 + 100, 0);
     }
 }
+
+export function taDaa() {
+    beep(400, "sawtooth");
+    setTimeout(() => beep(600, "sawtooth"), 200);
+ }
+ 
+export  function explode() {
+    const audioContext = new 
+       (window.AudioContext )();
+ 
+    const numOscillators = 10;
+ 
+    for (let i = 0; i < numOscillators; i++) {
+       const osc = audioContext.createOscillator();
+       const envelope = audioContext.createGain();
+ 
+       osc.frequency.setValueAtTime(100 + Math.random() * 200, 0);
+       osc.connect(envelope);
+       osc.start();
+       osc.stop(1);
+ 
+       envelope.gain.value = 0;
+       envelope.gain.linearRampToValueAtTime(1, 0.1);
+       envelope.gain.linearRampToValueAtTime(0, 1);
+       envelope.connect(audioContext.destination);
+    }
+ }
+ 
