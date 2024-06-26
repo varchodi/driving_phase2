@@ -3,8 +3,10 @@
 
 import Car from "../car";
 import { carCtx } from "../race";
+import { cross, distance, substract } from "../world/math/utils";
 import { Point } from "../world/primitives/point";
 import { Polygon } from "../world/primitives/polygon";
+import { Segment } from "../world/primitives/segment";
 import { World } from "../world/world";
 
 
@@ -20,7 +22,7 @@ export default class Camera {
     public right: Point = null!;
     public poly: Polygon = null!;
     
-    constructor({x,y,angle}:Car,range=100) {
+    constructor({x,y,angle}:Car,range=1000) {
         this.range = range;
         this.move({ x, y, angle } as Car);
     }
@@ -47,9 +49,36 @@ export default class Camera {
         this.poly = new Polygon([this.center,this.left,this.right])
     }
 
+    private projectPoint(ctx: CanvasRenderingContext2D, p: Point):Point {
+        const seg = new Segment(this.center, this.tip);
+        const { point: p1 } = seg.projectPoint(p);
+        const c = cross(substract(p1, new Point(this.x, this.y)), substract(p, new Point(this.x, this.y)));
+        const x =Math.sign(c)* distance(p, p1) / distance(new Point(this.x, this.y), p1);
+        const y = - this.z / distance(new Point(this.x, this.y), p1);
+
+        const cX = ctx.canvas.width / 2;
+        const cY = ctx.canvas.height / 2;
+        const scaler = Math.min(cX, cY);
+
+        return new Point(cX + x * scaler, cY + y * scaler);
+    }
+
+    
+
     public render(ctx: CanvasRenderingContext2D, world: World) {
         // get buildings bases
-        const polys = world.buildings.map((b) => b.base);
+        const polys =this.filer( world.buildings.map((b) => b.base));
+
+        const projPolys = polys.map((poly) => new Polygon(
+            poly.points.map((p)=>this.projectPoint(ctx,p))
+        ))
+
+        ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+
+        for (const poly of projPolys) {
+            poly.draw(ctx);
+        }
+
         for (const poly of polys) {
             poly.draw(carCtx);
         }
