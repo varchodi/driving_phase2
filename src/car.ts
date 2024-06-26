@@ -43,9 +43,9 @@ export default class Car {
         //?? Hoe much car move(travel)<->Still exist
         this.fittness = 0;
 
-        this.useBrain=controlType=="AI";
+        this.useBrain=controlType==="AI";
 
-        if(controlType!="DUMMY"){
+        if(controlType==="AI"){
             this.sensor=new Sensor(this);
             this.brain=new NeuralNetwork(
                 [this.sensor.rayCount,6,4]

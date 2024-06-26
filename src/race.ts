@@ -220,6 +220,7 @@ function animate(time?: number) {
             stat.innerHTML+= `<span style="float:right"> ${(cars[i].finishTime/60).toFixed(1)}s </span>`;
         }
     }
+    camera.move(myCar);
     camera.draw(carCtx);
     //!! inc frame 
     frameCount++;
