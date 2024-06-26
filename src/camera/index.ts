@@ -58,7 +58,7 @@ export default class Camera {
 
         const cX = ctx.canvas.width / 2;
         const cY = ctx.canvas.height / 2;
-        const scaler = Math.min(cX, cY);
+        const scaler = Math.max(cX, cY);
 
         return new Point(cX + x * scaler, cY + y * scaler);
     }
