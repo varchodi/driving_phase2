@@ -63,11 +63,19 @@ export default class Camera {
         return new Point(cX + x * scaler, cY + y * scaler);
     }
 
-    
+    private filter(polys: Polygon[]):Polygon[] {
+        const filteredPolys = [];
+        for (const poly of polys) {
+            if (this.poly.containsPoly(poly)) {
+                filteredPolys.push(poly);
+            }
+        }
+        return filteredPolys;
+    }
 
     public render(ctx: CanvasRenderingContext2D, world: World) {
         // get buildings bases
-        const polys =this.filer( world.buildings.map((b) => b.base));
+        const polys =this.filter( world.buildings.map((b) => b.base));
 
         const projPolys = polys.map((poly) => new Polygon(
             poly.points.map((p)=>this.projectPoint(ctx,p))

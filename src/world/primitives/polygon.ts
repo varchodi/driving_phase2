@@ -113,6 +113,10 @@ export class Polygon{
         return false;
     }
 
+    public containsPoly(poly: Polygon) {
+        return poly.points.filter((p) => this.containsPoint(p)).length > 0;
+    }
+
     containsSegment(seg: Segment) {
         const midpoint=average(seg.p1,seg.p2)
         return this.containsPoint(midpoint);
