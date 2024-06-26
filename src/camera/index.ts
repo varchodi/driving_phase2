@@ -2,8 +2,10 @@
 // const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
 
 import Car from "../car";
+import { carCtx } from "../race";
 import { Point } from "../world/primitives/point";
 import { Polygon } from "../world/primitives/polygon";
+import { World } from "../world/world";
 
 
 export default class Camera {
@@ -43,6 +45,14 @@ export default class Camera {
         )
 
         this.poly = new Polygon([this.center,this.left,this.right])
+    }
+
+    public render(ctx: CanvasRenderingContext2D, world: World) {
+        // get buildings bases
+        const polys = world.buildings.map((b) => b.base);
+        for (const poly of polys) {
+            poly.draw(carCtx);
+        }
     }
 
     public draw(ctx: CanvasRenderingContext2D) {

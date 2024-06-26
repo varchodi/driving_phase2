@@ -16,7 +16,7 @@ export class World{
     private envelopes: Envelope[];
     public roadBoarders: Segment[] = [];
     public roadBorders?:Segment[] = [];
-    private buildings: Building[];
+    public buildings: Building[];
     private trees: Tree[] = [];
     public laneGuides: Segment[];
     public markings: ( any| Stop | Crossing)[];
