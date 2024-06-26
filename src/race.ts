@@ -75,7 +75,7 @@ if (target) {
 }
 
 let frameCount = 0;
-let started = false;
+let started = true;
 
 // ---------- counter  timeout ----------
 startCounter();
