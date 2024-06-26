@@ -43,9 +43,9 @@ export default class Car {
         //?? Hoe much car move(travel)<->Still exist
         this.fittness = 0;
 
-        this.useBrain=controlType=="AI";
+        this.useBrain=controlType==="AI";
 
-        if(controlType!="DUMMY"){
+        if(controlType==="AI"){
             this.sensor=new Sensor(this);
             this.brain=new NeuralNetwork(
                 [this.sensor.rayCount,6,4]
@@ -130,7 +130,8 @@ export default class Car {
         }
     }
 
-    private assessDamage(roadBorders: Array<typeof this.polygon>,traffic:Car[]): boolean {
+    private assessDamage(roadBorders: Array<typeof this.polygon>, traffic: Car[]): boolean {
+        return false;
         for(let i=0;i<roadBorders.length;i++){
             if(polysIntersect(this.polygon,roadBorders[i])){
                 return true;

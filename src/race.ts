@@ -11,9 +11,12 @@ import { getRandomColor, loadData } from './util';
 import { Target } from './world/markings/target';
 import { Segment } from './world/primitives/segment';
 import { Engine, beep, taDaa } from './sound';
+import Camera from './camera';
 
 const rightPanelWidth = 300;
+document.body.style.flexDirection = 'column';
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
+const cameraCanvas = document.getElementById("cameraCanvas") as HTMLCanvasElement;
 const statisticsEl = document.getElementById("statistics") as HTMLDivElement;
 const counterEl = document.getElementById("counter") as HTMLDivElement;
 const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElement;
@@ -21,12 +24,16 @@ const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElem
 miniMapCanvas.width = rightPanelWidth;
 miniMapCanvas.height = rightPanelWidth;
 carCanvas.width = window.innerWidth;
-carCanvas.height=window.innerHeight;
+carCanvas.height=window.innerHeight/2;
+
+cameraCanvas.width = window.innerWidth;
+cameraCanvas.height=window.innerHeight/2;
 
 statisticsEl.style.width = rightPanelWidth + "px";
 statisticsEl.style.height = window.innerHeight - rightPanelWidth-40 + "px";
 
-const carCtx = carCanvas.getContext("2d") as CanvasRenderingContext2D;
+export const carCtx = carCanvas.getContext("2d") as CanvasRenderingContext2D;
+const cameraCtx = cameraCanvas.getContext("2d") as CanvasRenderingContext2D;
 
 // Use the loaded world data
 const worldy = await loadData("/src/world/items/worlds/path_finding.world");
@@ -42,6 +49,9 @@ const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth);
 const N=10;
 const cars=generateCars(1,"KEYS").concat(generateCars(N,"AI"));
 const myCar=cars[0];
+// camera
+const camera = new Camera(myCar);
+
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
         cars[i].brain=JSON.parse(
@@ -75,7 +85,7 @@ if (target) {
 }
 
 let frameCount = 0;
-let started = false;
+let started = true;
 
 // ---------- counter  timeout ----------
 startCounter();
@@ -216,6 +226,9 @@ function animate(time?: number) {
             stat.innerHTML+= `<span style="float:right"> ${(cars[i].finishTime/60).toFixed(1)}s </span>`;
         }
     }
+    camera.move(myCar);
+    camera.draw(carCtx);
+    camera.render(cameraCtx, world);
     //!! inc frame 
     frameCount++;
     requestAnimationFrame(animate);
