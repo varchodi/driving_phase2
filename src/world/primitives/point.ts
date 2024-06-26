@@ -5,6 +5,7 @@ export class Point{
     public dist: number = null!;
     public visited: Boolean = false;
     public prev: Point = null!;
+    public intersection: boolean = false;
     constructor(x: number, y: number) {
         this.x = x;
         this.y = y;
