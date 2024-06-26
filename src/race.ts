@@ -11,6 +11,7 @@ import { getRandomColor, loadData } from './util';
 import { Target } from './world/markings/target';
 import { Segment } from './world/primitives/segment';
 import { Engine, beep, taDaa } from './sound';
+import Camera from './camera';
 
 const rightPanelWidth = 300;
 const carCanvas = document.getElementById("carCanvas") as HTMLCanvasElement;
@@ -42,6 +43,9 @@ const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth);
 const N=10;
 const cars=generateCars(1,"KEYS").concat(generateCars(N,"AI"));
 const myCar=cars[0];
+// camera
+const camera = new Camera(myCar);
+
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
         cars[i].brain=JSON.parse(
@@ -216,6 +220,7 @@ function animate(time?: number) {
             stat.innerHTML+= `<span style="float:right"> ${(cars[i].finishTime/60).toFixed(1)}s </span>`;
         }
     }
+    camera.draw(carCtx);
     //!! inc frame 
     frameCount++;
     requestAnimationFrame(animate);
