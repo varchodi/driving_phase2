@@ -1,5 +1,5 @@
 import Car from "../car";
-import { cross, distance, substract } from "../world/math/utils";
+import { cross, distance, lerp, substract } from "../world/math/utils";
 import { Point } from "../world/primitives/point";
 import { Polygon } from "../world/primitives/polygon";
 import { Segment } from "../world/primitives/segment";
@@ -21,10 +21,34 @@ export default class Camera {
     constructor({x,y,angle}:Car,range=1000, public distanceBehind=100) {
         this.range = range;
         this.distanceBehind = distanceBehind; 
-        this.move({ x, y, angle } as Car);
+        this.moveSimple({ x, y, angle } as Car);
     }
 
     public move({ x, y, angle }: Car) {
+        const t = 0.1;
+        
+        this.x = lerp(this.x,x + this.distanceBehind*Math.sin(this.angle),t);
+        this.y= lerp(this.y,y + this.distanceBehind*Math.cos(this.angle),t);
+        this.z = -40;
+        this.angle = lerp(this.angle,angle,t);
+        this.center = new Point(this.x, this.y);
+        this.tip = new Point(
+            this.x - this.range * Math.sin(this.angle),
+            this.y -this.range * Math.cos(this.angle)
+        )
+        this.left = new Point(
+            this.x - this.range * Math.sin(this.angle - Math.PI / 4),
+            this.y -this.range * Math.cos(this.angle - Math.PI / 4)
+        )
+        this.right = new Point(
+            this.x - this.range * Math.sin(this.angle + Math.PI / 4),
+            this.y -this.range * Math.cos(this.angle + Math.PI / 4)
+        )
+
+        this.poly = new Polygon([this.center,this.left,this.right])
+    }
+
+    public moveSimple({ x, y, angle }: Car) {
         this.x = x +this.distanceBehind*Math.sin(this.angle);
         this.y=y + this.distanceBehind*Math.cos(this.angle);
         this.z = -40;
@@ -104,9 +128,9 @@ export default class Camera {
         const roadPolys = this.extrude(this.filter(world.corridor.borders.map((s) => new Polygon(
             [s.p1,s.p2]
         ))),10);
-        const carPolys = this.extrude(this.filter(world.cars.map((c) => new Polygon(
-            c.polygon.map((p)=>new Point(p.x,p.y))
-        ))),10);
+        const carPolys = this.extrude(this.filter(
+            [new Polygon(world.bestCar.polygon.map((p)=>new Point(p.x,p.y)))]
+        ),10);
 
         return  [...buildingPolys,...carPolys,...roadPolys]
     }
