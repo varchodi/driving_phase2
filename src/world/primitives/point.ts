@@ -6,9 +6,10 @@ export class Point{
     public visited: Boolean = false;
     public prev: Point = null!;
     public intersection: boolean = false;
-    constructor(x: number, y: number) {
+    constructor(x: number, y: number,public z:number=0) {
         this.x = x;
         this.y = y;
+        this.z = z;
     }
 
     //!! check if 2 points are the same

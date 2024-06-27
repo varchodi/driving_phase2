@@ -54,7 +54,7 @@ export default class Camera {
         const { point: p1 } = seg.projectPoint(p);
         const c = cross(substract(p1, new Point(this.x, this.y)), substract(p, new Point(this.x, this.y)));
         const x =Math.sign(c)* distance(p, p1) / distance(new Point(this.x, this.y), p1);
-        const y = - this.z / distance(new Point(this.x, this.y), p1);
+        const y = (p.z - this.z) / distance(new Point(this.x, this.y), p1);
 
         const cX = ctx.canvas.width / 2;
         const cY = ctx.canvas.height / 2;
@@ -83,9 +83,20 @@ export default class Camera {
         return filteredPolys;
     }
 
+    private extrude(polys: Polygon[], height = 10) {
+        const extrudePolys =[];
+        for (const poly of polys) {
+            const ceiling = new Polygon(
+                poly.points.map((p) => new Point(p.x, p.y, -height))
+            );
+            extrudePolys.push(poly, ceiling);
+        }
+        return extrudePolys;
+    }
+
     public render(ctx: CanvasRenderingContext2D, world: World) {
         // get buildings bases
-        const polys =this.filter( world.buildings.map((b) => b.base));
+        const polys =this.extrude(this.filter( world.buildings.map((b) => b.base)));
 
         const projPolys = polys.map((poly) => new Polygon(
             poly.points.map((p)=>this.projectPoint(ctx,p))
