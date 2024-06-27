@@ -1,9 +1,5 @@
-// const myCanvas = document.getElementById("soundVis") as HTMLCanvasElement;
-// const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
-
 import Car from "../car";
-import { carCtx } from "../race";
-import { cross, distance, substract } from "../world/math/utils";
+import { cross, distance, lerp, substract } from "../world/math/utils";
 import { Point } from "../world/primitives/point";
 import { Polygon } from "../world/primitives/polygon";
 import { Segment } from "../world/primitives/segment";
@@ -22,15 +18,40 @@ export default class Camera {
     public right: Point = null!;
     public poly: Polygon = null!;
     
-    constructor({x,y,angle}:Car,range=1000) {
+    constructor({x,y,angle}:Car,range=1000, public distanceBehind=100) {
         this.range = range;
-        this.move({ x, y, angle } as Car);
+        this.distanceBehind = distanceBehind; 
+        this.moveSimple({ x, y, angle } as Car);
     }
 
     public move({ x, y, angle }: Car) {
-        this.x = x;
-        this.y=y;
-        this.z = -20;
+        const t = 0.1;
+        
+        this.x = lerp(this.x,x + this.distanceBehind*Math.sin(this.angle),t);
+        this.y= lerp(this.y,y + this.distanceBehind*Math.cos(this.angle),t);
+        this.z = -40;
+        this.angle = lerp(this.angle,angle,t);
+        this.center = new Point(this.x, this.y);
+        this.tip = new Point(
+            this.x - this.range * Math.sin(this.angle),
+            this.y -this.range * Math.cos(this.angle)
+        )
+        this.left = new Point(
+            this.x - this.range * Math.sin(this.angle - Math.PI / 4),
+            this.y -this.range * Math.cos(this.angle - Math.PI / 4)
+        )
+        this.right = new Point(
+            this.x - this.range * Math.sin(this.angle + Math.PI / 4),
+            this.y -this.range * Math.cos(this.angle + Math.PI / 4)
+        )
+
+        this.poly = new Polygon([this.center,this.left,this.right])
+    }
+
+    public moveSimple({ x, y, angle }: Car) {
+        this.x = x +this.distanceBehind*Math.sin(this.angle);
+        this.y=y + this.distanceBehind*Math.cos(this.angle);
+        this.z = -40;
         this.angle = angle;
         this.center = new Point(this.x, this.y);
         this.tip = new Point(
@@ -54,7 +75,7 @@ export default class Camera {
         const { point: p1 } = seg.projectPoint(p);
         const c = cross(substract(p1, new Point(this.x, this.y)), substract(p, new Point(this.x, this.y)));
         const x =Math.sign(c)* distance(p, p1) / distance(new Point(this.x, this.y), p1);
-        const y = - this.z / distance(new Point(this.x, this.y), p1);
+        const y = (p.z - this.z) / distance(new Point(this.x, this.y), p1);
 
         const cX = ctx.canvas.width / 2;
         const cY = ctx.canvas.height / 2;
@@ -66,9 +87,7 @@ export default class Camera {
     private filter(polys: Polygon[]):Polygon[] {
         const filteredPolys = [];
         for (const poly of polys) {
-            if (!this.poly.containsPoly(poly)) {
-                continue;
-            }
+            
             if (poly.intersectPoly(this.poly)) {
                 const copy1 = new Polygon(poly.points);
                 const copy2 = new Polygon(this.poly.points);
@@ -76,16 +95,49 @@ export default class Camera {
                 const points = copy1.segments.map((s) => s.p1);
                 const filteredPoints = points.filter((p) => p.intersection || this.poly.containsPoint(p));
                 filteredPolys.push(new Polygon(filteredPoints));
-            } else {
+            } else if (this.poly.containsPoly(poly)) {
                 filteredPolys.push(poly);
             }
         }
         return filteredPolys;
     }
 
+    private extrude(polys: Polygon[], height = 10) {
+        const extrudePolys =[];
+        for (const poly of polys) {
+            const ceiling = new Polygon(
+                poly.points.map((p) => new Point(p.x, p.y, -height))
+            );
+            const sides =[];
+            //extrusion walls
+            for (let i = 0; i < poly.points.length; i++){
+                sides.push(new Polygon([
+                    poly.points[i],
+                    poly.points[(i + 1) % poly.points.length],
+                    ceiling.points[(i + 1) % poly.points.length],
+                    ceiling.points[i]
+                ]))
+            }
+            extrudePolys.push(...sides, ceiling);
+        }
+        return extrudePolys;
+    }
+
+    private getPolys(world: World) {
+        const buildingPolys = this.extrude(this.filter(world.buildings.map((b) => b.base)), 200);
+        const roadPolys = this.extrude(this.filter(world.corridor.borders.map((s) => new Polygon(
+            [s.p1,s.p2]
+        ))),10);
+        const carPolys = this.extrude(this.filter(
+            [new Polygon(world.bestCar.polygon.map((p)=>new Point(p.x,p.y)))]
+        ),10);
+
+        return  [...buildingPolys,...carPolys,...roadPolys]
+    }
+
     public render(ctx: CanvasRenderingContext2D, world: World) {
-        // get buildings bases
-        const polys =this.filter( world.buildings.map((b) => b.base));
+        // get polys
+        const polys = this.getPolys(world);
 
         const projPolys = polys.map((poly) => new Polygon(
             poly.points.map((p)=>this.projectPoint(ctx,p))
@@ -95,10 +147,6 @@ export default class Camera {
 
         for (const poly of projPolys) {
             poly.draw(ctx);
-        }
-
-        for (const poly of polys) {
-            poly.draw(carCtx);
         }
     }
 

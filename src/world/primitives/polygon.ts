@@ -127,7 +127,7 @@ export class Polygon{
 
     //check if point p is inside the polygon
     containsPoint(p: Point) {
-        const outerPoint=new Point(-1000,-1000)
+        const outerPoint=new Point(-100000,-100000)
         let intersectionCount = 0;
 
         for (const seg of this.segments) {

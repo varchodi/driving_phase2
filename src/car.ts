@@ -69,6 +69,8 @@ export default class Car {
             maskCtx.globalCompositeOperation="destination-atop";
             maskCtx.drawImage(this.img,0,0,this.width,this.height);
         }
+
+        // this.update([], []);
     }
 
     // ?? load car
@@ -131,7 +133,6 @@ export default class Car {
     }
 
     private assessDamage(roadBorders: Array<typeof this.polygon>, traffic: Car[]): boolean {
-        return false;
         for(let i=0;i<roadBorders.length;i++){
             if(polysIntersect(this.polygon,roadBorders[i])){
                 return true;
