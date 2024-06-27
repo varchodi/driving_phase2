@@ -89,14 +89,29 @@ export default class Camera {
             const ceiling = new Polygon(
                 poly.points.map((p) => new Point(p.x, p.y, -height))
             );
-            extrudePolys.push(poly, ceiling);
+            const sides =[];
+            //extrusion walls
+            for (let i = 0; i < poly.points.length; i++){
+                sides.push(new Polygon([
+                    poly.points[i],
+                    poly.points[(i + 1) % poly.points.length],
+                    ceiling.points[(i + 1) % poly.points.length],
+                    ceiling.points[i]
+                ]))
+            }
+            extrudePolys.push(...sides, ceiling);
         }
         return extrudePolys;
     }
 
     public render(ctx: CanvasRenderingContext2D, world: World) {
         // get buildings bases
-        const polys =this.extrude(this.filter( world.buildings.map((b) => b.base)));
+        const buildingPolys = this.extrude(this.filter(world.buildings.map((b) => b.base)), 200);
+        const carPolys = this.extrude(this.filter(world.cars.map((c) => new Polygon(
+            c.polygon.map((p)=>new Point(p.x,p.y))
+        ))),10);
+
+        const polys = [...buildingPolys,...carPolys]
 
         const projPolys = polys.map((poly) => new Polygon(
             poly.points.map((p)=>this.projectPoint(ctx,p))
