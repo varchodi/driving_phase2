@@ -69,6 +69,8 @@ export default class Car {
             maskCtx.globalCompositeOperation="destination-atop";
             maskCtx.drawImage(this.img,0,0,this.width,this.height);
         }
+
+        // this.update([], []);
     }
 
     // ?? load car
