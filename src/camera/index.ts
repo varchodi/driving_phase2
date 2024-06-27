@@ -1,8 +1,4 @@
-// const myCanvas = document.getElementById("soundVis") as HTMLCanvasElement;
-// const ctx = myCanvas.getContext('2d') as CanvasRenderingContext2D;
-
 import Car from "../car";
-import { carCtx } from "../race";
 import { cross, distance, substract } from "../world/math/utils";
 import { Point } from "../world/primitives/point";
 import { Polygon } from "../world/primitives/polygon";
@@ -22,15 +18,16 @@ export default class Camera {
     public right: Point = null!;
     public poly: Polygon = null!;
     
-    constructor({x,y,angle}:Car,range=1000) {
+    constructor({x,y,angle}:Car,range=1000, public distanceBehind=100) {
         this.range = range;
+        this.distanceBehind = distanceBehind; 
         this.move({ x, y, angle } as Car);
     }
 
     public move({ x, y, angle }: Car) {
-        this.x = x;
-        this.y=y;
-        this.z = -20;
+        this.x = x +this.distanceBehind*Math.sin(this.angle);
+        this.y=y + this.distanceBehind*Math.cos(this.angle);
+        this.z = -40;
         this.angle = angle;
         this.center = new Point(this.x, this.y);
         this.tip = new Point(
@@ -102,8 +99,7 @@ export default class Camera {
         return extrudePolys;
     }
 
-    public render(ctx: CanvasRenderingContext2D, world: World) {
-        // get buildings bases
+    private getPolys(world: World) {
         const buildingPolys = this.extrude(this.filter(world.buildings.map((b) => b.base)), 200);
         const roadPolys = this.extrude(this.filter(world.corridor.borders.map((s) => new Polygon(
             [s.p1,s.p2]
@@ -112,7 +108,12 @@ export default class Camera {
             c.polygon.map((p)=>new Point(p.x,p.y))
         ))),10);
 
-        const polys = [...buildingPolys,...carPolys,...roadPolys]
+        return  [...buildingPolys,...carPolys,...roadPolys]
+    }
+
+    public render(ctx: CanvasRenderingContext2D, world: World) {
+        // get polys
+        const polys = this.getPolys(world);
 
         const projPolys = polys.map((poly) => new Polygon(
             poly.points.map((p)=>this.projectPoint(ctx,p))
@@ -122,10 +123,6 @@ export default class Camera {
 
         for (const poly of projPolys) {
             poly.draw(ctx);
-        }
-
-        for (const poly of polys) {
-            poly.draw(carCtx);
         }
     }
 
