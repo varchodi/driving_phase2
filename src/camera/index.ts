@@ -66,9 +66,7 @@ export default class Camera {
     private filter(polys: Polygon[]):Polygon[] {
         const filteredPolys = [];
         for (const poly of polys) {
-            if (!this.poly.containsPoly(poly)) {
-                continue;
-            }
+            
             if (poly.intersectPoly(this.poly)) {
                 const copy1 = new Polygon(poly.points);
                 const copy2 = new Polygon(this.poly.points);
@@ -76,7 +74,7 @@ export default class Camera {
                 const points = copy1.segments.map((s) => s.p1);
                 const filteredPoints = points.filter((p) => p.intersection || this.poly.containsPoint(p));
                 filteredPolys.push(new Polygon(filteredPoints));
-            } else {
+            } else if (this.poly.containsPoly(poly)) {
                 filteredPolys.push(poly);
             }
         }
@@ -107,11 +105,14 @@ export default class Camera {
     public render(ctx: CanvasRenderingContext2D, world: World) {
         // get buildings bases
         const buildingPolys = this.extrude(this.filter(world.buildings.map((b) => b.base)), 200);
+        const roadPolys = this.extrude(this.filter(world.corridor.borders.map((s) => new Polygon(
+            [s.p1,s.p2]
+        ))),10);
         const carPolys = this.extrude(this.filter(world.cars.map((c) => new Polygon(
             c.polygon.map((p)=>new Point(p.x,p.y))
         ))),10);
 
-        const polys = [...buildingPolys,...carPolys]
+        const polys = [...buildingPolys,...carPolys,...roadPolys]
 
         const projPolys = polys.map((poly) => new Polygon(
             poly.points.map((p)=>this.projectPoint(ctx,p))
