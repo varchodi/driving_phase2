@@ -7,7 +7,8 @@ export class PhoneControls{
 
     private addAdventListeners() {
         window.addEventListener('deviceorientation', (e: DeviceOrientationEvent) => {
-            console.log(e)
+            this.tilt = e.beta! * Math.PI / 180;
         })
+
     }
 }

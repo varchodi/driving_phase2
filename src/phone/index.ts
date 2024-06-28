@@ -2,14 +2,13 @@ import { PhoneControls } from "./phoneControls";
 
 const myCanvas = document.getElementById('phoneCanvas') as HTMLCanvasElement;
 const ctx = myCanvas.getContext('2d')!;
+const btn = document.getElementById('btn') as HTMLButtonElement;
 
 let rotation = Math.PI / 4;
+const controls = new PhoneControls(myCanvas)
 animate();
-const controls = new PhoneControls()
-
 function animate() {
     ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-    rotation+=.1;
     ctx.beginPath();
     ctx.ellipse(
         myCanvas.width / 2,
@@ -22,5 +21,7 @@ function animate() {
     );
     ctx.stroke();
     requestAnimationFrame(animate);
+
+    myCanvas.onclick=(e:MouseEvent)=>console.log("touched")
 }
 
