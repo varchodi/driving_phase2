@@ -2,9 +2,7 @@ import { PhoneControls } from "./phoneControls";
 
 const myCanvas = document.getElementById('phoneCanvas') as HTMLCanvasElement;
 const ctx = myCanvas.getContext('2d')!;
-const btn = document.getElementById('btn') as HTMLButtonElement;
-
-let rotation = Math.PI / 4;
+let rotation = 0;
 const controls = new PhoneControls(myCanvas)
 animate();
 function animate() {
