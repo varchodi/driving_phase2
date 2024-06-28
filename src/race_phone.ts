@@ -12,6 +12,7 @@ import { Target } from './world/markings/target';
 import { Segment } from './world/primitives/segment';
 import { Engine, beep, taDaa } from './sound';
 import Camera from './camera';
+import { PhoneControls } from './phone/phoneControls';
 
 const rightPanelWidth = 300;
 document.body.style.flexDirection = 'column';
@@ -51,6 +52,8 @@ const cars=generateCars(1,"KEYS").concat(generateCars(N,"AI"));
 const myCar=cars[0];
 // camera
 const camera = new Camera(myCar);
+
+myCar.controls = new PhoneControls(cameraCanvas);
 
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){

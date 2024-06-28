@@ -1,17 +1,17 @@
-import Car from './car';
+import Car from '../car';
 import './styles/style.css'
-import { NeuralNetwork } from './network';
-import { World } from './world/world';
-import { Viewport } from './world/viewport';
-import { angle, getNearestSegment, scale } from './world/math/utils';
-import { Start } from './world/markings/start';
-import { Point } from './world/primitives/point';
-import { MiniMap } from './miniMap';
-import { getRandomColor, loadData } from './util';
-import { Target } from './world/markings/target';
-import { Segment } from './world/primitives/segment';
-import { Engine, beep, taDaa } from './sound';
-import Camera from './camera';
+import { NeuralNetwork } from '../network';
+import { World } from '../world/world';
+import { Viewport } from '../world/viewport';
+import { angle, getNearestSegment, scale } from '../world/math/utils';
+import { Start } from '../world/markings/start';
+import { Point } from '../world/primitives/point';
+import { MiniMap } from '../miniMap';
+import { getRandomColor, loadData } from '../util';
+import { Target } from '../world/markings/target';
+import { Segment } from '../world/primitives/segment';
+import { Engine, beep, taDaa } from '../sound';
+import Camera from '../camera';
 
 const rightPanelWidth = 300;
 document.body.style.flexDirection = 'column';
