@@ -3,8 +3,9 @@ import Sensor from "./sensor";
 import { polysIntersect } from "./util";
 import { NeuralNetwork } from "./network";
 import { Engine, explode } from "./sound";
+import { PhoneControls } from "./phone/phoneControls";
 export default class Car {
-    controls: Controls;
+    controls: Controls | PhoneControls;
     speed: number;
     acceleration: number;
     maxSpeed: number;
@@ -117,11 +118,13 @@ export default class Car {
             ).concat([this.speed/this.maxSpeed]);
             const outputs=NeuralNetwork.feedForward(offsets,this.brain!);
 
-            if(this.useBrain){
-                this.controls.forward=outputs[0];
-                this.controls.left=outputs[1];
-                this.controls.right=outputs[2];
-                this.controls.reverse=outputs[3];
+            if (this.useBrain) {
+                if (this.controls instanceof Controls) {
+                    this.controls.forward = outputs[0];
+                    this.controls.left = outputs[1];
+                    this.controls.right = outputs[2];
+                    this.controls.reverse = outputs[3];
+                }
             }
         }
         if (this.engine) {
@@ -195,13 +198,19 @@ export default class Car {
             this.speed=0;
         }
 
-        if(this.speed!=0){
-            const flip=this.speed>0?1:-1;
-            if(this.controls.left){
-                this.angle+=0.03*flip;
+        if (this.speed != 0) {
+            if (this.controls instanceof PhoneControls) {
+                this.angle -= this.controls.tilt * 0.03;
+
             }
-            if(this.controls.right){
-                this.angle-=0.03*flip;
+            if (this.controls instanceof Controls) {
+                const flip = this.speed > 0 ? 1 : -1;
+                if (this.controls.left) {
+                    this.angle += 0.03 * flip;
+                }
+                if (this.controls.right) {
+                    this.angle -= 0.03 * flip;
+                }
             }
         }
 
