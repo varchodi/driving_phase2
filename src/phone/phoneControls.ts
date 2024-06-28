@@ -1,10 +1,15 @@
 export class PhoneControls{
     public tilt: number;
     public canvasAngle: number;
+    public forward: boolean;
+    public reverse: boolean;
+    
     constructor(public canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.tilt = 0;
         this.canvasAngle = 0;
+        this.forward = true;
+        this.reverse = false;
         this.addAdventListeners();
     }
 
@@ -24,6 +29,16 @@ export class PhoneControls{
             const newCanvasAngle = -this.tilt;
             this.canvasAngle = this.canvasAngle * .6  + newCanvasAngle*.4;
             this.canvas.style.transform =`translate(-50%,-50%) rotate(${this.canvasAngle}rad)`
+        })
+
+        window.addEventListener("touchstart", (e: TouchEvent) => {
+            this.reverse = true;
+            this.forward = false;
+        })
+
+        window.addEventListener("touchend", (e: TouchEvent) => {
+            this.reverse = false;
+            this.forward = true;
         })
 
     }
