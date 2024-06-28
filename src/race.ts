@@ -24,10 +24,10 @@ const miniMapCanvas = document.getElementById("minimapCanvas") as HTMLCanvasElem
 miniMapCanvas.width = rightPanelWidth;
 miniMapCanvas.height = rightPanelWidth;
 carCanvas.width = window.innerWidth;
-carCanvas.height=window.innerHeight/2;
+carCanvas.height=0; //window.innerHeight/2
 
 cameraCanvas.width = window.innerWidth;
-cameraCanvas.height=window.innerHeight/2;
+cameraCanvas.height=window.innerHeight;
 
 statisticsEl.style.width = rightPanelWidth + "px";
 statisticsEl.style.height = window.innerHeight - rightPanelWidth-40 + "px";
