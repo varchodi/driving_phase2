@@ -1,9 +1,9 @@
 export class Markerdetector{
     canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D | null;
+    ctx: CanvasRenderingContext2D ;
     constructor() { 
         this.canvas = document.createElement('canvas')!;
-        this.ctx = this.canvas.getContext('2d');
+        this.ctx = this.canvas.getContext('2d')!;
         document.body.appendChild(this.canvas);
     }
     
@@ -32,6 +32,7 @@ export class Markerdetector{
         this.canvas.height = imgData.height;
 
         for (const point of points) {
+            this.ctx.globalAlpha=point.blueness/255 
             this.ctx?.fillRect(point.x, point.y, 1, 1);
         }
     }
