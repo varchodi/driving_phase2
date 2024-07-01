@@ -5,13 +5,13 @@ const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 
 const myVideo = document.createElement('video')!;
 const ctx = myCanvas.getContext('2d')!;
+const markerdetector = new Markerdetector();
 
 const loop = () => {
     
     //draw video on canvas
     ctx.drawImage(myVideo, 0, 0, myCanvas.width, myCanvas.height);
     // image processing
-    const markerdetector = new Markerdetector();
     // image data
     const imgData = ctx.getImageData(0, 0, myCanvas.width, myCanvas.height);
     markerdetector.detect(imgData)
