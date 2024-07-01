@@ -1,3 +1,5 @@
+import { Markerdetector } from "./merkerDetector";
+
 // let myVideo = document.getElementById("myVideo") as HTMLVideoElement;
 const myCanvas = document.getElementById("myCanvas") as HTMLCanvasElement;
 
@@ -8,6 +10,12 @@ const loop = () => {
     
     //draw video on canvas
     ctx.drawImage(myVideo, 0, 0, myCanvas.width, myCanvas.height);
+    // image processing
+    const markerdetector = new Markerdetector();
+    // image data
+    const imgData = ctx.getImageData(0, 0, myCanvas.width, myCanvas.height);
+    markerdetector.detect(imgData)
+
     requestAnimationFrame(loop);
     
 }
