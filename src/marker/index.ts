@@ -14,7 +14,20 @@ const loop = () => {
     // image processing
     // image data
     const imgData = ctx.getImageData(0, 0, myCanvas.width, myCanvas.height);
-    markerdetector.detect(imgData)
+    const res=markerdetector.detect(imgData)
+
+    //?? debug marker results
+    if (res) {
+        ctx.fillStyle = 'red';
+        for (const point of res.leftMarker.points) {
+            ctx.fillRect(point.x, point.y, 1, 1);
+        }
+
+        ctx.fillStyle = 'yellow';
+        for (const point of res.rightMarker.points) {
+            ctx.fillRect(point.x, point.y, 1, 1);
+        }
+    }
 
     requestAnimationFrame(loop);
     
