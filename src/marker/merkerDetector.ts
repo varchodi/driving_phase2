@@ -18,13 +18,14 @@ export class Markerdetector{
 
     // average points (find center point)
     private averagePoints(points:{x: number;y: number;blueness: number}[]) {
-        const center = { x: 0, y: 0 };
+        const center = { x: 0, y: 0 ,blueness:0};
         for (const point of points) {
             center.x += point.x;
             center.y += point.y;
         }
         center.x /= points.length;
         center.y /= points.length;
+        center.blueness = null!;
 
         return center;
     }
@@ -49,15 +50,20 @@ export class Markerdetector{
                 points.push({x,y,blueness});
             }
         }
-        const first = points[0];
-        const last = points[points.length - 1];
+        let centroid1 = points[0];
+        let centroid2 = points[points.length - 1];
 
-        const group1 = points.filter((p) => distance(p, first) < distance(p, last));
-        const group2 = points.filter((p) => distance(p, first) >= distance(p, last));
+        let group1:{x: number;y: number;blueness: number}[] = [];
+        let group2:{x: number;y: number;blueness: number}[] = [];
 
-        //!!center point
-        const centroid1 = this.averagePoints(group1);
-        const centroid2 = this.averagePoints(group2);
+        for (let i = 1; i <= 10; i++) {
+            group1 = points.filter((p) => distance(p, centroid1) < distance(p, centroid2));
+            group2 = points.filter((p) => distance(p, centroid1) >= distance(p, centroid2));
+        
+            //!!center point
+            centroid1 = this.averagePoints(group1);
+            centroid2 = this.averagePoints(group2);
+        }
         //??find point measure
         const size1 = Math.sqrt(group1.length);
         const radius1 = size1 / 2;
