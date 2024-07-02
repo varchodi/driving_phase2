@@ -47,8 +47,11 @@ export class Markerdetector{
                 points.push({x,y,blueness});
             }
         }
-
+        //!!center point
         const centroid = this.averagePoints(points);
+        //??find point measure
+        const size = Math.sqrt(points.length);
+        const radius = size / 2;
 
         this.canvas.width = imgData.width;
         this.canvas.height = imgData.height +255;
@@ -62,7 +65,7 @@ export class Markerdetector{
         this.ctx.globalAlpha = 1;
 
         // ?? draw a circle on  center blue points
-        this.ctx.arc(centroid.x, centroid.y, 100,0, Math.PI * 2);
+        this.ctx.arc(centroid.x, centroid.y, radius,0, Math.PI * 2);
         this.ctx.stroke();
         
 
