@@ -40,6 +40,8 @@ export class Markerdetector{
         this.ctx.globalAlpha = 1;
         this.ctx.translate(0, imgData.height);
 
+        points.sort((a, b) => b.blueness - a.blueness);
+
         // small chart of blue points 
         for (let i = 0; i < points.length; i++){
             const y = points[i].blueness;
