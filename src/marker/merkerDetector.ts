@@ -1,10 +1,17 @@
 export class Markerdetector{
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D ;
+    threshold: HTMLInputElement;
     constructor() { 
         this.canvas = document.createElement('canvas')!;
         this.ctx = this.canvas.getContext('2d')!;
+        this.threshold = document.createElement('input')!;
+        this.threshold.type = 'range';
+        this.threshold.min = '0';
+        this.threshold.max = '255';
+        this.threshold.value = '25';
         document.body.appendChild(this.canvas);
+        document.body.appendChild(this.threshold);
     }
     
     public detect(imgData: ImageData) {
@@ -18,7 +25,7 @@ export class Markerdetector{
             
             // mesure bleness
             const blueness = b - Math.max(r, g);
-            if (blueness > 0) {
+            if (blueness > parseInt(this.threshold.value)) {
                 const pIndex = i / 4;
                 const y = Math.floor(pIndex / imgData.width);
                 const x = pIndex % imgData.width;
