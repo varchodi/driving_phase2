@@ -1,19 +1,13 @@
 import { distance } from ".";
 
 export class Markerdetector{
-    canvas: HTMLCanvasElement;
-    ctx: CanvasRenderingContext2D ;
     threshold: HTMLInputElement;
     constructor() { 
-        this.canvas = document.createElement('canvas')!;
-        this.ctx = this.canvas.getContext('2d')!;
         this.threshold = document.createElement('input')!;
         this.threshold.type = 'range';
         this.threshold.min = '0';
         this.threshold.max = '255';
         this.threshold.value = '40';
-        document.body.appendChild(this.canvas);
-        document.body.appendChild(this.threshold);
     }
 
     // average points (find center point)
@@ -70,46 +64,23 @@ export class Markerdetector{
         const size2 = Math.sqrt(group2.length);
         const radius2 = size2 / 2;
 
-        this.canvas.width = imgData.width;
-        this.canvas.height = imgData.height +255;
-        this.ctx.fillStyle = 'red'
-        
-        // group 1
-        for (const point of group1) {
-            this.ctx.globalAlpha=point.blueness/255 
-            this.ctx?.fillRect(point.x, point.y, 1, 1);
-        }
-
-        // group 2
-        this.ctx.fillStyle = 'yellow'
-        for (const point of group2) {
-            this.ctx.globalAlpha=point.blueness/255 
-            this.ctx?.fillRect(point.x, point.y, 1, 1);
-        }
-
-        //reset transparence
-        this.ctx.globalAlpha = 1;
-
-        // ?? draw a circle on  center blue points
-        this.ctx.beginPath()
-        this.ctx.arc(centroid1.x, centroid1.y, radius1,0, Math.PI * 2);
-        this.ctx.stroke();
-
-        // group2
-        this.ctx.beginPath()
-        this.ctx.arc(centroid2.x, centroid2.y, radius2,0, Math.PI * 2);
-        this.ctx.stroke();
-        
-
-        this.ctx.translate(0, imgData.height);
-
         points.sort((a, b) => b.blueness - a.blueness);
 
-        // small chart of blue points 
-        for (let i = 0; i < points.length; i++){
-            const y = points[i].blueness;
-            const x = this.canvas.width * i / points.length;
-            this.ctx.fillRect(x, y, 1, 1);
+        const marker1 = {
+            centroid: centroid1,
+            points: group1,
+            radius: radius1,
+        };
+
+        const marker2 = {
+            centroid: centroid2,
+            points: group2,
+            radius: radius2,
+        };
+        
+        return {
+            leftMarker: centroid1.x < centroid2.x ? marker1 : marker2,
+            rightMarker: centroid1.x < centroid2.x ? marker2 : marker1,
         }
     }
 }
