@@ -9,9 +9,22 @@ export class Markerdetector{
         this.threshold.type = 'range';
         this.threshold.min = '0';
         this.threshold.max = '255';
-        this.threshold.value = '25';
+        this.threshold.value = '40';
         document.body.appendChild(this.canvas);
         document.body.appendChild(this.threshold);
+    }
+
+    // average points (find center point)
+    private averagePoints(points:{x: number;y: number;blueness: number}[]) {
+        const center = { x: 0, y: 0 };
+        for (const point of points) {
+            center.x += point.x;
+            center.y += point.y;
+        }
+        center.x /= points.length;
+        center.y /= points.length;
+
+        return center;
     }
     
     public detect(imgData: ImageData) {
@@ -35,6 +48,8 @@ export class Markerdetector{
             }
         }
 
+        const centroid = this.averagePoints(points);
+
         this.canvas.width = imgData.width;
         this.canvas.height = imgData.height +255;
 
@@ -45,6 +60,12 @@ export class Markerdetector{
 
         //reset transparence
         this.ctx.globalAlpha = 1;
+
+        // ?? draw a circle on  center blue points
+        this.ctx.arc(centroid.x, centroid.y, 100,0, Math.PI * 2);
+        this.ctx.stroke();
+        
+
         this.ctx.translate(0, imgData.height);
 
         points.sort((a, b) => b.blueness - a.blueness);
