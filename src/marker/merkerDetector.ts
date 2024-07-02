@@ -53,17 +53,30 @@ export class Markerdetector{
         const last = points[points.length - 1];
 
         const group1 = points.filter((p) => distance(p, first) < distance(p, last));
+        const group2 = points.filter((p) => distance(p, first) >= distance(p, last));
 
         //!!center point
         const centroid1 = this.averagePoints(group1);
+        const centroid2 = this.averagePoints(group2);
         //??find point measure
         const size1 = Math.sqrt(group1.length);
         const radius1 = size1 / 2;
+        const size2 = Math.sqrt(group2.length);
+        const radius2 = size2 / 2;
 
         this.canvas.width = imgData.width;
         this.canvas.height = imgData.height +255;
+        this.ctx.fillStyle = 'red'
+        
+        // group 1
+        for (const point of group1) {
+            this.ctx.globalAlpha=point.blueness/255 
+            this.ctx?.fillRect(point.x, point.y, 1, 1);
+        }
 
-        for (const point of points) {
+        // group 2
+        this.ctx.fillStyle = 'yellow'
+        for (const point of group2) {
             this.ctx.globalAlpha=point.blueness/255 
             this.ctx?.fillRect(point.x, point.y, 1, 1);
         }
@@ -72,7 +85,13 @@ export class Markerdetector{
         this.ctx.globalAlpha = 1;
 
         // ?? draw a circle on  center blue points
+        this.ctx.beginPath()
         this.ctx.arc(centroid1.x, centroid1.y, radius1,0, Math.PI * 2);
+        this.ctx.stroke();
+
+        // group2
+        this.ctx.beginPath()
+        this.ctx.arc(centroid2.x, centroid2.y, radius2,0, Math.PI * 2);
         this.ctx.stroke();
         
 
