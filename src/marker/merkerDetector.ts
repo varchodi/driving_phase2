@@ -1,3 +1,5 @@
+import { distance } from ".";
+
 export class Markerdetector{
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D ;
@@ -47,11 +49,16 @@ export class Markerdetector{
                 points.push({x,y,blueness});
             }
         }
+        const first = points[0];
+        const last = points[points.length - 1];
+
+        const group1 = points.filter((p) => distance(p, first) < distance(p, last));
+
         //!!center point
-        const centroid = this.averagePoints(points);
+        const centroid1 = this.averagePoints(group1);
         //??find point measure
-        const size = Math.sqrt(points.length);
-        const radius = size / 2;
+        const size1 = Math.sqrt(group1.length);
+        const radius1 = size1 / 2;
 
         this.canvas.width = imgData.width;
         this.canvas.height = imgData.height +255;
@@ -65,7 +72,7 @@ export class Markerdetector{
         this.ctx.globalAlpha = 1;
 
         // ?? draw a circle on  center blue points
-        this.ctx.arc(centroid.x, centroid.y, radius,0, Math.PI * 2);
+        this.ctx.arc(centroid1.x, centroid1.y, radius1,0, Math.PI * 2);
         this.ctx.stroke();
         
 
