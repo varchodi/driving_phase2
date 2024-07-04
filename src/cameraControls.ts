@@ -10,6 +10,7 @@ export class CameraControls{
     constructor(public canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
+        if (this.ctx==null) alert("cotext error");
         this.tilt = 0;
         this.forward = true;
         this.reverse = false;
@@ -26,10 +27,12 @@ export class CameraControls{
                     this.canvas.height = this.video.videoHeight;
                     this.loop();
                 }
-        })
+        }).catch((err)=>{alert(err)})
     }
 
     private loop() {
-        
+            this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+            requestAnimationFrame(()=>this.loop())
+
     }
 }
