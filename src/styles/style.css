@@ -74,3 +74,10 @@ button:hover{
   opacity: 50%;
   color: white;
 }
+
+#ironManCanvas{
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  
+}

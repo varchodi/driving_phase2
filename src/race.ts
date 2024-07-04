@@ -48,7 +48,7 @@ const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth);
 
 const N=10;
 const cars=generateCars(1,"KEYS").concat(generateCars(N,"AI"));
-const myCar=cars[0];
+export const myCar=cars[0];
 // camera
 const camera = new Camera(myCar);
 
