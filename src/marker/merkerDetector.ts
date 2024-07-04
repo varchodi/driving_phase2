@@ -1,4 +1,6 @@
-import { distance } from ".";
+// import { distance } from "./index_c";
+
+import { distance } from "../util";
 
 export class Markerdetector{
     threshold: HTMLInputElement;

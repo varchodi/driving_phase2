@@ -52,14 +52,3 @@ navigator.mediaDevices.getUserMedia({
     alert(error)
 })
 
-export const distance=(p1:{
-    x: number;
-    y: number;
-    blueness: number;
-},p2:{
-    x: number;
-    y: number;
-    blueness: number;
-    }) => {
-    return Math.hypot(p1.x - p2.x, p1.y - p2.y);
-}

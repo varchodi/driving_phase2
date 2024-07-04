@@ -72,5 +72,17 @@ export async function loadData(link:string) {
       console.error("Error loading world data:", error);
       // Handle loading a default world or displaying an error message
     }
-  }
+}
+  
+export const distance=(p1:{
+    x: number;
+    y: number;
+    blueness: number;
+},p2:{
+    x: number;
+    y: number;
+    blueness: number;
+    }) => {
+    return Math.hypot(p1.x - p2.x, p1.y - p2.y);
+}
     
