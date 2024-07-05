@@ -12,6 +12,10 @@ export class Markerdetector{
         this.threshold.value = '40';
     }
 
+    public updateThreshhold(delta: number) {
+        this.threshold.value = String(Number(this.threshold.value) + delta);
+    }
+
     // average points (find center point)
     private averagePoints(points:{x: number;y: number;blueness: number}[]) {
         const center = { x: 0, y: 0 ,blueness:0};

@@ -37,10 +37,14 @@ export class CameraControls{
     reverse: boolean;
     markerDetector: Markerdetector;
     public video: HTMLVideoElement=null!;
+    tempCanvas: HTMLCanvasElement;
+    tmpCtx: CanvasRenderingContext2D;
     constructor(public canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
-        if (this.ctx==null) alert("cotext error");
+        if (this.ctx == null) alert("cotext error");
+        this.tempCanvas = document.createElement("canvas");
+        this.tmpCtx = this.tempCanvas.getContext("2d")!;
         this.tilt = 0;
         this.forward = true;
         this.reverse = false;
@@ -53,11 +57,17 @@ export class CameraControls{
                 this.video.srcObject = rawdata;
                 this.video.play();
                 this.video.onloadeddata = () => {
-                    this.canvas.width = this.video.videoWidth/4;
-                    this.canvas.height = this.video.videoHeight/4;
+                    this.canvas.width = this.video.videoWidth / 4;
+                    this.canvas.height = this.video.videoHeight / 4;
+                    this.tempCanvas.width = this.canvas.width;
+                    this.tempCanvas.height = this.canvas.height;
                     this.loop();
                 }
-        }).catch((err)=>{alert(err)})
+            }).catch((err) => { alert(err) });
+        
+        this.canvas.addEventListener("wheel", (event: WheelEvent) => {
+            this.markerDetector.updateThreshhold(-Math.sin(event.deltaY))
+        })
     }
 
     private processMarkers({ leftMarker, rightMarker }: DetectType) {
@@ -102,7 +112,8 @@ export class CameraControls{
                 imgData.data[index + 3] = 255;
             }
 
-            this.ctx.putImageData(imgData, 0, 0);
+            this.tmpCtx.putImageData(imgData, 0, 0);
+            this.ctx.drawImage(this.tempCanvas , 0, 0);
 
         }
         requestAnimationFrame(() => this.loop());
