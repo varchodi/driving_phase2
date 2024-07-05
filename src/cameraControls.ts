@@ -70,17 +70,17 @@ export class CameraControls{
         );
 
         const wheelRadius = distance(wheelCenter, new Point(leftMarker.centroid.x, leftMarker.centroid.y));
-        
+
 
         this.ctx.beginPath();
         this.ctx.fillStyle = 'red';
-        this.ctx.arc(leftMarker.centroid.x, leftMarker.centroid.y, 20, 0, Math.PI * 2);
+        this.ctx.arc(wheelCenter.x, wheelCenter.y, wheelRadius, 0, Math.PI * 2);
         this.ctx.fill();
 
-        this.ctx.beginPath();
-        this.ctx.fillStyle = 'yellow';
-        this.ctx.arc(rightMarker.centroid.x, rightMarker.centroid.y, 20, 0, Math.PI * 2);
-        this.ctx.fill();
+        // this.ctx.beginPath();
+        // this.ctx.fillStyle = 'yellow';
+        // this.ctx.arc(rightMarker.centroid.x, rightMarker.centroid.y, 20, 0, Math.PI * 2);
+        // this.ctx.fill();
 
     }
 
@@ -97,7 +97,7 @@ export class CameraControls{
         if (result) {
             this.processMarkers(result);
         }
-        requestAnimationFrame(()=>this.loop())
+        requestAnimationFrame(() => this.loop());
 
     }
 }
