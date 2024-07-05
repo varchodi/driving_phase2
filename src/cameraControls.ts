@@ -51,8 +51,8 @@ export class CameraControls{
                 this.video.srcObject = rawdata;
                 this.video.play();
                 this.video.onloadeddata = () => {
-                    this.canvas.width = this.video.videoWidth;
-                    this.canvas.height = this.video.videoHeight;
+                    this.canvas.width = this.video.videoWidth/4;
+                    this.canvas.height = this.video.videoHeight/4;
                     this.loop();
                 }
         }).catch((err)=>{alert(err)})
