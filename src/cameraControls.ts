@@ -31,7 +31,9 @@ export class CameraControls{
     }
 
     private loop() {
-            this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        const imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
+        const result = this.markerDetector.detect(imgData);//get data from canvas
             requestAnimationFrame(()=>this.loop())
 
     }
