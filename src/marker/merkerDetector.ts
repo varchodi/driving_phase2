@@ -9,7 +9,7 @@ export class Markerdetector{
         this.threshold.type = 'range';
         this.threshold.min = '0';
         this.threshold.max = '255';
-        this.threshold.value = '50';
+        this.threshold.value = '40';
     }
 
     // average points (find center point)

@@ -58,7 +58,10 @@ export class CameraControls{
         }).catch((err)=>{alert(err)})
     }
 
-    private processMarkers({leftMarker,rightMarker}: DetectType) {
+    private processMarkers({ leftMarker, rightMarker }: DetectType) {
+        // get tilt
+        this.tilt = Math.atan2(rightMarker.centroid.y - leftMarker.centroid.y, rightMarker.centroid.x - leftMarker.centroid.x);
+        // console.log(this.tilt);
         this.ctx.beginPath();
         this.ctx.fillStyle = 'red';
         this.ctx.arc(leftMarker.centroid.x, leftMarker.centroid.y, 20, 0, Math.PI * 2);

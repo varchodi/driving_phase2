@@ -4,8 +4,9 @@ import { polysIntersect } from "./util";
 import { NeuralNetwork } from "./network";
 import { Engine, explode } from "./sound";
 import { PhoneControls } from "./phone/phoneControls";
+import { CameraControls } from "./cameraControls";
 export default class Car {
-    controls: Controls | PhoneControls;
+    controls: Controls | PhoneControls |CameraControls;
     speed: number;
     acceleration: number;
     maxSpeed: number;
@@ -199,7 +200,7 @@ export default class Car {
         }
 
         if (this.speed != 0) {
-            if (this.controls instanceof PhoneControls) {
+            if (this.controls instanceof PhoneControls || this.controls instanceof CameraControls ) {
                 this.angle -= this.controls.tilt * 0.03;
 
             }
