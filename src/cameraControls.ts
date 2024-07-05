@@ -61,7 +61,7 @@ export class CameraControls{
     private processMarkers({ leftMarker, rightMarker }: DetectType) {
         // get tilt
         this.tilt = Math.atan2(rightMarker.centroid.y - leftMarker.centroid.y, rightMarker.centroid.x - leftMarker.centroid.x);
-        // console.log(this.tilt);
+
         this.ctx.beginPath();
         this.ctx.fillStyle = 'red';
         this.ctx.arc(leftMarker.centroid.x, leftMarker.centroid.y, 20, 0, Math.PI * 2);
@@ -75,7 +75,13 @@ export class CameraControls{
     }
 
     private loop() {
+        this.ctx.save();
+        this.ctx.translate(this.canvas.width, 0);
+        this.ctx.scale(-1, 1);
+
         this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.restore();
+
         const imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const result = this.markerDetector.detect(imgData);//get data from canvas
         if (result) {
