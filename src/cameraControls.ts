@@ -1,4 +1,6 @@
 import { Markerdetector } from "./marker/merkerDetector";
+import { average, distance } from "./world/math/utils";
+import { Point } from "./world/primitives/point";
 export type DetectType = {
     leftMarker: {
         centroid: {
@@ -61,6 +63,14 @@ export class CameraControls{
     private processMarkers({ leftMarker, rightMarker }: DetectType) {
         // get tilt
         this.tilt = Math.atan2(rightMarker.centroid.y - leftMarker.centroid.y, rightMarker.centroid.x - leftMarker.centroid.x);
+
+        const wheelCenter = average(
+            new Point(leftMarker.centroid.x, leftMarker.centroid.y),
+            new Point(rightMarker.centroid.x, rightMarker.centroid.y)
+        );
+
+        const wheelRadius = distance(wheelCenter, new Point(leftMarker.centroid.x, leftMarker.centroid.y));
+        
 
         this.ctx.beginPath();
         this.ctx.fillStyle = 'red';
