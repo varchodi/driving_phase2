@@ -1,4 +1,32 @@
 import { Markerdetector } from "./marker/merkerDetector";
+export type DetectType = {
+    leftMarker: {
+        centroid: {
+            x: number;
+            y: number;
+            blueness: number;
+        };
+        points: {
+            x: number;
+            y: number;
+            blueness: number;
+        }[];
+        radius: number;
+    };
+    rightMarker: {
+        centroid: {
+            x: number;
+            y: number;
+            blueness: number;
+        };
+        points: {
+            x: number;
+            y: number;
+            blueness: number;
+        }[];
+        radius: number;
+    };
+}
 
 export class CameraControls{
     ctx: CanvasRenderingContext2D;
@@ -30,11 +58,27 @@ export class CameraControls{
         }).catch((err)=>{alert(err)})
     }
 
+    private processMarkers({leftMarker,rightMarker}: DetectType) {
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'red';
+        this.ctx.arc(leftMarker.centroid.x, leftMarker.centroid.y, 20, 0, Math.PI * 2);
+        this.ctx.fill();
+
+        this.ctx.beginPath();
+        this.ctx.fillStyle = 'yellow';
+        this.ctx.arc(rightMarker.centroid.x, rightMarker.centroid.y, 20, 0, Math.PI * 2);
+        this.ctx.fill();
+
+    }
+
     private loop() {
         this.ctx.drawImage(this.video, 0, 0, this.canvas.width, this.canvas.height);
         const imgData = this.ctx.getImageData(0, 0, this.canvas.width, this.canvas.height);
         const result = this.markerDetector.detect(imgData);//get data from canvas
-            requestAnimationFrame(()=>this.loop())
+        if (result) {
+            this.processMarkers(result);
+        }
+        requestAnimationFrame(()=>this.loop())
 
     }
 }
