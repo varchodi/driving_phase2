@@ -1,4 +1,6 @@
-import { distance } from ".";
+// import { distance } from "./index_c";
+
+import { distance } from "../util";
 
 export class Markerdetector{
     threshold: HTMLInputElement;
@@ -7,7 +9,12 @@ export class Markerdetector{
         this.threshold.type = 'range';
         this.threshold.min = '0';
         this.threshold.max = '255';
-        this.threshold.value = '40';
+        this.threshold.value = localStorage.getItem('markerThreshold') || '40';
+    }
+
+    public updateThreshhold(delta: number) {
+        this.threshold.value = String(Number(this.threshold.value) + delta);
+        localStorage.setItem("markerThreshold", this.threshold.value);
     }
 
     // average points (find center point)
