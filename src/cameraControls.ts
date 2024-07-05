@@ -77,10 +77,6 @@ export class CameraControls{
         this.ctx.arc(wheelCenter.x, wheelCenter.y, wheelRadius, 0, Math.PI * 2);
         this.ctx.fill();
 
-        // this.ctx.beginPath();
-        // this.ctx.fillStyle = 'yellow';
-        // this.ctx.arc(rightMarker.centroid.x, rightMarker.centroid.y, 20, 0, Math.PI * 2);
-        // this.ctx.fill();
 
     }
 
@@ -96,6 +92,18 @@ export class CameraControls{
         const result = this.markerDetector.detect(imgData);//get data from canvas
         if (result) {
             this.processMarkers(result);
+
+            for (let i = 0; i < imgData.data.length; i+=4) {
+                imgData.data[i + 3] = 0;
+            }
+
+            for (const point of [...result.leftMarker.points, ...result.rightMarker.points]) {
+                const index = (point.y * imgData.width + point.x) * 4;
+                imgData.data[index + 3] = 255;
+            }
+
+            this.ctx.putImageData(imgData, 0, 0);
+
         }
         requestAnimationFrame(() => this.loop());
 
