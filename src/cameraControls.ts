@@ -39,6 +39,8 @@ export class CameraControls{
     public video: HTMLVideoElement=null!;
     tempCanvas: HTMLCanvasElement;
     tmpCtx: CanvasRenderingContext2D;
+    initializing: boolean;
+    expectedSize: any;
     constructor(public canvas: HTMLCanvasElement) {
         this.canvas = canvas;
         this.ctx = canvas.getContext('2d')!;
@@ -48,6 +50,10 @@ export class CameraControls{
         this.tilt = 0;
         this.forward = true;
         this.reverse = false;
+
+        // init 
+        this.initializing = true;
+        this.expectedSize = 0;
 
         this.markerDetector = new Markerdetector();
 
@@ -74,6 +80,19 @@ export class CameraControls{
         // get tilt
         this.tilt = Math.atan2(rightMarker.centroid.y - leftMarker.centroid.y, rightMarker.centroid.x - leftMarker.centroid.x);
 
+        if (this.initializing) {
+            this.expectedSize = (leftMarker.radius + rightMarker.radius) / 2;
+            
+        }
+        const size = (leftMarker.radius + rightMarker.radius) / 2;
+        if (size < this.expectedSize * .85) {
+            this.forward = false;
+            this.reverse = true;
+        } else {
+            this.reverse = false;
+            this.forward = true;
+        }
+
         const wheelCenter = average(
             new Point(leftMarker.centroid.x, leftMarker.centroid.y),
             new Point(rightMarker.centroid.x, rightMarker.centroid.y)
@@ -83,7 +102,7 @@ export class CameraControls{
 
 
         this.ctx.beginPath();
-        this.ctx.fillStyle = 'red';
+        this.ctx.fillStyle = this.forward ?"blue":'red';
         this.ctx.arc(wheelCenter.x, wheelCenter.y, wheelRadius, 0, Math.PI * 2);
         this.ctx.fill();
 
@@ -91,6 +110,11 @@ export class CameraControls{
     }
 
     private loop() {
+        setTimeout(() => {
+            this.initializing = false;
+            
+        },3000)
+
         this.ctx.save();
         this.ctx.translate(this.canvas.width, 0);
         this.ctx.scale(-1, 1);
