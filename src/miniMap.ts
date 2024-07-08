@@ -1,13 +1,15 @@
+import Car from "./car";
 import { Graph } from "./world/math/graph";
 import { scale } from "./world/math/utils";
 import { Point } from "./world/primitives/point";
 
 export class MiniMap{
     ctx: CanvasRenderingContext2D;
-    constructor(private canvas: HTMLCanvasElement, private graph: Graph, public size: number) {
+    constructor(private canvas: HTMLCanvasElement, private graph: Graph, public size: number,public  cars:Car[]) {
         this.canvas = canvas;
         this.graph = graph;
         this.size = size;
+        this.cars = cars;
 
         canvas.width = size;
         canvas.height = size;
@@ -28,6 +30,12 @@ export class MiniMap{
         this.ctx.scale(scaler, scaler);
         for (const seg of this.graph.segments) {
             seg.draw(this.ctx, { width: 3/scaler,color:"white"});
+        }
+
+        for (const c of this.cars) {
+            this.ctx.beginPath();
+            this.ctx.arc(c.x, c.y, 5 / scaler, 0, Math.PI * 2);
+            this.ctx.fill();
         }
         this.ctx.restore();
 

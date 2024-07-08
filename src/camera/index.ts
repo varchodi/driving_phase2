@@ -138,7 +138,7 @@ export default class Camera {
             )
         )
         for(const poly of carShadows) {
-            poly.fill = "rgba(0,0,0,0.1)";
+            poly.fill = "rgba(150,150,150,1)";
             poly.stroke = "rgba(0,0,0,0)"
         }
         return [...carShadows, ...buildingPolys, ...carPolys, ...roadPolys];

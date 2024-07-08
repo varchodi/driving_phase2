@@ -44,13 +44,16 @@ const world = World.load(worldy);
 const carInfo = await loadData("/src/saves/right_hand_rule.car");
 //set viewport
 const viewport = new Viewport(carCanvas, world.zoom, world.offset);
-const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth);
+// const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth);
 
 const N=10;
 const cars=generateCars(1,"KEYS").concat(generateCars(N,"AI"));
 export const myCar=cars[0];
 // camera
 const camera = new Camera(myCar);
+
+// add other cars to mini map
+const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth,cars);
 
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
