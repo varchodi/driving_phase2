@@ -12,6 +12,7 @@ import { Target } from './world/markings/target';
 import { Segment } from './world/primitives/segment';
 import { Engine, beep, taDaa } from './sound';
 import Camera from './camera';
+import { Graph } from './world/math/graph';
 
 const rightPanelWidth = 300;
 document.body.style.flexDirection = 'column';
@@ -52,9 +53,6 @@ export const myCar=cars[0];
 // camera
 const camera = new Camera(myCar);
 
-// add other cars to mini map
-const minimap = new MiniMap(miniMapCanvas,world.graph,rightPanelWidth,cars);
-
 if(localStorage.getItem("bestBrain")){
     for(let i=0;i<cars.length;i++){
         cars[i].brain=JSON.parse(
@@ -86,6 +84,10 @@ if (target) {
 } else {
     roadBorders=world.roadBoarders.map(s=>[s.p1,s.p2])
 }
+
+// add other cars to mini map and keep only visible corridor
+const miniMapGraph = new Graph([], world.corridor.skeleton);
+const minimap = new MiniMap(miniMapCanvas,miniMapGraph,rightPanelWidth,cars);
 
 let frameCount = 0;
 let started = true;
