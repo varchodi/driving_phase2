@@ -19,7 +19,7 @@ export class MiniMap{
     public update(viewPoint: Point) {
         this.ctx.clearRect(0, 0, this.size, this.size);
 
-        const scaler = 0.05;
+        const scaler = 0.1;
         const  scaleViewPoint = scale(viewPoint, -scaler);
         //?? consider viewpoint
         this.ctx.save();
