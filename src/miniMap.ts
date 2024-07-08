@@ -5,7 +5,7 @@ import { Point } from "./world/primitives/point";
 
 export class MiniMap{
     ctx: CanvasRenderingContext2D;
-    constructor(private canvas: HTMLCanvasElement, private graph: Graph, public size: number,public  cars:Car[]) {
+    constructor(public canvas: HTMLCanvasElement, private graph: Graph, public size: number,public  cars:Car[]) {
         this.canvas = canvas;
         this.graph = graph;
         this.size = size;

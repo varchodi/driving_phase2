@@ -216,6 +216,7 @@ function animate(time?: number) {
     //--------------------------------
     //?? draw minimap
     minimap.update(viewPoint);
+    minimap.canvas.style.transform = `rotate(${myCar.angle}rad)`;
 
     //---------------------
     for (let i = 0; i < cars.length; i++) {
