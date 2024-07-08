@@ -132,7 +132,13 @@ export default class Camera {
             [new Polygon(world.bestCar.polygon.map((p)=>new Point(p.x,p.y)))]
         ),10);
 
-        return  [...buildingPolys,...carPolys,...roadPolys]
+        const carShadows = this.filter(
+            world.cars.map(
+                (c)=>new Polygon(c.polygon.map((p)=>new Point(p.x,p.y)))
+            )
+        )
+
+        return [...carShadows, ...buildingPolys, ...carPolys, ...roadPolys];
     }
 
     public render(ctx: CanvasRenderingContext2D, world: World) {
