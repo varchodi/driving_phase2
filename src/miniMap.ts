@@ -34,8 +34,11 @@ export class MiniMap{
 
         for (const c of this.cars) {
             this.ctx.beginPath();
+            this.ctx.fillStyle = 'gray';
+            this.ctx.lineWidth = scaler;
             this.ctx.arc(c.x, c.y, 5 / scaler, 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.stroke();
         }
         this.ctx.restore();
 
