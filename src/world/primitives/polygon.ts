@@ -4,9 +4,12 @@ import { getIntersection ,getRandomColor,average} from "../math/utils";
 
 export class Polygon{
     public segments: Segment[];
+    public fill: string = null!;
+    public stroke: string = null!;
     constructor(public points: Point[]) {
         this.points = points;
         this.segments = [];
+
 
 
         for (let i = 1; i <= points.length; i++) {

@@ -137,7 +137,10 @@ export default class Camera {
                 (c)=>new Polygon(c.polygon.map((p)=>new Point(p.x,p.y)))
             )
         )
-
+        for(const poly of carShadows) {
+            poly.fill = "rgba(0,0,0,0.1)";
+            poly.stroke = "rgba(0,0,0,0)"
+        }
         return [...carShadows, ...buildingPolys, ...carPolys, ...roadPolys];
     }
 
@@ -151,8 +154,14 @@ export default class Camera {
 
         ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-        for (const poly of projPolys) {
-            poly.draw(ctx);
+        // for (const poly of projPolys) {
+        //     poly.draw(ctx);
+        // }
+        for (let i = 0; i < projPolys.length; i++) {
+            const { fill, stroke } = polys[i];
+            if (fill && stroke) projPolys[i].draw(ctx, { fill, stroke })
+            else projPolys[i].draw(ctx)
+            
         }
     }
 
