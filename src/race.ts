@@ -193,7 +193,8 @@ function startCounter() {
 function handleCollisionWithRoadBorder(car: Car) {
     const seg = getNearestSegment(new Point(car.x,car.y), world.corridor.skeleton);
     const correctotors = car.polygon.map((p) => {
-        const { point: projPoint } = seg.projectPoint(new Point(p.x, p.y));
+        const proj = seg.projectPoint(new Point(p.x, p.y));
+        const projPoint = proj.offset < 0 ? seg.p1 : proj.offset > 1 ? seg.p2 : proj.point;
         return substract(projPoint, new Point(p.x, p.y));
     })
 
