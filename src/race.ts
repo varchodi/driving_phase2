@@ -3,7 +3,7 @@ import './styles/style.css'
 import { NeuralNetwork } from './network';
 import { World } from './world/world';
 import { Viewport } from './world/viewport';
-import { angle, getNearestSegment, scale } from './world/math/utils';
+import { angle, getNearestSegment, magnitude, scale, substract } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
@@ -188,7 +188,21 @@ function startCounter() {
           }, 1000);
        }, 1000);
     }, 1000);
- }
+}
+ 
+function handleCollisionWithRoadBorder(car: Car) {
+    const seg = getNearestSegment(new Point(car.x,car.y), world.corridor.skeleton);
+    const correctotors = car.polygon.map((p) => {
+        const { point: projPoint } = seg.projectPoint(new Point(p.x, p.y));
+        return substract(projPoint, new Point(p.x, p.y));
+    })
+
+    const maxMagnitude = Math.max(...correctotors.map((p) => magnitude(new Point(p.x, p.y))));
+    const corrector = correctotors.find((p) => magnitude(new Point(p.x, p.y)) == maxMagnitude)!;
+    car.x += corrector.x;
+    car.y += corrector.y;
+    car.damaged = false;
+}
 
 function animate(time?: number) {
     if (started) {
@@ -199,6 +213,12 @@ function animate(time?: number) {
         //pass cars to world
         world.cars = cars;
         world.bestCar = myCar;
+    }
+
+    for (const car of cars) {
+        if (car.damaged) {
+            handleCollisionWithRoadBorder(car);
+        }
     }
 
     //!! camera follows bestCar
