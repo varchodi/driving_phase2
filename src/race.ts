@@ -167,8 +167,6 @@ function UpdateCarProgress(car:Car) {
     }
 }
 
-
-
 function startCounter() {
     counterEl.innerText = "3";
     beep(400);

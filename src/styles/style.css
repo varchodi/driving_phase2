@@ -35,6 +35,10 @@ button:hover{
   background:#2a5;
 }
 
+#cameraCanvas{
+  background-image:linear-gradient(#8cf,white 70%);
+}
+
 .mimiMap{
   width: 15em;
   position: absolute;
