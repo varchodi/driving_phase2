@@ -3,7 +3,7 @@ import './styles/style.css'
 import { NeuralNetwork } from './network';
 import { World } from './world/world';
 import { Viewport } from './world/viewport';
-import { angle, getNearestSegment, magnitude, scale, substract } from './world/math/utils';
+import { angle, getNearestSegment, magnitude, normalize, scale, substract } from './world/math/utils';
 import { Start } from './world/markings/start';
 import { Point } from './world/primitives/point';
 import { MiniMap } from './miniMap';
@@ -199,8 +199,9 @@ function handleCollisionWithRoadBorder(car: Car) {
 
     const maxMagnitude = Math.max(...correctotors.map((p) => magnitude(new Point(p.x, p.y))));
     const corrector = correctotors.find((p) => magnitude(new Point(p.x, p.y)) == maxMagnitude)!;
-    car.x += corrector.x;
-    car.y += corrector.y;
+    const normCorrector = normalize(corrector);
+    car.x += normCorrector.x;
+    car.y += normCorrector.y;
     car.damaged = false;
 }
 
