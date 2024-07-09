@@ -201,6 +201,13 @@ function handleCollisionWithRoadBorder(car: Car) {
     const maxMagnitude = Math.max(...correctotors.map((p) => magnitude(new Point(p.x, p.y))));
     const corrector = correctotors.find((p) => magnitude(new Point(p.x, p.y)) == maxMagnitude)!;
     const normCorrector = normalize(corrector);
+
+    if (corrector == correctotors[0] || corrector == correctotors[2]) {
+        car.angle += .1;
+    } else {
+        car.angle -= .1;
+    }
+
     car.x += normCorrector.x;
     car.y += normCorrector.y;
     car.damaged = false;
