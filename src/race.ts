@@ -223,7 +223,7 @@ function animate(time?: number) {
     cars.sort((a, b) => b.progress - a.progress);// sort cars by progress
     for (let i = 0; i < cars.length; i++) {
         const stat = document.getElementById(`stat_${i}`) as HTMLDivElement;
-        stat.style.color = cars[i].color;
+        stat.style.color = cars[i].type == "AI"? "white":cars[i].color;
         stat.innerText = `${i + 1}: ${cars[i].name} ${cars[i].damaged ?"💀":""}`
         stat.style.backgroundColor=cars[i].type ==='AI'?'black':'white'
         if (cars[i].finishTime) {

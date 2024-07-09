@@ -25,7 +25,7 @@ export default class Camera {
     }
 
     public move({ x, y, angle }: Car) {
-        const t = 0.1;
+        const t = 0.15;
         
         this.x = lerp(this.x,x + this.distanceBehind*Math.sin(this.angle),t);
         this.y= lerp(this.y,y + this.distanceBehind*Math.cos(this.angle),t);
@@ -168,7 +168,7 @@ export default class Camera {
             const { fill, stroke } = polys[i];
             // make building far building transparent
             const dist = polys[i].distanceToPoint(new Point(this.x, this.y));
-            ctx.globalAlpha = 1 - dist / this.range;
+            ctx.globalAlpha = (1 - dist / this.range)**2;
             if (fill && stroke) projPolys[i].draw(ctx, { fill, stroke })
             else projPolys[i].draw(ctx)
             

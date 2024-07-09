@@ -58,7 +58,7 @@ button:hover{
   border-radius: 10px;
   opacity: 50%;
   border: white 2px solid;
-  overflow-y: auto;
+  overflow-y: hidden;
 }
 
 .stat{
