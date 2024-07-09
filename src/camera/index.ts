@@ -137,10 +137,17 @@ export default class Camera {
                 (c)=>new Polygon(c.polygon.map((p)=>new Point(p.x,p.y)))
             )
         )
+
         for(const poly of carShadows) {
             poly.fill = "rgba(150,150,150,1)";
             poly.stroke = "rgba(0,0,0,0)"
         }
+
+        for(const poly of buildingPolys) {
+            poly.fill = "rgba(150,150,150,.2)";
+            poly.stroke = "rgba(150,150,150,.2)";
+        }
+        
         return [...carShadows, ...buildingPolys, ...carPolys, ...roadPolys];
     }
 
