@@ -166,6 +166,9 @@ export default class Camera {
         // }
         for (let i = 0; i < projPolys.length; i++) {
             const { fill, stroke } = polys[i];
+            // make building far building transparent
+            const dist = polys[i].distanceToPoint(new Point(this.x, this.y));
+            ctx.globalAlpha = 1 - dist / this.range;
             if (fill && stroke) projPolys[i].draw(ctx, { fill, stroke })
             else projPolys[i].draw(ctx)
             
